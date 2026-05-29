@@ -8,6 +8,7 @@ from loguru import logger
 
 from src.graph import build_graph
 from src.memory.checkpointer import get_checkpointer
+from src.storage.user_store import UserStore
 from src.api.middleware import add_middleware
 
 
@@ -35,7 +36,8 @@ async def lifespan(app: FastAPI):
     logger.info("app: starting up")
     app.state.checkpointer = get_checkpointer()
     app.state.graph = build_graph(app.state.checkpointer)
-    logger.info("app: graph and checkpointer initialized")
+    app.state.user_store = UserStore()
+    logger.info("app: graph, checkpointer, and user_store initialized")
 
     yield
 
@@ -130,11 +132,12 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     # Import and register routers
-    from src.api.routers import recommendations, feedback, sessions
+    from src.api.routers import recommendations, feedback, sessions, profile
 
     app.include_router(recommendations.router, prefix="/v1")
     app.include_router(feedback.router, prefix="/v1")
     app.include_router(sessions.router, prefix="/v1")
+    app.include_router(profile.router)  # /api/* routes
 
     return app
 

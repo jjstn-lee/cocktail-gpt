@@ -1,15 +1,15 @@
 """Business logic for feedback submission."""
 
+from typing import Any
 from loguru import logger
 
-from src.memory.checkpointer import Checkpointer
 from src.state import Feedback
 from src.api.schemas import FeedbackRequest, FeedbackResponse
 
 
 async def submit_feedback(
     request: FeedbackRequest,
-    checkpointer: Checkpointer,
+    checkpointer: Any,
 ) -> FeedbackResponse:
     """
     Submit feedback on a cocktail recommendation.

@@ -1,18 +1,19 @@
 """Business logic for recommendations and clarifications."""
 
 import uuid
+from typing import Any
 from loguru import logger
 
-from src.graph import CompiledGraph
-from src.memory.checkpointer import Checkpointer
+from src.storage.user_store import UserStore
 from src.state import AgentState
 from src.api.schemas import RecommendRequest, ClarifyRequest, RecommendResponse, CocktailOut
 
 
 async def get_recommendations(
     request: RecommendRequest,
-    graph: CompiledGraph,
-    checkpointer: Checkpointer,
+    graph: Any,
+    checkpointer: Any,
+    user_store: UserStore | None = None,
 ) -> RecommendResponse:
     """
     Run the graph to generate recommendations for a user.
@@ -32,12 +33,22 @@ async def get_recommendations(
         "raw_sources": {},
         "recommendations": [],
         "confidence_score": 0.0,
+        "rationale": "",
         "clarification_question": None,
         "clarification_answer": None,
         "session_count": 0,
         "session_clarification_used": False,
         "feedback": [],
     }
+
+    # Merge stored user preferences and constraints if user_store is provided
+    if user_store:
+        stored_prefs = user_store.get_preferences(request.user_id)
+        if stored_prefs:
+            state["preferences"] = stored_prefs
+        stored_constraints = user_store.get_constraints(request.user_id)
+        if stored_constraints:
+            state["constraints"] = stored_constraints
 
     # Run the graph with persistence
     config = {"configurable": {"thread_id": thread_id}}
@@ -80,8 +91,8 @@ async def get_recommendations(
 
 async def submit_clarification(
     request: ClarifyRequest,
-    graph: CompiledGraph,
-    checkpointer: Checkpointer,
+    graph: Any,
+    checkpointer: Any,
 ) -> RecommendResponse:
     """
     Submit a clarification answer and re-run the recommender node.

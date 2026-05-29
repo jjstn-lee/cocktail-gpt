@@ -7,6 +7,7 @@
   "constraints": null,
   "recommendations": [],
   "confidence_score": 0.0,
+  "rationale": "",
   "clarification_question": null,
   "clarification_answer": null,
   "session_count": 0,

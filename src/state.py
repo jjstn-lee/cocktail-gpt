@@ -58,6 +58,7 @@ class AgentState(TypedDict, total=False):
     constraints: Constraints | None
     recommendations: list[Cocktail]
     confidence_score: float
+    rationale: str  # Top-pick explanation from recommender
     clarification_question: str | None
     clarification_answer: str | None
     session_count: int

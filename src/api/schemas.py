@@ -3,7 +3,7 @@
 from typing import Literal
 from pydantic import BaseModel
 
-from src.state import Cocktail
+from src.state import Cocktail, Preferences, Constraints
 
 
 # Request bodies
@@ -73,3 +73,34 @@ class SessionSummary(BaseModel):
     session_count: int
     last_run_at: str | None = None
     top_preferences: dict
+
+
+# Profile management
+
+
+class UpdatePreferencesRequest(BaseModel):
+    """Request to update user preferences."""
+
+    user_id: str
+    preferred_spirits: list[str] | None = None
+    preferred_flavors: list[str] | None = None
+    abv_preference: str | None = None
+    style_preferences: list[str] | None = None
+
+
+class UpdateConstraintsRequest(BaseModel):
+    """Request to update user constraints."""
+
+    user_id: str
+    allergies: list[str] | None = None
+    ingredients_on_hand: list[str] | None = None
+    max_abv: float | None = None
+
+
+class UserProfileResponse(BaseModel):
+    """Response with full user profile (preferences and constraints)."""
+
+    user_id: str
+    preferences: dict
+    constraints: dict
+    updated_at: str | None = None

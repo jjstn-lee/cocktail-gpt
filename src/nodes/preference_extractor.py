@@ -71,9 +71,22 @@ Source Signals: {sources_summary}"""),
         content = content.strip()
 
         prefs_dict = json.loads(content)
-        preferences = Preferences(**prefs_dict)
-        logger.info("preference_extractor: preferences extracted", extra={"preferences": preferences})
-        return {"preferences": preferences}
+        inferred = Preferences(**prefs_dict)
+
+        # Merge with existing state preferences: user-set values win, LLM fills blanks
+        existing = state.get("preferences") or Preferences()
+        merged = Preferences(
+            preferred_spirits=existing.preferred_spirits or inferred.preferred_spirits,
+            preferred_flavors=existing.preferred_flavors or inferred.preferred_flavors,
+            abv_preference=existing.abv_preference or inferred.abv_preference,
+            style_preferences=existing.style_preferences or inferred.style_preferences,
+        )
+
+        logger.info(
+            "preference_extractor: preferences extracted and merged",
+            extra={"preferences": merged},
+        )
+        return {"preferences": merged}
     except (json.JSONDecodeError, ValueError) as e:
         logger.warning("preference_extractor: failed to parse preferences", extra={"error": str(e)})
-        return {"preferences": Preferences()}
+        return {"preferences": state.get("preferences") or Preferences()}

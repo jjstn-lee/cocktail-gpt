@@ -71,9 +71,22 @@ Source Signals: {sources_summary}"""),
         content = content.strip()
 
         constraints_dict = json.loads(content)
-        constraints = Constraints(**constraints_dict)
-        logger.info("constraint_checker: constraints identified", extra={"constraints": constraints})
-        return {"constraints": constraints}
+        inferred = Constraints(**constraints_dict)
+
+        # Merge with existing state constraints: user-set values win, LLM fills blanks
+        # Safety-critical: allergies and max_abv must never be overwritten by LLM inference
+        existing = state.get("constraints") or Constraints()
+        merged = Constraints(
+            allergies=existing.allergies or inferred.allergies,
+            ingredients_on_hand=existing.ingredients_on_hand or inferred.ingredients_on_hand,
+            max_abv=existing.max_abv or inferred.max_abv,
+        )
+
+        logger.info(
+            "constraint_checker: constraints identified and merged",
+            extra={"constraints": merged},
+        )
+        return {"constraints": merged}
     except (json.JSONDecodeError, ValueError) as e:
         logger.warning("constraint_checker: failed to parse constraints", extra={"error": str(e)})
-        return {"constraints": Constraints()}
+        return {"constraints": state.get("constraints") or Constraints()}

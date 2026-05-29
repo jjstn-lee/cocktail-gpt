@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends
 from loguru import logger
 
-from src.api.dependencies import get_graph, get_checkpointer
+from src.api.dependencies import get_graph, get_checkpointer, get_user_store
 from src.api.schemas import RecommendRequest, ClarifyRequest, RecommendResponse
 from src.api.services.recommendation_service import get_recommendations, submit_clarification
 
@@ -15,6 +15,7 @@ async def recommend(
     request: RecommendRequest,
     graph=Depends(get_graph),
     checkpointer=Depends(get_checkpointer),
+    user_store=Depends(get_user_store),
 ) -> RecommendResponse:
     """
     Generate cocktail recommendations for a user.
@@ -23,7 +24,7 @@ async def recommend(
     If needs_clarification is true, call POST /clarify with the thread_id and user's answer.
     """
     logger.info("POST /recommend", extra={"user_id": request.user_id})
-    return await get_recommendations(request, graph, checkpointer)
+    return await get_recommendations(request, graph, checkpointer, user_store)
 
 
 @router.post("/clarify", response_model=RecommendResponse)
