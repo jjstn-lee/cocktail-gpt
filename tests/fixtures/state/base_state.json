@@ -1,0 +1,15 @@
+{
+  "user_id": "test_user",
+  "thread_id": "test_thread",
+  "raw_sources": {},
+  "user_profile": null,
+  "preferences": null,
+  "constraints": null,
+  "recommendations": [],
+  "confidence_score": 0.0,
+  "clarification_question": null,
+  "clarification_answer": null,
+  "session_count": 0,
+  "session_clarification_used": false,
+  "feedback": []
+}

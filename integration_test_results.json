@@ -1,0 +1,74 @@
+{
+  "test_type": "integration_test_with_mocks",
+  "user_id": "integration_test_user",
+  "sources_ingested": [
+    "spotify",
+    "weather"
+  ],
+  "spotify": {
+    "confidence": 0.92,
+    "signals": {
+      "audio": {
+        "avg_energy": 0.78,
+        "avg_valence": 0.62,
+        "avg_danceability": 0.71,
+        "avg_tempo": 125.3,
+        "avg_acousticness": 0.15,
+        "avg_instrumentalness": 0.08,
+        "track_count": 47
+      },
+      "genre": {
+        "top_genres": [
+          "indie-rock",
+          "alternative",
+          "pop",
+          "electronic"
+        ],
+        "artist_count": 23
+      },
+      "playback": {
+        "is_active": true,
+        "track_name": "Ocean Avenue",
+        "artist_name": "Yellowcard",
+        "context_type": "playlist",
+        "context_uri": "spotify:playlist:37i9dQZF1DX7F6T8nwGA03"
+      },
+      "playlist": {
+        "playlist_names": [
+          "Summer Vibes",
+          "Workout Mix",
+          "Chill Evening"
+        ],
+        "playlist_count": 3
+      }
+    }
+  },
+  "weather": {
+    "confidence": 0.75,
+    "signals": {
+      "current": {
+        "temp": 72.5,
+        "feels_like": 71.2,
+        "humidity": 65,
+        "pressure": 1013,
+        "wind_speed": 4.5,
+        "clouds": 15,
+        "condition": "Clear",
+        "description": "clear sky",
+        "sunrise": 1679078400,
+        "sunset": 1679125200
+      },
+      "forecast": {
+        "avg_temp": 71.8,
+        "avg_humidity": 63,
+        "avg_wind_speed": 4.2,
+        "forecast_count": 12,
+        "conditions": [
+          "Clear",
+          "Partly Cloudy"
+        ]
+      }
+    }
+  },
+  "timestamp": "2026-05-28T18:16:08.887821+00:00"
+}

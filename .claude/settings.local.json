@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:spotipy.readthedocs.io)",
+      "WebFetch(domain:developer.spotify.com)",
+      "Bash(source .venv/bin/activate)",
+      "Bash(pip show:*)",
+      "Bash(pip list:*)"
+    ]
+  }
+}

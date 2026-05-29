@@ -1,0 +1,29 @@
+[
+  {
+    "id": "track_1",
+    "energy": 0.8,
+    "valence": 0.7,
+    "danceability": 0.75,
+    "tempo": 120,
+    "acousticness": 0.1,
+    "instrumentalness": 0.05
+  },
+  {
+    "id": "track_2",
+    "energy": 0.6,
+    "valence": 0.5,
+    "danceability": 0.65,
+    "tempo": 100,
+    "acousticness": 0.2,
+    "instrumentalness": 0.1
+  },
+  {
+    "id": "track_3",
+    "energy": 0.7,
+    "valence": 0.6,
+    "danceability": 0.7,
+    "tempo": 110,
+    "acousticness": 0.15,
+    "instrumentalness": 0.08
+  }
+]

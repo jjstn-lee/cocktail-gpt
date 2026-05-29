@@ -1,0 +1,12 @@
+{
+  "is_playing": true,
+  "item": {
+    "id": "track_current",
+    "name": "Now Playing Track",
+    "artists": [{"name": "Current Artist"}]
+  },
+  "context": {
+    "type": "playlist",
+    "uri": "spotify:playlist:123456"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "items": [
+    {
+      "id": "artist_1",
+      "name": "Artist A",
+      "genres": ["pop", "dance", "electronic"]
+    },
+    {
+      "id": "artist_2",
+      "name": "Artist B",
+      "genres": ["hip-hop", "rap"]
+    },
+    {
+      "id": "artist_3",
+      "name": "Artist C",
+      "genres": ["indie", "alternative", "pop"]
+    },
+    {
+      "id": "artist_4",
+      "name": "Artist D",
+      "genres": ["dance", "electronic", "house"]
+    },
+    {
+      "id": "artist_5",
+      "name": "Artist E",
+      "genres": ["pop", "synth-pop"]
+    }
+  ]
+}
