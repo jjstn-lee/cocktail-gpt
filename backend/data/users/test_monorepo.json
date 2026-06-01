@@ -1,0 +1,16 @@
+{
+  "preferences": {
+    "preferred_spirits": [
+      "gin"
+    ],
+    "preferred_flavors": [],
+    "abv_preference": null,
+    "style_preferences": []
+  },
+  "constraints": {
+    "allergies": [],
+    "ingredients_on_hand": [],
+    "max_abv": null
+  },
+  "updated_at": "2026-05-29T18:28:21.113834Z"
+}
