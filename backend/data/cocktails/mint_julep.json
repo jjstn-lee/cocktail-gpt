@@ -1,0 +1,60 @@
+{
+  "id": "mint_julep",
+  "name": "Mint Julep",
+  "method": "built",
+  "glass": "silver cup",
+  "abv_estimate": 18.0,
+  "ingredients": [
+    {
+      "item": "bourbon",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh mint",
+      "amount": "8-10 leaves",
+      "role": "modifier"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "crushed ice",
+      "amount": "1 cup",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "minty",
+    "warming",
+    "sweet",
+    "refreshing"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "refreshing",
+    "cooling",
+    "smooth"
+  ],
+  "occasion_tags": [
+    "summer day",
+    "garden party",
+    "Kentucky Derby"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "bourbon",
+    "mint"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Bourbon and mint in perfect summer harmony\u2014the South's signature drink."
+}

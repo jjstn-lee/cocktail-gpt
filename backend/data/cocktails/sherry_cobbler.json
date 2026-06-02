@@ -1,0 +1,60 @@
+{
+  "id": "sherry_cobbler",
+  "name": "Sherry Cobbler",
+  "method": "shaken",
+  "glass": "highball glass",
+  "abv_estimate": 12.0,
+  "ingredients": [
+    {
+      "item": "sherry",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.5 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "seasonal fruit",
+      "amount": "mix",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "fruity",
+    "light",
+    "sweet",
+    "nutty"
+  ],
+  "spirit_category": "wine",
+  "mood_tags": [
+    "light",
+    "fruity",
+    "summer"
+  ],
+  "occasion_tags": [
+    "summer afternoon",
+    "garden party",
+    "brunch"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "classic",
+    "sherry",
+    "fruity"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Light sherry with seasonal fruit\u2014a refreshing, elegant summer sip."
+}

@@ -1,0 +1,63 @@
+{
+  "id": "sazerac",
+  "name": "Sazerac",
+  "method": "stirred",
+  "glass": "rocks glass",
+  "abv_estimate": 25.0,
+  "ingredients": [
+    {
+      "item": "rye whiskey",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "absinthe",
+      "amount": "0.25 oz",
+      "role": "rinse"
+    },
+    {
+      "item": "peychaud bitters",
+      "amount": "3 dashes",
+      "role": "modifier"
+    },
+    {
+      "item": "sugar",
+      "amount": "1 cube",
+      "role": "modifier"
+    },
+    {
+      "item": "lemon peel",
+      "amount": "1 twist",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "spicy",
+    "warming",
+    "anise"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "bold",
+    "daring",
+    "powerful"
+  ],
+  "occasion_tags": [
+    "nightcap",
+    "adventurous evening",
+    "whiskey night"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "New Orleans",
+    "spirit-forward"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "The original American cocktail\u2014bold rye with an herbal absinthe rinse."
+}

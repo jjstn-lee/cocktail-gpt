@@ -1,0 +1,60 @@
+{
+  "id": "whiskey_sour",
+  "name": "Whiskey Sour",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 19.0,
+  "ingredients": [
+    {
+      "item": "bourbon",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "egg white",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "warming",
+    "smooth",
+    "balanced"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "cozy",
+    "balanced",
+    "warming"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "casual evening",
+    "whiskey night"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "sour",
+    "spirit-forward"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Bourbon's warmth mellowed with lemon and a silky egg white foam."
+}

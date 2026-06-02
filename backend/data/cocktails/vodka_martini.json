@@ -1,0 +1,53 @@
+{
+  "id": "vodka_martini",
+  "name": "Vodka Martini",
+  "method": "stirred",
+  "glass": "coupe glass",
+  "abv_estimate": 32.0,
+  "ingredients": [
+    {
+      "item": "vodka",
+      "amount": "2.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "dry vermouth",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "olive",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "clean",
+    "dry",
+    "smooth",
+    "savory"
+  ],
+  "spirit_category": "vodka",
+  "mood_tags": [
+    "cool",
+    "sophisticated",
+    "contemplative"
+  ],
+  "occasion_tags": [
+    "aperitif",
+    "nightcap",
+    "spy thriller evening"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "vodka",
+    "dry"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Smooth vodka lets the olive shine\u2014the drink of understated elegance."
+}

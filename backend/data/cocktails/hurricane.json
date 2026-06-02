@@ -1,0 +1,65 @@
+{
+  "id": "hurricane",
+  "name": "Hurricane",
+  "method": "shaken",
+  "glass": "highball glass",
+  "abv_estimate": 20.0,
+  "ingredients": [
+    {
+      "item": "light rum",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "dark rum",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "passion fruit syrup",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "tropical",
+    "fruity",
+    "balanced",
+    "sweet"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "tropical",
+    "sweet",
+    "fun"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "tropical party",
+    "summer"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "tiki",
+    "tropical",
+    "sweet"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Two rums and passion fruit\u2014a New Orleans classic that's equal parts sweet and tropical."
+}

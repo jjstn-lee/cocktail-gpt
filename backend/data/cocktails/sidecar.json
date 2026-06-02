@@ -1,0 +1,55 @@
+{
+  "id": "sidecar",
+  "name": "Sidecar",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 26.0,
+  "ingredients": [
+    {
+      "item": "cognac",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "triple sec",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "warm",
+    "complex",
+    "elegant"
+  ],
+  "spirit_category": "brandy",
+  "mood_tags": [
+    "sophisticated",
+    "elegant",
+    "warming"
+  ],
+  "occasion_tags": [
+    "aperitif",
+    "elegant evening",
+    "after-dinner"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "brandy",
+    "elegant"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Cognac's warmth with brandy elegance and bright lemon\u2014a truly refined sour."
+}

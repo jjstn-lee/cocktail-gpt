@@ -1,0 +1,55 @@
+{
+  "id": "shrub_soda",
+  "name": "Shrub Soda",
+  "method": "built",
+  "glass": "highball glass",
+  "abv_estimate": 0.0,
+  "ingredients": [
+    {
+      "item": "fruit shrub syrup",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "soda water",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "ice",
+      "amount": "handfull",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "fruity",
+    "tart",
+    "refreshing",
+    "bright"
+  ],
+  "spirit_category": "none",
+  "mood_tags": [
+    "refreshing",
+    "fruity",
+    "light"
+  ],
+  "occasion_tags": [
+    "daytime",
+    "casual",
+    "healthy"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "virgin",
+    "fruity",
+    "modern"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": true,
+  "why_it_works": "Tangy fruit shrub with soda\u2014a refreshing non-alcoholic alternative."
+}

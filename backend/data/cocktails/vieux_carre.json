@@ -1,0 +1,65 @@
+{
+  "id": "vieux_carre",
+  "name": "Vieux Carr\u00e9",
+  "method": "stirred",
+  "glass": "rocks glass",
+  "abv_estimate": 30.0,
+  "ingredients": [
+    {
+      "item": "rye whiskey",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "cognac",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "sweet vermouth",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "chartreuse",
+      "amount": "0.25 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "bitters",
+      "amount": "2 dashes",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "warming",
+    "complex",
+    "sweet"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "sophisticated",
+    "contemplative",
+    "warming"
+  ],
+  "occasion_tags": [
+    "nightcap",
+    "special occasion",
+    "jazz evening"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "New Orleans",
+    "complex"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "A luxurious blend of whiskey, cognac, and herbal liqueurs\u2014the spirit of New Orleans."
+}

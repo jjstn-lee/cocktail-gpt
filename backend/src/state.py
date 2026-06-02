@@ -25,7 +25,8 @@ class UserProfile(BaseModel):
 class Preferences(BaseModel):
     """User's spirit and flavor preferences."""
 
-    preferred_spirits: list[str] = []
+    preferred_spirits: list[str] = []  # User-explicitly-set favorite spirits
+    genre_spirits: list[str] = []  # Spirits inferred from music (genre/audio signals)
     preferred_flavors: list[str] = []
     abv_preference: str | None = None  # e.g., "strong", "moderate", "light"
     style_preferences: list[str] = []
@@ -59,8 +60,8 @@ class AgentState(TypedDict, total=False):
     recommendations: list[Cocktail]
     confidence_score: float
     rationale: str  # Top-pick explanation from recommender
-    clarification_question: str | None
     clarification_answer: str | None
     session_count: int
     session_clarification_used: bool  # Cap clarification at one round
     feedback: list[Feedback]
+    recommendation_history: list[dict]  # Past sessions [{session_id, cocktails, timestamp}]

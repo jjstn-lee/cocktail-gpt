@@ -1,0 +1,65 @@
+{
+  "id": "penicillin",
+  "name": "Penicillin",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 19.0,
+  "ingredients": [
+    {
+      "item": "scotch",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "islay scotch",
+      "amount": "0.25 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "honey syrup",
+      "amount": "0.75 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "fresh ginger",
+      "amount": "3 slices",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "smoky",
+    "honey",
+    "citrus",
+    "spicy"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "warming",
+    "smoky",
+    "healing"
+  ],
+  "occasion_tags": [
+    "winter evening",
+    "healing drink",
+    "craft night"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "modern",
+    "scotch",
+    "smoky"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Scotch and smoke with honey and ginger\u2014a warming elixir with bite."
+}

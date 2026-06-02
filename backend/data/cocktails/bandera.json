@@ -1,0 +1,53 @@
+{
+  "id": "bandera",
+  "name": "Bandera",
+  "method": "built",
+  "glass": "shot glasses",
+  "abv_estimate": 12.0,
+  "ingredients": [
+    {
+      "item": "mezcal",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lime",
+      "amount": "1",
+      "role": "mixer"
+    },
+    {
+      "item": "sangrita",
+      "amount": "1 oz",
+      "role": "mixer"
+    }
+  ],
+  "flavor_notes": [
+    "smoky",
+    "spicy",
+    "citrus",
+    "traditional"
+  ],
+  "spirit_category": "mezcal",
+  "mood_tags": [
+    "bold",
+    "traditional",
+    "adventurous"
+  ],
+  "occasion_tags": [
+    "mezcal night",
+    "traditional evening",
+    "adventure"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "traditional",
+    "mezcal",
+    "Mexican"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "The traditional mezcal trilogy\u2014mezcal, lime, and sangrita in perfect balance."
+}

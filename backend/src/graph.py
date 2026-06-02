@@ -1,12 +1,13 @@
 """LangGraph state machine for the cocktail recommendation agent."""
 
+import os
 from typing import Literal
 
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from loguru import logger
 
-from src.state import AgentState
+from src.state import AgentState, Cocktail, UserProfile, Preferences, Constraints
 from src.config import CLARIFY_THRESHOLD
 from src.nodes.ingest import make_ingest_node
 from src.nodes.profile_builder import profile_builder
@@ -33,13 +34,17 @@ def build_graph(checkpointer: BaseCheckpointSaver, user_store=None):
       recommender
         ↓
       [conditional] clarify (if confidence < CLARIFY_THRESHOLD)
-        ↓
+        ↓      (pauses with interrupt() and returns question to API)
+                also runs when user continues conversation
       output
         ↓
       END
 
-    If clarification is needed and not yet used in this session, route to clarify,
-    which then loops back to recommender. After clarification, always proceed to output.
+    If clarification is needed and not yet used in this session, route to clarify.
+    The clarify node pauses execution via interrupt(), returning the question to the API.
+    When the user submits an answer, Command(resume=answer) resumes the graph at the
+    interrupt() point, skipping ingest and all profile-building nodes entirely.
+    After resuming, the recommender node runs again, then always proceeds to output.
 
     Args:
         checkpointer: BaseCheckpointSaver for state persistence
@@ -86,6 +91,10 @@ def build_graph(checkpointer: BaseCheckpointSaver, user_store=None):
 
     # Set entry point
     workflow.set_entry_point("ingest")
+
+    # Configure msgpack to allow custom Pydantic models
+    # (Allows deserialization without warnings)
+    os.environ.setdefault("LANGGRAPH_ALLOWED_MSGPACK_MODULES", "src.state:Cocktail,src.state:UserProfile,src.state:Preferences,src.state:Constraints,src.state:Feedback")
 
     # Compile with checkpointer for persistence
     logger.info("build_graph: compiling graph with checkpointer")

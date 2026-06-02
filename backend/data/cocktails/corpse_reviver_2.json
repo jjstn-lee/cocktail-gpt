@@ -1,0 +1,63 @@
+{
+  "id": "corpse_reviver_2",
+  "name": "Corpse Reviver No. 2",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 23.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "0.75 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "triple sec",
+      "amount": "0.75 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "lillet blanc",
+      "amount": "0.75 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "absinthe",
+      "amount": "1 dash",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "herbal",
+    "complex",
+    "crisp"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "bracing",
+    "herbal",
+    "complex"
+  ],
+  "occasion_tags": [
+    "morning after",
+    "craft night",
+    "bold morning"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "gin",
+    "herbal"
+  ],
+  "complexity": "advanced",
+  "is_non_alcoholic": false,
+  "why_it_works": "A bracing blend of gin, triple sec, Lillet, and a dash of absinthe\u2014truly revives!"
+}

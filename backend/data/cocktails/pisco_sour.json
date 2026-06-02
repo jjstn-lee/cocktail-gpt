@@ -1,0 +1,66 @@
+{
+  "id": "pisco_sour",
+  "name": "Pisco Sour",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 17.0,
+  "ingredients": [
+    {
+      "item": "pisco",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "1 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.75 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "egg white",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "angostura bitters",
+      "amount": "2 dashes",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "light",
+    "fruity",
+    "creamy"
+  ],
+  "spirit_category": "brandy",
+  "mood_tags": [
+    "refreshing",
+    "smooth",
+    "light"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "sophisticated evening",
+    "Peruvian night"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "sour",
+    "Peruvian",
+    "creamy"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Peruvian pisco's fruity warmth balanced with lime and a silky foam\u2014exotic and refined."
+}

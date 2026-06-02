@@ -1,0 +1,63 @@
+{
+  "id": "amaretto_sour",
+  "name": "Amaretto Sour",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 15.0,
+  "ingredients": [
+    {
+      "item": "bourbon",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "amaretto",
+      "amount": "0.75 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "egg white",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "almond",
+    "citrus",
+    "sweet",
+    "smooth"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "sweet",
+    "smooth",
+    "balanced"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "casual evening",
+    "smooth night"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "modern",
+    "bourbon",
+    "almond"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Bourbon and almond liqueur with silky foam\u2014sweet, smooth sophistication."
+}

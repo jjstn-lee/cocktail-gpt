@@ -1,0 +1,60 @@
+{
+  "id": "sparkling_lemonade_spritz",
+  "name": "Sparkling Lemonade Spritz",
+  "method": "built",
+  "glass": "wine glass",
+  "abv_estimate": 0.0,
+  "ingredients": [
+    {
+      "item": "fresh lemon juice",
+      "amount": "1 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "sparkling water",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "lemon wheel",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "light",
+    "refreshing",
+    "bubbly"
+  ],
+  "spirit_category": "none",
+  "mood_tags": [
+    "refreshing",
+    "light",
+    "summery"
+  ],
+  "occasion_tags": [
+    "daytime",
+    "casual",
+    "family"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "virgin",
+    "citrus",
+    "simple"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": true,
+  "why_it_works": "The simplest refresher\u2014fresh lemon and sparkle."
+}

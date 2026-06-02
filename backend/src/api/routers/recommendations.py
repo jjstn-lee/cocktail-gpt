@@ -40,6 +40,7 @@ async def clarify(
     user: dict = Depends(get_current_user),
     graph=Depends(get_graph),
     checkpointer=Depends(get_checkpointer),
+    user_store=Depends(get_user_store),
 ) -> RecommendResponse:
     """
     Submit an answer to a clarification question.
@@ -49,4 +50,4 @@ async def clarify(
     """
     user_id = user["sub"]
     logger.info("POST /clarify", extra={"user_id": user_id, "thread_id": request.thread_id})
-    return await submit_clarification(request, user_id, graph, checkpointer)
+    return await submit_clarification(request, user_id, graph, checkpointer, user_store)

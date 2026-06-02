@@ -1,0 +1,63 @@
+{
+  "id": "three_dots_and_a_dash",
+  "name": "Three Dots and a Dash",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 24.0,
+  "ingredients": [
+    {
+      "item": "dark rum",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "light rum",
+      "amount": "0.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "overproof rum",
+      "amount": "0.25 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "spiced syrup",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "tropical",
+    "potent",
+    "spicy",
+    "fruity"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "bold",
+    "potent",
+    "tropical"
+  ],
+  "occasion_tags": [
+    "rum night",
+    "bold party",
+    "tiki"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "tiki",
+    "potent",
+    "tropical"
+  ],
+  "complexity": "advanced",
+  "is_non_alcoholic": false,
+  "why_it_works": "A triple-rum powerhouse\u2014the Morse code for 'Let's party!'"
+}

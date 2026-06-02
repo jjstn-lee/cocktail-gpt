@@ -1,0 +1,53 @@
+{
+  "id": "dry_martini",
+  "name": "Dry Martini",
+  "method": "stirred",
+  "glass": "coupe glass",
+  "abv_estimate": 32.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "2.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "dry vermouth",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "lemon peel",
+      "amount": "1 twist",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "dry",
+    "botanical",
+    "citrus"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "sophisticated",
+    "contemplative",
+    "powerful"
+  ],
+  "occasion_tags": [
+    "aperitif",
+    "nightcap",
+    "sophisticated evening"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "gin",
+    "dry"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "A showcase of pure gin botanicals with minimal interference\u2014elegant and unforgettable."
+}

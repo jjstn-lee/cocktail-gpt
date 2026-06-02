@@ -1,0 +1,60 @@
+{
+  "id": "toronto",
+  "name": "Toronto",
+  "method": "stirred",
+  "glass": "rocks glass",
+  "abv_estimate": 27.0,
+  "ingredients": [
+    {
+      "item": "rye whiskey",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fernet branca",
+      "amount": "0.25 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "angostura bitters",
+      "amount": "2 dashes",
+      "role": "modifier"
+    },
+    {
+      "item": "sugar",
+      "amount": "0.5 tsp",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "spicy",
+    "warming",
+    "minty"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "bold",
+    "sophisticated",
+    "digestif"
+  ],
+  "occasion_tags": [
+    "nightcap",
+    "after-dinner",
+    "digestif"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "herbal",
+    "digestif"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Rye whiskey meets Fernet's bold herbal bite\u2014an acquired taste for adventurous palates."
+}

@@ -1,0 +1,61 @@
+{
+  "id": "margarita",
+  "name": "Margarita",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 20.0,
+  "ingredients": [
+    {
+      "item": "tequila",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "triple sec",
+      "amount": "0.75 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "sea salt",
+      "amount": "rim",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "tequila",
+    "balanced",
+    "bright"
+  ],
+  "spirit_category": "tequila",
+  "mood_tags": [
+    "fun",
+    "refreshing",
+    "party"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "party",
+    "Mexican night",
+    "celebration"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "tequila",
+    "bright"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Tequila's agave punch balanced with lime and orange\u2014the ultimate party spirit."
+}

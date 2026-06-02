@@ -1,0 +1,65 @@
+{
+  "id": "bahama_mama",
+  "name": "Bahama Mama",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 18.0,
+  "ingredients": [
+    {
+      "item": "dark rum",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "light rum",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "coconut rum",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "pineapple juice",
+      "amount": "2 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "orange juice",
+      "amount": "1 oz",
+      "role": "mixer"
+    }
+  ],
+  "flavor_notes": [
+    "tropical",
+    "coconut",
+    "fruity",
+    "smooth"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "tropical",
+    "smooth",
+    "party"
+  ],
+  "occasion_tags": [
+    "beach party",
+    "tropical evening",
+    "fun"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "tropical",
+    "rum",
+    "fruity"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "A multi-rum tropical punch\u2014party spirit incarnate."
+}

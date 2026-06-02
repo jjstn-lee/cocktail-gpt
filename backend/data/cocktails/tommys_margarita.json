@@ -1,0 +1,55 @@
+{
+  "id": "tommys_margarita",
+  "name": "Tommy's Margarita",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 18.0,
+  "ingredients": [
+    {
+      "item": "tequila",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "1 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "agave nectar",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "tequila",
+    "agave",
+    "bright"
+  ],
+  "spirit_category": "tequila",
+  "mood_tags": [
+    "pure",
+    "bright",
+    "refreshing"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "tequila night",
+    "casual"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "modern",
+    "tequila",
+    "citrus"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Tequila purist version\u2014no triple sec, just lime and agave balance."
+}

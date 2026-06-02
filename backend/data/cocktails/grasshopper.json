@@ -1,0 +1,53 @@
+{
+  "id": "grasshopper",
+  "name": "Grasshopper",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 16.0,
+  "ingredients": [
+    {
+      "item": "creme de menthe green",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "creme de cacao white",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "cream",
+      "amount": "1 oz",
+      "role": "topping"
+    }
+  ],
+  "flavor_notes": [
+    "mint",
+    "chocolate",
+    "creamy",
+    "sweet"
+  ],
+  "spirit_category": "none",
+  "mood_tags": [
+    "sweet",
+    "creamy",
+    "minty"
+  ],
+  "occasion_tags": [
+    "after-dinner",
+    "dessert",
+    "sweet treat"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "creamy",
+    "mint"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Mint and chocolate in creamy harmony\u2014a liquid dessert."
+}

@@ -1,0 +1,59 @@
+{
+  "id": "rob_roy",
+  "name": "Rob Roy",
+  "method": "stirred",
+  "glass": "coupe glass",
+  "abv_estimate": 28.0,
+  "ingredients": [
+    {
+      "item": "scotch",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "sweet vermouth",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "angostura bitters",
+      "amount": "2 dashes",
+      "role": "modifier"
+    },
+    {
+      "item": "cherry",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "smoky",
+    "sweet",
+    "warming",
+    "cherry"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "bold",
+    "sophisticated",
+    "warming"
+  ],
+  "occasion_tags": [
+    "nightcap",
+    "special occasion",
+    "Scottish evening"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "Scottish"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Scotch's smoky depth paired with sweet vermouth\u2014a Highland classic."
+}

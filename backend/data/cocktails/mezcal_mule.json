@@ -1,0 +1,60 @@
+{
+  "id": "mezcal_mule",
+  "name": "Mezcal Mule",
+  "method": "built",
+  "glass": "copper mug",
+  "abv_estimate": 12.0,
+  "ingredients": [
+    {
+      "item": "mezcal",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "ginger beer",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.5 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "lime wheel",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "smoky",
+    "spicy",
+    "citrus",
+    "refreshing"
+  ],
+  "spirit_category": "mezcal",
+  "mood_tags": [
+    "bold",
+    "spicy",
+    "refreshing"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "casual",
+    "mezcal night"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "modern",
+    "mezcal",
+    "spicy"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Mezcal's smoke meets ginger beer's spicy kick\u2014a Mexican twist on a Moscow Mule."
+}

@@ -1,0 +1,55 @@
+{
+  "id": "dark_and_stormy",
+  "name": "Dark & Stormy",
+  "method": "built",
+  "glass": "rocks glass",
+  "abv_estimate": 13.0,
+  "ingredients": [
+    {
+      "item": "dark rum",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "ginger beer",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "lime wedge",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "spicy",
+    "dark",
+    "tropical",
+    "bold"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "bold",
+    "tropical",
+    "refreshing"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "tropical evening",
+    "casual"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "modern",
+    "rum",
+    "spicy"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Dark rum's molasses depth with ginger beer's punch\u2014a tropical storm in a glass."
+}

@@ -1,0 +1,63 @@
+{
+  "id": "zombie",
+  "name": "Zombie",
+  "method": "shaken",
+  "glass": "highball glass",
+  "abv_estimate": 25.0,
+  "ingredients": [
+    {
+      "item": "light rum",
+      "amount": "0.75 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "dark rum",
+      "amount": "0.75 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "absinthe",
+      "amount": "0.25 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "pineapple juice",
+      "amount": "1.5 oz",
+      "role": "mixer"
+    }
+  ],
+  "flavor_notes": [
+    "tropical",
+    "herbal",
+    "potent",
+    "fruity"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "bold",
+    "potent",
+    "tropical"
+  ],
+  "occasion_tags": [
+    "tiki night",
+    "bold party",
+    "rum night"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "tiki",
+    "potent",
+    "tropical"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "A potent multi-rum punch with absinthe\u2014legendary for its power and taste."
+}

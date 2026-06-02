@@ -10,14 +10,107 @@
     "ingredients_on_hand": [],
     "max_abv": null
   },
-  "updated_at": null,
+  "updated_at": "2026-06-02T23:04:14.572014Z",
+  "recommendation_history": [
+    {
+      "session_id": "de4fb9fa-05e1-4650-82de-2ae6b7a10e99",
+      "cocktails": [
+        "Bamboo",
+        "Bijou",
+        "Scotch Highball"
+      ],
+      "timestamp": "2026-06-02T22:43:26.422448Z"
+    },
+    {
+      "session_id": "12b8dbce-1ce2-4312-918c-de2dad1358ea",
+      "cocktails": [
+        "Gold Rush",
+        "Hot Toddy",
+        "Amaretto Sour"
+      ],
+      "timestamp": "2026-06-02T22:45:14.645168Z"
+    },
+    {
+      "session_id": "12b8dbce-1ce2-4312-918c-de2dad1358ea",
+      "cocktails": [
+        "Gold Rush",
+        "Hot Toddy",
+        "Amaretto Sour"
+      ],
+      "timestamp": "2026-06-02T22:46:08.621641Z"
+    },
+    {
+      "session_id": "12b8dbce-1ce2-4312-918c-de2dad1358ea",
+      "cocktails": [
+        "Gold Rush",
+        "Hot Toddy",
+        "Amaretto Sour"
+      ],
+      "timestamp": "2026-06-02T22:46:45.513709Z"
+    },
+    {
+      "session_id": "5e66000a-7b53-41fd-b61c-8608af191e6c",
+      "cocktails": [
+        "Aviation",
+        "Clover Club",
+        "Tom Collins"
+      ],
+      "timestamp": "2026-06-02T22:52:30.498403Z"
+    },
+    {
+      "session_id": "5e66000a-7b53-41fd-b61c-8608af191e6c",
+      "cocktails": [
+        "Seedlip Garden Spritz",
+        "Sherry Cobbler",
+        "Adonis"
+      ],
+      "timestamp": "2026-06-02T22:53:09.005929Z"
+    },
+    {
+      "session_id": "4a22578d-3156-4d04-99ba-61b75f682012",
+      "cocktails": [
+        "Bamboo",
+        "Gin & Tonic",
+        "Americano"
+      ],
+      "timestamp": "2026-06-02T23:00:49.927821Z"
+    },
+    {
+      "session_id": "4a22578d-3156-4d04-99ba-61b75f682012",
+      "cocktails": [
+        "Cosmopolitan",
+        "Vodka Martini",
+        "Moscow Mule"
+      ],
+      "timestamp": "2026-06-02T23:01:47.464211Z"
+    },
+    {
+      "session_id": "b2a60615-351f-455f-b4c0-57a502722edc",
+      "cocktails": [
+        "Hanky Panky",
+        "Bijou",
+        "Toronto"
+      ],
+      "timestamp": "2026-06-02T23:03:30.118920Z"
+    },
+    {
+      "session_id": "b2a60615-351f-455f-b4c0-57a502722edc",
+      "cocktails": [
+        "Cosmopolitan",
+        "Vodka Martini",
+        "Espresso Martini"
+      ],
+      "timestamp": "2026-06-02T23:04:14.570256Z"
+    }
+  ],
+  "session_count": 18,
   "spotify": {
-    "access_token": "BQCmmFj6cFzuHSaC-9Tp3YPcqjEiqumANTM7jCYto5OqbNGM1pMiEu0FoJ6iiXS_CuIuSQeFr3Mz0-nANQNI0g_koEjNZY57EsL3HitPEad39LumusYtjkOjJt9G14FUzTi9i2GWMDLH7SihniFIDqPaWrcFRkEMc1ogIVKrpKrJc2AWyqiYRV_qi-IdjWEf9dpMGrd_xBbJY1jm1oEflwReK4FbMBG6qrBd-Zr0OkhO90-C9t_S5FQopE6GG9I",
+    "access_token": "BQAjGi8Jl5Y7GNyUoQ_BhB7bNsNcdhCO6KRJqb6sYxQGd4az1FUcVbE_9jem__yCjDHdRrgpotPhFhuRBKeF7CYtEcxikJ3IAtTOgkcQkqLvn6TwjpIFip2XsogX2doKuHbGWoJAfPiH104vem1Ca3zR1nuA7l1LORCfMfDOVLM6NwHoW-FBn--sWnKPBYmwkNhloEaBG-SR5T8UzW_qAutn2UhockOUi5wCGAYNHZwhG3sFrqPVzn2QDbys6mI",
     "token_type": "Bearer",
     "expires_in": 3600,
-    "refresh_token": "AQA_EKMH-RwNJqDDM9DoCQxtltPSu3WaM1s1uEmF5jienoyZbFWzu3OXDBrULyeF9QQU6amjCYz7Hm767MrB0GlSFAZ-wjzeCGmkiVKPIdvHTUBOtiitmMRczTRAYFoqwxU",
+    "refresh_token": "AQDus1mXANpXEOlgAXFVqIV2-42IUYWkirh5Ub6Lr8oiMCE3ftWECiPk80S_aUtn2JhEx3aBnWN8gCmidhTtI0-N2JUqTAHPGTfI1gkH9gD_IVD7I2vyTYiCTZ6UgREqDzQ",
     "scope": "playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played user-top-read",
-    "expires_at": 1780354785,
-    "connected_at": "2026-06-01T21:59:45.287368+00:00"
+    "expires_at": 1780443354,
+    "connected_at": "2026-06-02T22:35:54.416180+00:00"
   }
 }

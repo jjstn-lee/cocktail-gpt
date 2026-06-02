@@ -1,0 +1,53 @@
+{
+  "id": "brandy_alexander",
+  "name": "Brandy Alexander",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 19.0,
+  "ingredients": [
+    {
+      "item": "cognac",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "creme de cacao brown",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "cream",
+      "amount": "1 oz",
+      "role": "topping"
+    }
+  ],
+  "flavor_notes": [
+    "chocolate",
+    "creamy",
+    "warm",
+    "elegant"
+  ],
+  "spirit_category": "brandy",
+  "mood_tags": [
+    "elegant",
+    "creamy",
+    "indulgent"
+  ],
+  "occasion_tags": [
+    "after-dinner",
+    "special occasion",
+    "elegant"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "brandy",
+    "creamy"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Cognac and chocolate liqueur with cream\u2014old-world elegance in a glass."
+}

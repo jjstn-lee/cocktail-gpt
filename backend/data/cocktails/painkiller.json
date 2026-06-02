@@ -1,0 +1,60 @@
+{
+  "id": "painkiller",
+  "name": "Painkiller",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 17.0,
+  "ingredients": [
+    {
+      "item": "dark rum",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "pineapple juice",
+      "amount": "3 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "orange juice",
+      "amount": "1 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "cream of coconut",
+      "amount": "1 oz",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "tropical",
+    "fruity",
+    "coconut",
+    "smooth"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "tropical",
+    "smooth",
+    "easy"
+  ],
+  "occasion_tags": [
+    "beach day",
+    "casual tropical",
+    "easy day"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "tropical",
+    "rum",
+    "smooth"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Dark rum with tropical juices and coconut\u2014smooth relief in a glass."
+}

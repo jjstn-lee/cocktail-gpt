@@ -1,0 +1,58 @@
+{
+  "id": "mezcal_negroni",
+  "name": "Mezcal Negroni",
+  "method": "stirred",
+  "glass": "rocks glass",
+  "abv_estimate": 24.0,
+  "ingredients": [
+    {
+      "item": "mezcal",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "campari",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "sweet vermouth",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "orange peel",
+      "amount": "1 twist",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "smoky",
+    "bitter",
+    "herbal",
+    "citrus"
+  ],
+  "spirit_category": "mezcal",
+  "mood_tags": [
+    "bold",
+    "smoky",
+    "sophisticated"
+  ],
+  "occasion_tags": [
+    "mezcal night",
+    "dinner party",
+    "bold evening"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "mezcal",
+    "bitter",
+    "smoky"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Mezcal's smoke elevated with bitter Campari\u2014a Mexican twist on a classic."
+}

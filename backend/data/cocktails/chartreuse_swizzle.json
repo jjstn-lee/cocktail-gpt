@@ -1,0 +1,65 @@
+{
+  "id": "chartreuse_swizzle",
+  "name": "Chartreuse Swizzle",
+  "method": "thrown",
+  "glass": "rocks glass",
+  "abv_estimate": 16.0,
+  "ingredients": [
+    {
+      "item": "chartreuse green",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "white rum",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "1 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "crushed ice",
+      "amount": "1 cup",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "tropical",
+    "minty",
+    "bright"
+  ],
+  "spirit_category": "none",
+  "mood_tags": [
+    "tropical",
+    "herbal",
+    "refreshing"
+  ],
+  "occasion_tags": [
+    "tropical party",
+    "happy hour",
+    "summery"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "tropical",
+    "herbal",
+    "crushed ice"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Chartreuse and rum swizzled with ice\u2014a minty, herbal tropical escape."
+}

@@ -1,0 +1,65 @@
+{
+  "id": "mai_tai",
+  "name": "Mai Tai",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 21.0,
+  "ingredients": [
+    {
+      "item": "dark rum",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "light rum",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "triple sec",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "orgeat syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    }
+  ],
+  "flavor_notes": [
+    "tropical",
+    "nutty",
+    "fruity",
+    "balanced"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "tropical",
+    "party",
+    "fun"
+  ],
+  "occasion_tags": [
+    "tropical evening",
+    "party",
+    "tiki night"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "tiki",
+    "tropical"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "The king of tiki drinks\u2014two rums, almond, and lime in perfect island harmony."
+}

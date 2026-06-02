@@ -1,0 +1,60 @@
+{
+  "id": "spicy_margarita",
+  "name": "Spicy Margarita",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 20.0,
+  "ingredients": [
+    {
+      "item": "tequila",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "jalape\u00f1o simple syrup",
+      "amount": "0.75 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "jalape\u00f1o slice",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "spicy",
+    "tequila",
+    "bright"
+  ],
+  "spirit_category": "tequila",
+  "mood_tags": [
+    "spicy",
+    "bold",
+    "fun"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "spicy night",
+    "party"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "modern",
+    "tequila",
+    "spicy"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Classic margarita with jalape\u00f1o heat\u2014for those who like it spicy."
+}

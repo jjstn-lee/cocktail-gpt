@@ -1,0 +1,60 @@
+{
+  "id": "aperol_spritz",
+  "name": "Aperol Spritz",
+  "method": "built",
+  "glass": "wine glass",
+  "abv_estimate": 10.0,
+  "ingredients": [
+    {
+      "item": "aperol",
+      "amount": "1.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "prosecco",
+      "amount": "3 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "soda water",
+      "amount": "1 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "orange slice",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "bitter",
+    "light",
+    "citrus",
+    "bubbly"
+  ],
+  "spirit_category": "wine",
+  "mood_tags": [
+    "light",
+    "social",
+    "refreshing"
+  ],
+  "occasion_tags": [
+    "aperitif",
+    "social hour",
+    "afternoon"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "modern",
+    "Italian",
+    "aperitif"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Prosecco's effervescence with Aperol's gentle bitters\u2014the essence of la dolce vita."
+}

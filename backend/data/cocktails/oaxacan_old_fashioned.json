@@ -1,0 +1,60 @@
+{
+  "id": "oaxacan_old_fashioned",
+  "name": "Oaxacan Old Fashioned",
+  "method": "stirred",
+  "glass": "rocks glass",
+  "abv_estimate": 25.0,
+  "ingredients": [
+    {
+      "item": "mezcal",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "tequila",
+      "amount": "0.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "sugar",
+      "amount": "1 cube",
+      "role": "modifier"
+    },
+    {
+      "item": "mole bitters",
+      "amount": "2 dashes",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "smoky",
+    "spicy",
+    "complex",
+    "warming"
+  ],
+  "spirit_category": "mezcal",
+  "mood_tags": [
+    "bold",
+    "complex",
+    "warming"
+  ],
+  "occasion_tags": [
+    "mezcal night",
+    "special occasion",
+    "winter evening"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "mezcal",
+    "smoky",
+    "complex"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Mezcal and tequila with mole spice\u2014a bold, complex tribute to Mexican tradition."
+}

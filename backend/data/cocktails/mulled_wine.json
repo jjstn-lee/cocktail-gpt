@@ -1,0 +1,70 @@
+{
+  "id": "mulled_wine",
+  "name": "Mulled Wine",
+  "method": "built",
+  "glass": "mug",
+  "abv_estimate": 9.0,
+  "ingredients": [
+    {
+      "item": "red wine",
+      "amount": "4 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "honey",
+      "amount": "1 tsp",
+      "role": "sweetener"
+    },
+    {
+      "item": "cinnamon stick",
+      "amount": "1",
+      "role": "spice"
+    },
+    {
+      "item": "star anise",
+      "amount": "1",
+      "role": "spice"
+    },
+    {
+      "item": "clove",
+      "amount": "2",
+      "role": "spice"
+    },
+    {
+      "item": "orange slice",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "warming",
+    "spiced",
+    "fruity",
+    "cozy"
+  ],
+  "spirit_category": "wine",
+  "mood_tags": [
+    "warming",
+    "cozy",
+    "festive"
+  ],
+  "occasion_tags": [
+    "winter gathering",
+    "holidays",
+    "cold evening"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "warm",
+    "wine",
+    "spiced"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Red wine spiced and warmed\u2014the essence of winter comfort and cheer."
+}

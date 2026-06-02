@@ -1,0 +1,60 @@
+{
+  "id": "black_manhattan",
+  "name": "Black Manhattan",
+  "method": "stirred",
+  "glass": "coupe glass",
+  "abv_estimate": 28.0,
+  "ingredients": [
+    {
+      "item": "bourbon",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "averna",
+      "amount": "0.75 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "dry vermouth",
+      "amount": "0.25 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "cherry",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "sweet",
+    "bitter",
+    "warming"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "sophisticated",
+    "complex",
+    "warming"
+  ],
+  "occasion_tags": [
+    "nightcap",
+    "special occasion",
+    "craft evening"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "modern",
+    "bourbon",
+    "herbal"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Manhattan's sophisticated cousin with herbal Averna\u2014darker, deeper, more complex."
+}

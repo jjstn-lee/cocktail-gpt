@@ -1,0 +1,60 @@
+{
+  "id": "jungle_bird",
+  "name": "Jungle Bird",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 19.0,
+  "ingredients": [
+    {
+      "item": "dark rum",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "campari",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "pineapple juice",
+      "amount": "2 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.5 oz",
+      "role": "citrus"
+    }
+  ],
+  "flavor_notes": [
+    "tropical",
+    "fruity",
+    "bitter",
+    "tart"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "tropical",
+    "fun",
+    "tart"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "tropical night",
+    "casual"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "tropical",
+    "rum",
+    "fruity"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Dark rum and pineapple with Campari's bitter bite\u2014a tropical escape with an edge."
+}

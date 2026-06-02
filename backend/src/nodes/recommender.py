@@ -8,6 +8,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from src.llm import get_llm
 from src.state import AgentState, Cocktail
 from src.prompts.recommender import RECOMMENDER_PROMPT, RECOMMENDER_SYSTEM_PROMPT
+from src.tools.cocktail_kb import load_cocktails, filter_cocktails, format_for_prompt
 
 
 class RecommenderOutput(BaseModel):
@@ -20,9 +21,10 @@ class RecommenderOutput(BaseModel):
 
 async def recommender(state: AgentState) -> dict:
     """
-    Generate cocktail recommendations based on user profile, preferences, and constraints.
+    Generate cocktail recommendations based on user profile, preferences, constraints, and memory.
 
-    Input: state["user_profile"], state["preferences"], state["constraints"], state.get("clarification_answer")
+    Input: state["user_profile"], state["preferences"], state["constraints"], state.get("clarification_answer"),
+           state.get("feedback"), state.get("recommendation_history")
     Output: {"recommendations": list[Cocktail], "confidence_score": float, "rationale": str}
     """
     logger.debug("recommender: generating recommendations")
@@ -31,17 +33,90 @@ async def recommender(state: AgentState) -> dict:
     preferences = state.get("preferences")
     constraints = state.get("constraints")
     clarification_answer = state.get("clarification_answer")
+    feedback = state.get("feedback", [])
+    recommendation_history = state.get("recommendation_history", [])
 
     profile_dict = user_profile.model_dump() if user_profile else {}
     preferences_dict = preferences.model_dump() if preferences else {}
     constraints_dict = constraints.model_dump() if constraints else {}
 
+    # Build memory context from feedback and history
+    memory_context = ""
+    if feedback:
+        liked = [fb.cocktail_name for fb in feedback if fb.rating == 5]
+        disliked = [fb.cocktail_name for fb in feedback if fb.rating == 1]
+        memory_context = "\n## Memory Context (Cross-Session):"
+        if liked:
+            memory_context += f"\nCocktails the user LIKED: {', '.join(liked)}"
+        if disliked:
+            memory_context += f"\nCocktails the user DISLIKED (avoid recommending): {', '.join(disliked)}"
+
+    if recommendation_history:
+        # Get cocktails from last 2 sessions
+        recent_cocktails = []
+        for session in recommendation_history[-2:]:
+            recent_cocktails.extend(session.get("cocktails", []))
+        if recent_cocktails:
+            memory_context += f"\nRecently recommended cocktails (avoid unless user rated them up): {', '.join(recent_cocktails)}"
+
+    # Load knowledgebase - apply only constraint filters, never preference filters
+    # Preferences are soft signals for scoring/ranking, not hard exclusions.
+    # The LLM should see all available cocktails and decide based on user preferences.
+    all_cocktails = load_cocktails()
+
+    # Apply only hard constraint filters (allergies, max ABV)
+    # Never filter by preferences - a user who prefers vodka might still enjoy a great gin drink
+    filtered = []
+    for cocktail in all_cocktails:
+        # Hard exclusion 1: allergies
+        if constraints and constraints.allergies:
+            ingredients_items = [ing.get("item", "").lower() for ing in (cocktail.get("ingredients") or [])]
+            all_ingredients_text = " ".join(ingredients_items)
+            if any(allergy.lower() in all_ingredients_text for allergy in constraints.allergies):
+                continue  # Skip this cocktail
+
+        # Hard exclusion 2: max ABV
+        if constraints and constraints.max_abv is not None:
+            abv = cocktail.get("abv_estimate", 0)
+            if abv > constraints.max_abv:
+                continue  # Skip this cocktail
+
+        # Keep this cocktail
+        filtered.append(cocktail)
+
+    spirits_in_kb = list(set(c.get("spirit_category", "mixed") for c in filtered))
+    logger.info(
+        "recommender: full KB with constraint filters only",
+        extra={
+            "total": len(all_cocktails),
+            "filtered": len(filtered),
+            "spirits_available": sorted(spirits_in_kb),
+            "has_clarification": bool(clarification_answer),
+        },
+    )
+    print(f"[RECOMMENDER] Knowledgebase: {len(filtered)} cocktails available")
+    if clarification_answer:
+        print(f"[RECOMMENDER] Clarification: {clarification_answer}")
+    print(f"[RECOMMENDER] Spirits in KB: {sorted(spirits_in_kb)}")
+
+    kb_context = format_for_prompt(filtered)
+
+    # Format preferences clearly with spirit types separated
+    prefs_display = preferences_dict.copy()
+    user_set_spirits = preferences_dict.get("preferred_spirits", [])
+    genre_inferred_spirits = preferences_dict.get("genre_spirits", [])
+    if user_set_spirits or genre_inferred_spirits:
+        prefs_display["_spirits_note"] = f"preferred_spirits={user_set_spirits} (user-set), genre_spirits={genre_inferred_spirits} (inferred from music)"
+
     context = f"""User Profile: {json.dumps(profile_dict)}
-    Preferences: {json.dumps(preferences_dict)}
-    Constraints: {json.dumps(constraints_dict)}"""
+Preferences: {json.dumps(prefs_display, indent=2)}
+Constraints: {json.dumps(constraints_dict)}{memory_context}
+
+Knowledgebase (select from these only):
+{kb_context}"""
 
     if clarification_answer:
-        context += f"\nClarification Answer: {clarification_answer}"
+        context += f"\n\nClarification Answer: {clarification_answer}"
 
     llm = get_llm()
     llm_with_structured = llm.with_structured_output(RecommenderOutput)
@@ -59,6 +134,16 @@ async def recommender(state: AgentState) -> dict:
             "confidence_score": response.confidence_score,
         },
     )
+    print(f"\n[RECOMMENDER] LLM Response:")
+    print(f"[RECOMMENDER] Confidence: {response.confidence_score}")
+    print(f"[RECOMMENDER] Rationale: {response.rationale}")
+    print(f"[RECOMMENDER] Recommendations ({len(response.recommendations)}):")
+    for i, cocktail in enumerate(response.recommendations, 1):
+        print(f"  {i}. {cocktail.name}")
+        print(f"     Ingredients: {cocktail.ingredients}")
+        print(f"     Method: {cocktail.method}")
+        print(f"     Flavors: {cocktail.flavor_notes}")
+        print(f"     Why: {cocktail.why_this_works}")
 
     return {
         "recommendations": response.recommendations,

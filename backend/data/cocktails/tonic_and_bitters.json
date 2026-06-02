@@ -1,0 +1,58 @@
+{
+  "id": "tonic_and_bitters",
+  "name": "Tonic and Bitters",
+  "method": "built",
+  "glass": "highball glass",
+  "abv_estimate": 1.0,
+  "ingredients": [
+    {
+      "item": "angostura bitters",
+      "amount": "2 dashes",
+      "role": "modifier"
+    },
+    {
+      "item": "tonic water",
+      "amount": "5 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "ice",
+      "amount": "handful",
+      "role": "modifier"
+    },
+    {
+      "item": "lemon peel",
+      "amount": "twist",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "bitter",
+    "herbal",
+    "light",
+    "aromatic"
+  ],
+  "spirit_category": "none",
+  "mood_tags": [
+    "light",
+    "bitter",
+    "aperitif"
+  ],
+  "occasion_tags": [
+    "aperitif",
+    "light evening",
+    "afternoon"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "virgin",
+    "bitter",
+    "minimal"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": true,
+  "why_it_works": "Just tonic and bitters\u2014proof that simplicity can be profound."
+}

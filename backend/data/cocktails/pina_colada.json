@@ -1,0 +1,65 @@
+{
+  "id": "pina_colada",
+  "name": "Pi\u00f1a Colada",
+  "method": "blended",
+  "glass": "highball glass",
+  "abv_estimate": 16.0,
+  "ingredients": [
+    {
+      "item": "white rum",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "cream of coconut",
+      "amount": "2 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "pineapple juice",
+      "amount": "3 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "crushed ice",
+      "amount": "1 cup",
+      "role": "modifier"
+    },
+    {
+      "item": "pineapple wedge",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "tropical",
+    "coconut",
+    "pineapple",
+    "creamy"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "tropical",
+    "creamy",
+    "fun"
+  ],
+  "occasion_tags": [
+    "beach day",
+    "vacation",
+    "tropical party"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "tropical",
+    "blended",
+    "creamy"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "The ultimate beach escape\u2014rum, coconut, and pineapple frozen together."
+}

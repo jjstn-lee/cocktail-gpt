@@ -1,0 +1,58 @@
+{
+  "id": "espresso_martini",
+  "name": "Espresso Martini",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 21.0,
+  "ingredients": [
+    {
+      "item": "vodka",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "kahlua",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh espresso",
+      "amount": "1 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "coffee beans",
+      "amount": "3",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "coffee",
+    "smooth",
+    "creamy",
+    "strong"
+  ],
+  "spirit_category": "vodka",
+  "mood_tags": [
+    "energetic",
+    "smooth",
+    "bold"
+  ],
+  "occasion_tags": [
+    "after-dinner",
+    "evening pick-me-up",
+    "night out"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "modern",
+    "vodka",
+    "coffee"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Vodka and Kahl\u00faa shaken with espresso\u2014the perfect pick-me-up drink."
+}

@@ -1,0 +1,60 @@
+{
+  "id": "irish_coffee",
+  "name": "Irish Coffee",
+  "method": "built",
+  "glass": "coffee glass",
+  "abv_estimate": 12.0,
+  "ingredients": [
+    {
+      "item": "irish whiskey",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "hot coffee",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "brown sugar",
+      "amount": "0.5 tsp",
+      "role": "sweetener"
+    },
+    {
+      "item": "whipped cream",
+      "amount": "dollop",
+      "role": "topping"
+    }
+  ],
+  "flavor_notes": [
+    "coffee",
+    "whiskey",
+    "cream",
+    "warming"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "warming",
+    "comforting",
+    "cozy"
+  ],
+  "occasion_tags": [
+    "after-dinner",
+    "cold evening",
+    "evening wind-down"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "warm",
+    "irish",
+    "coffee"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Hot coffee and whiskey topped with cream\u2014pure Irish comfort."
+}

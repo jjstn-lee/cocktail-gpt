@@ -1,0 +1,65 @@
+{
+  "id": "hot_toddy",
+  "name": "Hot Toddy",
+  "method": "built",
+  "glass": "mug",
+  "abv_estimate": 12.0,
+  "ingredients": [
+    {
+      "item": "whiskey",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "hot water",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "honey",
+      "amount": "1 tsp",
+      "role": "sweetener"
+    },
+    {
+      "item": "lemon slice",
+      "amount": "1",
+      "role": "garnish"
+    },
+    {
+      "item": "cinnamon stick",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "warming",
+    "honey",
+    "citrus",
+    "spice"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "warming",
+    "comforting",
+    "healing"
+  ],
+  "occasion_tags": [
+    "cold evening",
+    "healing drink",
+    "winter"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "warm",
+    "whiskey",
+    "comforting"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Whiskey, honey, and lemon in hot water\u2014the ultimate winter warmer."
+}

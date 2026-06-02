@@ -1,0 +1,60 @@
+{
+  "id": "aviation",
+  "name": "Aviation",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 19.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "maraschino liqueur",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "creme de violette",
+      "amount": "0.25 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    }
+  ],
+  "flavor_notes": [
+    "floral",
+    "fruity",
+    "citrus",
+    "delicate"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "elegant",
+    "floral",
+    "romantic"
+  ],
+  "occasion_tags": [
+    "romantic evening",
+    "elegant drink",
+    "special occasion"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "gin",
+    "floral"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Gin with floral violette and maraschino\u2014delicate, elegant, and dreamy."
+}

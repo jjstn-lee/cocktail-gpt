@@ -1,0 +1,55 @@
+{
+  "id": "gold_rush",
+  "name": "Gold Rush",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 18.0,
+  "ingredients": [
+    {
+      "item": "bourbon",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "honey syrup",
+      "amount": "0.75 oz",
+      "role": "sweetener"
+    }
+  ],
+  "flavor_notes": [
+    "honey",
+    "citrus",
+    "warming",
+    "smooth"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "warm",
+    "smooth",
+    "comforting"
+  ],
+  "occasion_tags": [
+    "cozy evening",
+    "happy hour",
+    "casual"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "modern",
+    "bourbon",
+    "honey"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Bourbon sweetened with honey and brightened with lemon\u2014simple, delicious comfort."
+}

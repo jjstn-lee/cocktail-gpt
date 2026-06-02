@@ -4,14 +4,14 @@ import pytest
 from unittest.mock import AsyncMock, patch, MagicMock
 
 from src.graph import build_graph
-from src.memory.checkpointer import SqliteSaver
-from src.state import AgentState
+from langgraph.checkpoint.memory import MemorySaver
+from src.state import AgentState, Cocktail
 
 
 @pytest.fixture
 def mock_checkpointer():
-    """Provide a mock checkpointer for testing."""
-    return MagicMock(spec=SqliteSaver)
+    """Provide a real MemorySaver for testing (checkpointer needs real implementation)."""
+    return MemorySaver()
 
 
 @pytest.mark.asyncio
@@ -30,7 +30,7 @@ async def test_graph_full_flow_with_recommendations(mock_checkpointer):
 
     mock_recommender_response = AsyncMock()
     mock_recommender_response.recommendations = [
-        MagicMock(
+        Cocktail(
             name="Cosmopolitan",
             ingredients=["2 oz vodka", "1 oz cranberry"],
             method="shake",
@@ -85,7 +85,8 @@ async def test_graph_full_flow_with_recommendations(mock_checkpointer):
                                 "feedback": [],
                             }
 
-                            result = await graph.ainvoke(initial_state)
+                            config = {"configurable": {"thread_id": "test_thread"}}
+                            result = await graph.ainvoke(initial_state, config=config)
 
                             # Verify graph executed
                             assert result is not None
@@ -95,6 +96,8 @@ async def test_graph_full_flow_with_recommendations(mock_checkpointer):
 @pytest.mark.asyncio
 async def test_graph_with_clarification_flow(mock_checkpointer):
     """Test graph routes to clarification when confidence is low."""
+    # Note: interrupt() is handled at the API layer via service functions,
+    # not directly by the test. This test verifies the graph routes to clarify.
 
     mock_profile_response = AsyncMock()
     mock_profile_response.content = '{"mood": null, "vibe": null, "energy_level": null, "occasion": null}'
@@ -162,8 +165,14 @@ async def test_graph_with_clarification_flow(mock_checkpointer):
                                     "feedback": [],
                                 }
 
-                                result = await graph.ainvoke(initial_state)
+                                config = {"configurable": {"thread_id": "test_thread"}}
 
-                                # Verify clarification was set
-                                assert result.get("clarification_question") is not None
-                                assert result["session_clarification_used"] is True
+                                # Graph should route to clarify node due to low confidence
+                                result = await graph.ainvoke(initial_state, config=config)
+
+                                # Verify that graph paused at interrupt (indicated by __interrupt__ key)
+                                assert "__interrupt__" in result
+                                assert len(result["__interrupt__"]) > 0
+                                # Verify the interrupt contains the clarification question
+                                interrupt_value = result["__interrupt__"][0].value
+                                assert interrupt_value == "Are you a whiskey or vodka person?"

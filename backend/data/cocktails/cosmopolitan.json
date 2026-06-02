@@ -1,0 +1,63 @@
+{
+  "id": "cosmopolitan",
+  "name": "Cosmopolitan",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 20.0,
+  "ingredients": [
+    {
+      "item": "vodka",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "triple sec",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "cranberry juice",
+      "amount": "0.75 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.5 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "orange peel",
+      "amount": "1 twist",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "tart",
+    "citrus",
+    "fruity",
+    "balanced"
+  ],
+  "spirit_category": "vodka",
+  "mood_tags": [
+    "fun",
+    "trendy",
+    "sophisticated"
+  ],
+  "occasion_tags": [
+    "party",
+    "happy hour",
+    "night out"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "modern",
+    "vodka",
+    "fruity"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Vodka's smoothness with tart cranberry and bright citrus\u2014the ultimate cosmopolitan spirit."
+}

@@ -1,0 +1,65 @@
+{
+  "id": "paloma",
+  "name": "Paloma",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 14.0,
+  "ingredients": [
+    {
+      "item": "tequila",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh grapefruit juice",
+      "amount": "3 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.5 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.25 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "sea salt",
+      "amount": "rim",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "grapefruit",
+    "tequila",
+    "refreshing"
+  ],
+  "spirit_category": "tequila",
+  "mood_tags": [
+    "refreshing",
+    "tart",
+    "summery"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "beach day",
+    "casual"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "modern",
+    "tequila",
+    "citrus"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Tequila's punch tempered with tart grapefruit\u2014the superior margarita alternative."
+}

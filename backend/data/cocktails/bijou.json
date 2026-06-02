@@ -1,0 +1,58 @@
+{
+  "id": "bijou",
+  "name": "Bijou",
+  "method": "stirred",
+  "glass": "coupe glass",
+  "abv_estimate": 24.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "1 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "chartreuse green",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "sweet vermouth",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "cherry",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "sweet",
+    "complex",
+    "jewel-like"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "sophisticated",
+    "herbal",
+    "mysterious"
+  ],
+  "occasion_tags": [
+    "special occasion",
+    "craft evening",
+    "mysterious"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "gin",
+    "herbal"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Three equal parts in green, red, and gold\u2014a literal jewel in a glass."
+}

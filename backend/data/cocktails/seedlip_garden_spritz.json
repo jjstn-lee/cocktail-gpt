@@ -1,0 +1,60 @@
+{
+  "id": "seedlip_garden_spritz",
+  "name": "Seedlip Garden Spritz",
+  "method": "built",
+  "glass": "wine glass",
+  "abv_estimate": 0.0,
+  "ingredients": [
+    {
+      "item": "seedlip garden 108",
+      "amount": "1.5 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "prosecco",
+      "amount": "3 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "soda water",
+      "amount": "0.5 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "herb garnish",
+      "amount": "sprig",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "botanical",
+    "light",
+    "bubbly"
+  ],
+  "spirit_category": "none",
+  "mood_tags": [
+    "light",
+    "herbal",
+    "celebratory"
+  ],
+  "occasion_tags": [
+    "aperitif",
+    "brunch",
+    "celebration"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "virgin",
+    "herbal",
+    "modern"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": true,
+  "why_it_works": "Non-alcoholic botanical spirit with bubbly\u2014the perfect sober celebration."
+}

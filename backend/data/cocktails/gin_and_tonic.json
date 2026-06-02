@@ -1,0 +1,55 @@
+{
+  "id": "gin_and_tonic",
+  "name": "Gin & Tonic",
+  "method": "built",
+  "glass": "highball glass",
+  "abv_estimate": 11.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "tonic water",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "lime wedge",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "citrus",
+    "botanical",
+    "crisp"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "refreshing",
+    "classic",
+    "crisp"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "afternoon",
+    "casual"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "classic",
+    "gin",
+    "botanical"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "The ultimate showcase for gin's botanicals\u2014let the gin shine."
+}

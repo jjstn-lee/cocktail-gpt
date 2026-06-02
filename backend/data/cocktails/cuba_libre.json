@@ -1,0 +1,58 @@
+{
+  "id": "cuba_libre",
+  "name": "Cuba Libre",
+  "method": "built",
+  "glass": "highball glass",
+  "abv_estimate": 11.0,
+  "ingredients": [
+    {
+      "item": "white rum",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "cola",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.5 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "lime wedge",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "sweet",
+    "tropical",
+    "citrus",
+    "cola"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "fun",
+    "casual",
+    "tropical"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "party",
+    "casual"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "classic",
+    "rum",
+    "cola"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Rum and cola elevated with lime juice\u2014the spirit of Cuba in a simple, delicious drink."
+}

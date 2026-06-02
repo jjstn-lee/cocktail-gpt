@@ -3,10 +3,13 @@
 import uuid
 from typing import Any
 from loguru import logger
+from langgraph.errors import GraphInterrupt
+from langgraph.types import Command
 
 from src.storage.user_store import UserStore
-from src.state import AgentState
+from src.state import AgentState, Feedback
 from src.api.schemas import RecommendRequest, ClarifyRequest, RecommendResponse, CocktailOut
+from src.nodes.recommender import recommender
 
 
 async def get_recommendations(
@@ -36,14 +39,14 @@ async def get_recommendations(
         "recommendations": [],
         "confidence_score": 0.0,
         "rationale": "",
-        "clarification_question": None,
         "clarification_answer": None,
         "session_count": 0,
         "session_clarification_used": False,
         "feedback": [],
+        "recommendation_history": [],
     }
 
-    # Merge stored user preferences and constraints if user_store is provided
+    # Merge stored user preferences, constraints, feedback, history, and session count
     if user_store:
         stored_prefs = user_store.get_preferences(user_id)
         if stored_prefs:
@@ -51,20 +54,42 @@ async def get_recommendations(
         stored_constraints = user_store.get_constraints(user_id)
         if stored_constraints:
             state["constraints"] = stored_constraints
+        # Load cross-session memory
+        stored_feedback = user_store.load_feedback(user_id)
+        if stored_feedback:
+            state["feedback"] = [Feedback(**fb) for fb in stored_feedback]
+        stored_history = user_store.load_recommendation_history(user_id)
+        if stored_history:
+            state["recommendation_history"] = stored_history
+        state["session_count"] = user_store.get_session_count(user_id)
 
     # Run the graph with persistence
     config = {"configurable": {"thread_id": thread_id}}
-    final_state = await graph.ainvoke(state, config=config)
+    clarification_question: str | None = None
+    final_state: dict[str, Any] = {}
 
-    logger.info(
-        "recommendation_service: recommendations complete",
-        extra={
-            "user_id": user_id,
-            "thread_id": thread_id,
-            "recommendations_count": len(final_state.get("recommendations", [])),
-            "confidence_score": final_state.get("confidence_score", 0.0),
-        },
-    )
+    try:
+        final_state = await graph.ainvoke(state, config=config)
+        logger.info(
+            "recommendation_service: recommendations complete",
+            extra={
+                "user_id": user_id,
+                "thread_id": thread_id,
+                "recommendations_count": len(final_state.get("recommendations", [])),
+                "confidence_score": final_state.get("confidence_score", 0.0),
+            },
+        )
+    except GraphInterrupt as e:
+        # Graph paused at clarify node; extract the clarification question from interrupt payload
+        clarification_question = e.args[0] if e.args else None
+        logger.info(
+            "recommendation_service: graph paused at clarification",
+            extra={
+                "user_id": user_id,
+                "thread_id": thread_id,
+                "clarification_question": clarification_question,
+            },
+        )
 
     # Build response
     recommendations = [
@@ -78,7 +103,14 @@ async def get_recommendations(
         for c in final_state.get("recommendations", [])
     ]
 
-    needs_clarification = final_state.get("clarification_question") is not None
+    # Save session to cross-session memory if user_store is provided and not asking for clarification
+    if user_store and clarification_question is None:
+        # Only save if we're returning final recommendations (not asking for clarification)
+        cocktail_names = [c.name for c in final_state.get("recommendations", [])]
+        user_store.save_session_recommendations(user_id, thread_id, cocktail_names)
+        user_store.increment_session_count(user_id)
+
+    needs_clarification = clarification_question is not None
 
     return RecommendResponse(
         thread_id=thread_id,
@@ -86,7 +118,7 @@ async def get_recommendations(
         confidence_score=final_state.get("confidence_score", 0.0),
         rationale=final_state.get("rationale", ""),
         needs_clarification=needs_clarification,
-        clarification_question=final_state.get("clarification_question"),
+        clarification_question=clarification_question,
         degraded=False,  # TODO: detect source failures
     )
 
@@ -96,12 +128,14 @@ async def submit_clarification(
     user_id: str,
     graph: Any,
     checkpointer: Any,
+    user_store: UserStore | None = None,
 ) -> RecommendResponse:
     """
-    Submit a clarification answer and re-run the recommender node.
+    Submit a clarification answer and re-run the recommender with the clarification.
 
-    Load the prior state from the checkpointer, update with clarification_answer,
-    and resume the graph from the recommender node.
+    Load the saved state from the checkpointer and update it with the clarification_answer,
+    then re-run only the recommender node (skip ingest and profile nodes by starting directly
+    at recommender).
     user_id comes from the authenticated Google user, not the request.
     """
     logger.info(
@@ -109,18 +143,36 @@ async def submit_clarification(
         extra={"user_id": user_id, "thread_id": request.thread_id, "answer": request.answer},
     )
 
-    # Query the checkpointer for the prior state
-    # (This is a simplified approach; LangGraph's checkpointer API may vary)
     config = {"configurable": {"thread_id": request.thread_id}}
 
-    # Resume the graph with the clarification answer
-    state_update = {
-        "user_id": user_id,
-        "thread_id": request.thread_id,
-        "clarification_answer": request.answer,
-    }
+    # Load prior state from checkpointer
+    prior_checkpoint = checkpointer.get_tuple(config)
+    if prior_checkpoint and prior_checkpoint.checkpoint:
+        # Extract the full state from the checkpoint
+        prior_state = prior_checkpoint.checkpoint.get("channel_values", {})
+    else:
+        logger.error("No prior checkpoint found for clarification")
+        raise ValueError(f"No prior session found for thread_id {request.thread_id}")
 
-    final_state = await graph.ainvoke(state_update, config=config)
+    # Update state with clarification answer - this is the key part!
+    prior_state["clarification_answer"] = request.answer
+
+    logger.info(
+        "recommendation_service: running recommender with clarification",
+        extra={
+            "user_id": user_id,
+            "thread_id": request.thread_id,
+            "clarification_answer": request.answer,
+        },
+    )
+
+    # Run only the recommender node - this uses the clarification_answer from state
+    recommender_output = await recommender(prior_state)
+
+    # Update the state with recommender output
+    final_state = {**prior_state, **recommender_output}
+    final_state["user_id"] = user_id
+    final_state["thread_id"] = request.thread_id
 
     logger.info(
         "recommendation_service: clarification processed",
@@ -128,6 +180,7 @@ async def submit_clarification(
             "user_id": user_id,
             "thread_id": request.thread_id,
             "recommendations_count": len(final_state.get("recommendations", [])),
+            "confidence_score": final_state.get("confidence_score"),
         },
     )
 
@@ -141,6 +194,12 @@ async def submit_clarification(
         )
         for c in final_state.get("recommendations", [])
     ]
+
+    # Save session to cross-session memory after clarification
+    if user_store:
+        cocktail_names = [c.name for c in final_state.get("recommendations", [])]
+        user_store.save_session_recommendations(user_id, request.thread_id, cocktail_names)
+        user_store.increment_session_count(user_id)
 
     return RecommendResponse(
         thread_id=request.thread_id,

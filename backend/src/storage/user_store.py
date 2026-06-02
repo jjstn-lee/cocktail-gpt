@@ -54,6 +54,7 @@ class UserStore:
         return {
             "preferences": {
                 "preferred_spirits": [],
+                "genre_spirits": [],
                 "preferred_flavors": [],
                 "abv_preference": None,
                 "style_preferences": [],
@@ -63,6 +64,9 @@ class UserStore:
                 "ingredients_on_hand": [],
                 "max_abv": None,
             },
+            "feedback": [],
+            "recommendation_history": [],
+            "session_count": 0,
             "updated_at": None,
         }
 
@@ -145,3 +149,78 @@ class UserStore:
             except IOError as e:
                 logger.error("Failed to clear user data", extra={"user_id": user_id, "error": str(e)})
                 raise
+
+    def load_feedback(self, user_id: str) -> list[dict]:
+        """
+        Load all feedback entries for a user.
+
+        Returns a list of feedback dicts with keys: cocktail_name, rating, session_id, timestamp.
+        """
+        data = self._load_user_file(user_id)
+        feedback = data.get("feedback", [])
+        logger.debug("Feedback loaded", extra={"user_id": user_id, "count": len(feedback)})
+        return feedback
+
+    def save_feedback(self, user_id: str, feedback_entry: dict) -> None:
+        """
+        Save a single feedback entry.
+
+        Appends to the existing feedback list.
+        feedback_entry should have: cocktail_name, rating, session_id, timestamp.
+        """
+        data = self._load_user_file(user_id)
+        if "feedback" not in data:
+            data["feedback"] = []
+        data["feedback"].append(feedback_entry)
+        data["updated_at"] = datetime.utcnow().isoformat() + "Z"
+        self._save_user_file(user_id, data)
+        logger.debug("Feedback saved", extra={"user_id": user_id, "cocktail_name": feedback_entry.get("cocktail_name")})
+
+    def load_recommendation_history(self, user_id: str) -> list[dict]:
+        """
+        Load recommendation history for a user.
+
+        Returns a list of the last N sessions with their recommendations.
+        """
+        data = self._load_user_file(user_id)
+        history = data.get("recommendation_history", [])
+        logger.debug("Recommendation history loaded", extra={"user_id": user_id, "count": len(history)})
+        return history
+
+    def save_session_recommendations(self, user_id: str, session_id: str, cocktails: list[str]) -> None:
+        """
+        Save recommendations for a session.
+
+        Appends a new session entry with cocktail names.
+        cocktails should be a list of cocktail names (strings).
+        """
+        data = self._load_user_file(user_id)
+        if "recommendation_history" not in data:
+            data["recommendation_history"] = []
+        session_entry = {
+            "session_id": session_id,
+            "cocktails": cocktails,
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+        }
+        data["recommendation_history"].append(session_entry)
+        # Keep only last 10 sessions to avoid unbounded growth
+        data["recommendation_history"] = data["recommendation_history"][-10:]
+        data["updated_at"] = datetime.utcnow().isoformat() + "Z"
+        self._save_user_file(user_id, data)
+        logger.debug("Session recommendations saved", extra={"user_id": user_id, "session_id": session_id, "count": len(cocktails)})
+
+    def get_session_count(self, user_id: str) -> int:
+        """Get the total number of completed recommendation sessions."""
+        data = self._load_user_file(user_id)
+        return data.get("session_count", 0)
+
+    def increment_session_count(self, user_id: str) -> int:
+        """Increment session count and return the new value."""
+        data = self._load_user_file(user_id)
+        count = data.get("session_count", 0)
+        count += 1
+        data["session_count"] = count
+        data["updated_at"] = datetime.utcnow().isoformat() + "Z"
+        self._save_user_file(user_id, data)
+        logger.debug("Session count incremented", extra={"user_id": user_id, "count": count})
+        return count

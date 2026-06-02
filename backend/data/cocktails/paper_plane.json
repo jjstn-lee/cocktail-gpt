@@ -1,0 +1,58 @@
+{
+  "id": "paper_plane",
+  "name": "Paper Plane",
+  "method": "shaken",
+  "glass": "rocks glass",
+  "abv_estimate": 24.0,
+  "ingredients": [
+    {
+      "item": "bourbon",
+      "amount": "0.75 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "amaro",
+      "amount": "0.75 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "aperol",
+      "amount": "0.75 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    }
+  ],
+  "flavor_notes": [
+    "bitter",
+    "citrus",
+    "herbal",
+    "warming"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "bold",
+    "complex",
+    "adventurous"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "craft night",
+    "bold evening"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "modern",
+    "complex",
+    "bitter"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Equal parts bourbon, amaro, and Aperol with lemon\u2014a modern masterpiece of bitter balance."
+}

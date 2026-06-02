@@ -1,0 +1,60 @@
+{
+  "id": "moscow_mule",
+  "name": "Moscow Mule",
+  "method": "built",
+  "glass": "copper mug",
+  "abv_estimate": 12.0,
+  "ingredients": [
+    {
+      "item": "vodka",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "ginger beer",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.5 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "lime wheel",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "spicy",
+    "citrus",
+    "crisp",
+    "refreshing"
+  ],
+  "spirit_category": "vodka",
+  "mood_tags": [
+    "refreshing",
+    "spicy",
+    "fun"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "casual",
+    "party"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "modern",
+    "vodka",
+    "spicy"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Vodka's smoothness meets ginger beer's spicy kick\u2014a refreshing, easy crowd-pleaser."
+}

@@ -58,10 +58,14 @@ async def profile_builder(state: AgentState) -> dict:
 
         response = await llm.ainvoke(messages)
         logger.debug("profile_builder: LLM response received")
+        print(f"[PROFILE_BUILDER] LLM raw response:")
+        print(f"{response.content}")
 
         # Extract JSON from response (handles markdown code blocks and explanations)
         profile_dict = extract_json_from_llm_response(response.content)
+        print(f"[PROFILE_BUILDER] Extracted profile dict: {profile_dict}")
         profile = UserProfile(**profile_dict)
+        print(f"[PROFILE_BUILDER] ✓ Final profile: mood={profile.mood}, occasion={profile.occasion}, vibe={profile.vibe}, energy={profile.energy_level}")
         logger.info("profile_builder: profile synthesized", extra={"profile": profile})
         return {"user_profile": profile}
     except (json.JSONDecodeError, ValueError) as e:

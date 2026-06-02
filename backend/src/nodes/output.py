@@ -19,14 +19,12 @@ async def output_node(state: AgentState) -> dict:
 
     recommendations = state.get("recommendations", [])
     confidence_score = state.get("confidence_score", 0.0)
-    clarification_question = state.get("clarification_question")
 
     logger.debug(
         "output_node: final state",
         extra={
             "recommendations_count": len(recommendations),
             "confidence_score": confidence_score,
-            "needs_clarification": clarification_question is not None,
         },
     )
 

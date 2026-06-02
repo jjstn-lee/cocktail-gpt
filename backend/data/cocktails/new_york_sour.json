@@ -1,0 +1,58 @@
+{
+  "id": "new_york_sour",
+  "name": "New York Sour",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 20.0,
+  "ingredients": [
+    {
+      "item": "bourbon",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "red wine",
+      "amount": "0.5 oz",
+      "role": "float"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "wine",
+    "fruity",
+    "tart"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "fruity",
+    "elegant",
+    "tart"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "evening drink",
+    "craft night"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "modern",
+    "bourbon",
+    "wine float"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "A whiskey sour crowned with a red wine float\u2014beautiful and balanced."
+}

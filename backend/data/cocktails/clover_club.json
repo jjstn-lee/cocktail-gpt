@@ -1,0 +1,66 @@
+{
+  "id": "clover_club",
+  "name": "Clover Club",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 16.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "raspberry liqueur",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "egg white",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "raspberry",
+    "floral",
+    "citrus",
+    "smooth"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "romantic",
+    "sweet",
+    "delicate"
+  ],
+  "occasion_tags": [
+    "date night",
+    "garden party",
+    "brunch"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "gin",
+    "fruity",
+    "creamy"
+  ],
+  "complexity": "moderate",
+  "is_non_alcoholic": false,
+  "why_it_works": "Gin's botanicals with tart raspberry and silky foam\u2014a Victorian garden in a glass."
+}

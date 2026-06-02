@@ -1,0 +1,55 @@
+{
+  "id": "gimlet",
+  "name": "Gimlet",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 19.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "lime cordial",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.25 oz",
+      "role": "citrus"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "herbal",
+    "bright",
+    "tart"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "refreshing",
+    "sharp",
+    "clean"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "afternoon drink",
+    "garden party"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "gin",
+    "citrus"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Gin and lime cordial in perfect harmony\u2014crisp, bright, and unfailingly refreshing."
+}

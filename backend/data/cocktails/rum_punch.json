@@ -1,0 +1,65 @@
+{
+  "id": "rum_punch",
+  "name": "Rum Punch",
+  "method": "built",
+  "glass": "highball glass",
+  "abv_estimate": 15.0,
+  "ingredients": [
+    {
+      "item": "dark rum",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "pineapple juice",
+      "amount": "3 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "orange juice",
+      "amount": "1 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "lime juice",
+      "amount": "0.5 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "grenadine",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    }
+  ],
+  "flavor_notes": [
+    "tropical",
+    "fruity",
+    "sweet",
+    "balanced"
+  ],
+  "spirit_category": "rum",
+  "mood_tags": [
+    "tropical",
+    "party",
+    "sweet"
+  ],
+  "occasion_tags": [
+    "tropical party",
+    "happy hour",
+    "casual"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "tropical",
+    "rum",
+    "fruity"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "A crowd-pleasing blend of rum and tropical juices\u2014perfect for any gathering."
+}

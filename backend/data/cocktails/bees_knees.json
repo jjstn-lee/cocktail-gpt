@@ -1,0 +1,56 @@
+{
+  "id": "bees_knees",
+  "name": "Bee's Knees",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 17.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "honey syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "honey",
+    "light",
+    "floral"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "sweet",
+    "refreshing",
+    "light"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "garden party",
+    "brunch"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "gin",
+    "honey",
+    "bright"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Gin's botanicals sweetened with honey and brightened with lemon\u2014pure 1920s charm."
+}

@@ -1,0 +1,65 @@
+{
+  "id": "tom_collins",
+  "name": "Tom Collins",
+  "method": "built",
+  "glass": "highball glass",
+  "abv_estimate": 12.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "fresh lemon juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.5 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "soda water",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "cherry",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "citrus",
+    "herbal",
+    "light",
+    "refreshing"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "refreshing",
+    "light",
+    "summery"
+  ],
+  "occasion_tags": [
+    "happy hour",
+    "garden party",
+    "afternoon"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "classic",
+    "gin",
+    "citrus"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Gin, lemon, and soda in perfect proportion\u2014the classic tall drink."
+}

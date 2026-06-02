@@ -1,0 +1,59 @@
+{
+  "id": "manhattan",
+  "name": "Manhattan",
+  "method": "stirred",
+  "glass": "coupe glass",
+  "abv_estimate": 28.0,
+  "ingredients": [
+    {
+      "item": "rye whiskey",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "sweet vermouth",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "angostura bitters",
+      "amount": "2 dashes",
+      "role": "modifier"
+    },
+    {
+      "item": "cherry",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "sweet",
+    "herbal",
+    "warming",
+    "cherry"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "romantic",
+    "sophisticated",
+    "cozy"
+  ],
+  "occasion_tags": [
+    "date night",
+    "dinner party",
+    "nightcap"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "sweet"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "A timeless blend of whiskey sweetness and herbal notes\u2014ideal for reflective moods."
+}

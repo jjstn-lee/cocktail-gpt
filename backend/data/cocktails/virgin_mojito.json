@@ -1,0 +1,65 @@
+{
+  "id": "virgin_mojito",
+  "name": "Virgin Mojito",
+  "method": "built",
+  "glass": "highball glass",
+  "abv_estimate": 0.0,
+  "ingredients": [
+    {
+      "item": "fresh mint",
+      "amount": "10 leaves",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "1 oz",
+      "role": "citrus"
+    },
+    {
+      "item": "simple syrup",
+      "amount": "0.75 oz",
+      "role": "sweetener"
+    },
+    {
+      "item": "soda water",
+      "amount": "4 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "mint sprig",
+      "amount": "1",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "minty",
+    "citrus",
+    "refreshing",
+    "light"
+  ],
+  "spirit_category": "none",
+  "mood_tags": [
+    "refreshing",
+    "light",
+    "healthy"
+  ],
+  "occasion_tags": [
+    "daytime",
+    "casual",
+    "family"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "virgin",
+    "tropical",
+    "mint"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": true,
+  "why_it_works": "All the mojito joy without the alcohol\u2014fresh, minty refreshment."
+}

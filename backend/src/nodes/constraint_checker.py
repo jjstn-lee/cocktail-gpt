@@ -35,6 +35,8 @@ async def constraint_checker(state: AgentState) -> dict:
 
     raw_sources = state.get("raw_sources", {})
     user_profile = state.get("user_profile")
+    print(f"[CONSTRAINT_CHECKER] Raw sources: {list(raw_sources.keys())}")
+    print(f"[CONSTRAINT_CHECKER] User profile: {user_profile}")
 
     sources_summary = json.dumps(
         {
@@ -48,6 +50,7 @@ async def constraint_checker(state: AgentState) -> dict:
     )
 
     profile_dict = user_profile.model_dump() if user_profile else {}
+    print(f"[CONSTRAINT_CHECKER] Sources summary:\n{sources_summary}")
 
     llm = get_llm()
     messages = [
@@ -60,20 +63,26 @@ Source Signals: {sources_summary}"""),
 
     response = await llm.ainvoke(messages)
     logger.debug("constraint_checker: LLM response", extra={"response": response.content})
+    print(f"[CONSTRAINT_CHECKER] LLM raw response:")
+    print(f"{response.content}")
 
     try:
         # Extract JSON from response (handles markdown code blocks and explanations)
         constraints_dict = extract_json_from_llm_response(response.content)
+        print(f"[CONSTRAINT_CHECKER] Extracted constraints dict: {constraints_dict}")
         inferred = Constraints(**constraints_dict)
+        print(f"[CONSTRAINT_CHECKER] Inferred constraints: allergies={inferred.allergies}, ingredients={inferred.ingredients_on_hand}, max_abv={inferred.max_abv}")
 
         # Merge with existing state constraints: user-set values win, LLM fills blanks
         # Safety-critical: allergies and max_abv must never be overwritten by LLM inference
         existing = state.get("constraints") or Constraints()
+        print(f"[CONSTRAINT_CHECKER] Existing constraints: allergies={existing.allergies}, ingredients={existing.ingredients_on_hand}, max_abv={existing.max_abv}")
         merged = Constraints(
             allergies=existing.allergies or inferred.allergies,
             ingredients_on_hand=existing.ingredients_on_hand or inferred.ingredients_on_hand,
             max_abv=existing.max_abv or inferred.max_abv,
         )
+        print(f"[CONSTRAINT_CHECKER] ✓ Final merged constraints: allergies={merged.allergies}, ingredients={merged.ingredients_on_hand}, max_abv={merged.max_abv}")
 
         logger.info(
             "constraint_checker: constraints identified and merged",

@@ -1,0 +1,59 @@
+{
+  "id": "old_fashioned",
+  "name": "Old Fashioned",
+  "method": "stirred",
+  "glass": "rocks glass",
+  "abv_estimate": 26.0,
+  "ingredients": [
+    {
+      "item": "bourbon",
+      "amount": "2 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "sugar",
+      "amount": "1 cube",
+      "role": "modifier"
+    },
+    {
+      "item": "angostura bitters",
+      "amount": "2 dashes",
+      "role": "modifier"
+    },
+    {
+      "item": "orange peel",
+      "amount": "1 twist",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "sweet",
+    "warming",
+    "woody",
+    "citrus"
+  ],
+  "spirit_category": "whiskey",
+  "mood_tags": [
+    "contemplative",
+    "sophisticated",
+    "relaxing"
+  ],
+  "occasion_tags": [
+    "nightcap",
+    "after-dinner",
+    "cozy evening"
+  ],
+  "season_tags": [
+    "fall",
+    "winter",
+    "year-round"
+  ],
+  "abv_tier": "high",
+  "style_tags": [
+    "classic",
+    "spirit-forward"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Pure bourbon character with gentle sweetness\u2014the ultimate spirit-focused cocktail."
+}

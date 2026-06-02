@@ -1,0 +1,60 @@
+{
+  "id": "americano",
+  "name": "Americano",
+  "method": "built",
+  "glass": "rocks glass",
+  "abv_estimate": 9.0,
+  "ingredients": [
+    {
+      "item": "campari",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "sweet vermouth",
+      "amount": "1 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "soda water",
+      "amount": "2 oz",
+      "role": "mixer"
+    },
+    {
+      "item": "orange peel",
+      "amount": "1 twist",
+      "role": "garnish"
+    }
+  ],
+  "flavor_notes": [
+    "bitter",
+    "herbal",
+    "light",
+    "aperitif"
+  ],
+  "spirit_category": "none",
+  "mood_tags": [
+    "light",
+    "aperitif",
+    "bitter"
+  ],
+  "occasion_tags": [
+    "aperitif",
+    "afternoon",
+    "light evening"
+  ],
+  "season_tags": [
+    "spring",
+    "summer",
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "classic",
+    "aperitif",
+    "Italian"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Campari and vermouth with soda\u2014a light aperitivo for slow, social sipping."
+}

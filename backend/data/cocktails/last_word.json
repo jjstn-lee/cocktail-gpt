@@ -1,0 +1,58 @@
+{
+  "id": "last_word",
+  "name": "Last Word",
+  "method": "shaken",
+  "glass": "coupe glass",
+  "abv_estimate": 22.0,
+  "ingredients": [
+    {
+      "item": "gin",
+      "amount": "0.75 oz",
+      "role": "base_spirit"
+    },
+    {
+      "item": "chartreuse green",
+      "amount": "0.75 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "maraschino liqueur",
+      "amount": "0.75 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "fresh lime juice",
+      "amount": "0.75 oz",
+      "role": "citrus"
+    }
+  ],
+  "flavor_notes": [
+    "herbal",
+    "fruity",
+    "bright",
+    "complex"
+  ],
+  "spirit_category": "gin",
+  "mood_tags": [
+    "bold",
+    "herbal",
+    "elegant"
+  ],
+  "occasion_tags": [
+    "craft night",
+    "special occasion",
+    "bold evening"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "medium",
+  "style_tags": [
+    "classic",
+    "gin",
+    "herbal"
+  ],
+  "complexity": "advanced",
+  "is_non_alcoholic": false,
+  "why_it_works": "Four equal parts in perfect balance\u2014an herbal masterpiece of complexity."
+}

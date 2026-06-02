@@ -1,0 +1,48 @@
+{
+  "id": "kir_royale",
+  "name": "Kir Royale",
+  "method": "built",
+  "glass": "champagne flute",
+  "abv_estimate": 10.0,
+  "ingredients": [
+    {
+      "item": "cr\u00e8me de cassis",
+      "amount": "0.5 oz",
+      "role": "modifier"
+    },
+    {
+      "item": "champagne",
+      "amount": "4 oz",
+      "role": "base_spirit"
+    }
+  ],
+  "flavor_notes": [
+    "bubbly",
+    "berry",
+    "light",
+    "elegant"
+  ],
+  "spirit_category": "wine",
+  "mood_tags": [
+    "celebratory",
+    "light",
+    "elegant"
+  ],
+  "occasion_tags": [
+    "celebration",
+    "brunch",
+    "romantic"
+  ],
+  "season_tags": [
+    "year-round"
+  ],
+  "abv_tier": "low",
+  "style_tags": [
+    "classic",
+    "champagne",
+    "fruity"
+  ],
+  "complexity": "easy",
+  "is_non_alcoholic": false,
+  "why_it_works": "Champagne kissed with blackcurrant\u2014pure celebration in a glass."
+}
