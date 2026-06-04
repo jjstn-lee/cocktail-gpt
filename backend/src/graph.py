@@ -1,4 +1,10 @@
-"""LangGraph state machine for the cocktail recommendation agent."""
+"""LangGraph state machine for the cocktail recommendation agent.
+
+Main graph with supervisor routing to subgraphs:
+  supervisor
+    ├→ recommendation_subgraph (if intent == "recommendation")
+    └→ profile_management_subgraph (if intent == "profile_update")
+"""
 
 import os
 from typing import Literal
@@ -7,44 +13,26 @@ from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from loguru import logger
 
-from src.state import AgentState, Cocktail, UserProfile, Preferences, Constraints
-from src.config import CLARIFY_THRESHOLD
-from src.nodes.ingest import make_ingest_node
-from src.nodes.profile_builder import profile_builder
-from src.nodes.preference_extractor import preference_extractor
-from src.nodes.constraint_checker import constraint_checker
-from src.nodes.recommender import recommender
-from src.nodes.clarify import clarify
-from src.nodes.output import output_node
+from src.state import AgentState
+from src.nodes.supervisor import supervisor, Intent
+from src.graphs.recommendation_subgraph import build_recommendation_subgraph
+from src.graphs.profile_management_subgraph import build_profile_management_subgraph
 
 
 def build_graph(checkpointer: BaseCheckpointSaver, user_store=None):
     """
-    Build and compile the cocktail recommendation graph.
+    Build and compile the main graph with supervisor routing.
 
     Topology:
-      ingest
-        ↓
-      profile_builder
-        ↓
-      preference_extractor
-        ↓
-      constraint_checker
-        ↓
-      recommender
-        ↓
-      [conditional] clarify (if confidence < CLARIFY_THRESHOLD)
-        ↓      (pauses with interrupt() and returns question to API)
-                also runs when user continues conversation
-      output
+      supervisor (classifies user intent)
+        ├→ recommendation_subgraph (if intent == "recommendation")
+        └→ profile_management_subgraph (if intent == "profile_update")
         ↓
       END
 
-    If clarification is needed and not yet used in this session, route to clarify.
-    The clarify node pauses execution via interrupt(), returning the question to the API.
-    When the user submits an answer, Command(resume=answer) resumes the graph at the
-    interrupt() point, skipping ingest and all profile-building nodes entirely.
-    After resuming, the recommender node runs again, then always proceeds to output.
+    The supervisor classifies the user's intent based on their message.
+    - "recommendation": routes to the recommendation subgraph (ingest → ... → output)
+    - "profile_update": routes to the profile management subgraph (profile_updater)
 
     Args:
         checkpointer: BaseCheckpointSaver for state persistence
@@ -52,52 +40,48 @@ def build_graph(checkpointer: BaseCheckpointSaver, user_store=None):
     """
     workflow = StateGraph(AgentState)
 
-    # Add all nodes (ingest is created from factory with optional user_store)
-    workflow.add_node("ingest", make_ingest_node(user_store))
-    workflow.add_node("profile_builder", profile_builder)
-    workflow.add_node("preference_extractor", preference_extractor)
-    workflow.add_node("constraint_checker", constraint_checker)
-    workflow.add_node("recommender", recommender)
-    workflow.add_node("clarify", clarify)
-    workflow.add_node("output", output_node)
+    # Build subgraphs
+    recommendation_subgraph = build_recommendation_subgraph(checkpointer, user_store)
+    profile_management_subgraph = build_profile_management_subgraph()
 
-    # Linear edges (ingest through constraint_checker)
-    workflow.add_edge("ingest", "profile_builder")
-    workflow.add_edge("profile_builder", "preference_extractor")
-    workflow.add_edge("preference_extractor", "constraint_checker")
-    workflow.add_edge("constraint_checker", "recommender")
+    # Add supervisor node
+    workflow.add_node("supervisor", supervisor)
 
-    # Conditional edge after recommender
-    def should_clarify(state: AgentState) -> Literal["clarify", "output"]:
-        """Decide whether to ask for clarification based on confidence and prior usage."""
-        confidence = state.get("confidence_score", 0.0)
-        already_used = state.get("session_clarification_used", False)
-
-        if confidence < CLARIFY_THRESHOLD and not already_used:
-            logger.debug(
-                "should_clarify: routing to clarify",
-                extra={"confidence": confidence, "threshold": CLARIFY_THRESHOLD},
-            )
-            return "clarify"
-        return "output"
-
-    workflow.add_conditional_edges("recommender", should_clarify)
-
-    # After clarify, loop back to recommender (not output directly)
-    workflow.add_edge("clarify", "recommender")
-
-    # From output to end
-    workflow.add_edge("output", END)
+    # Add subgraphs as nodes
+    workflow.add_node("recommendation_subgraph", recommendation_subgraph)
+    workflow.add_node("profile_management_subgraph", profile_management_subgraph)
 
     # Set entry point
-    workflow.set_entry_point("ingest")
+    workflow.set_entry_point("supervisor")
+
+    # Conditional routing from supervisor
+    def route_intent(state: AgentState) -> str:
+        """Route based on supervisor's intent classification."""
+        intent = state.get("intent")
+        print(f"[ROUTE_INTENT] Intent from state: {intent}")
+        print(f"[ROUTE_INTENT] Comparing with: {Intent.PROFILE_UPDATE.value}")
+        logger.debug("route_intent: routing based on intent", extra={"intent": intent})
+
+        if intent == Intent.PROFILE_UPDATE.value:
+            print(f"[ROUTE_INTENT] Routing to: profile_management_subgraph")
+            return "profile_management_subgraph"
+        print(f"[ROUTE_INTENT] Routing to: recommendation_subgraph")
+        return "recommendation_subgraph"
+
+    workflow.add_conditional_edges("supervisor", route_intent)
+
+    # Both subgraphs lead to END
+    workflow.add_edge("recommendation_subgraph", END)
+    workflow.add_edge("profile_management_subgraph", END)
 
     # Configure msgpack to allow custom Pydantic models
-    # (Allows deserialization without warnings)
-    os.environ.setdefault("LANGGRAPH_ALLOWED_MSGPACK_MODULES", "src.state:Cocktail,src.state:UserProfile,src.state:Preferences,src.state:Constraints,src.state:Feedback")
+    os.environ.setdefault(
+        "LANGGRAPH_ALLOWED_MSGPACK_MODULES",
+        "src.state:Cocktail,src.state:UserProfile,src.state:Preferences,src.state:Constraints,src.state:Feedback",
+    )
 
     # Compile with checkpointer for persistence
-    logger.info("build_graph: compiling graph with checkpointer")
+    logger.info("build_graph: compiling main graph with supervisor and subgraphs")
     compiled = workflow.compile(checkpointer=checkpointer)
 
     return compiled

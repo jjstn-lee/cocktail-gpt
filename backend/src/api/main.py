@@ -140,11 +140,12 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     # Import and register routers
-    from src.api.routers import recommendations, feedback, sessions, profile, spotify_auth
+    from src.api.routers import recommendations, feedback, sessions, profile, spotify_auth, chat
 
     app.include_router(recommendations.router, prefix="/v1")
     app.include_router(feedback.router, prefix="/v1")
     app.include_router(sessions.router, prefix="/v1")
+    app.include_router(chat.router, prefix="/v1")  # /v1/chat endpoint
     app.include_router(profile.router)  # /api/* routes
     app.include_router(spotify_auth.router)  # /api/spotify/* routes
 

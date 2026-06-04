@@ -1,28 +1,25 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
-import {
-  getRecommendation,
-  clarify,
-  submitFeedback,
-  RecommendResponse,
-  CocktailOut,
-} from "@/lib/api";
-
-type ChatMessage =
-  | { id: string; role: "user"; text: string }
-  | { id: string; role: "assistant"; response: RecommendResponse };
+import { submitFeedback, ChatResponse, CocktailOut } from "@/lib/api";
 
 export default function RecommendPage() {
   const { data: session } = useSession();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [threadId, setThreadId] = useState<string | null>(null);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
   const [feedbackLoading, setFeedbackLoading] = useState<string | null>(null);
-  const [error, setError] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error, data, setMessages } =
+    useChat({
+      api: "/api/chat",
+      body: { threadId },
+      onFinish(message) {
+        const annotation = message.annotations?.[0] as { thread_id?: string } | undefined;
+        if (annotation?.thread_id) setThreadId(annotation.thread_id);
+      },
+    });
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -33,62 +30,18 @@ export default function RecommendPage() {
         }
       }, 0);
     }
-  }, [messages, loading]);
-
-  const handleSendMessage = async (text: string) => {
-    if (!text.trim()) return;
-    if (!session?.id_token) {
-      setError("Please sign in to continue");
-      return;
-    }
-
-    // Add user message
-    const userId = `user-${Date.now()}`;
-    setMessages((prev) => [...prev, { id: userId, role: "user", text }]);
-    setInput("");
-    setLoading(true);
-    setError("");
-
-    try {
-      let response: RecommendResponse;
-
-      if (threadId === null) {
-        // First message: get recommendation
-        response = await getRecommendation(null, session.id_token);
-        setThreadId(response.thread_id);
-      } else {
-        // Follow-up: clarify/refine
-        response = await clarify(threadId, text, session.id_token);
-      }
-
-      // Add assistant message
-      const assistantId = `assistant-${Date.now()}`;
-      setMessages((prev) => [
-        ...prev,
-        { id: assistantId, role: "assistant", response },
-      ]);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to get response");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [messages, isLoading]);
 
   const handleFeedback = async (cocktailName: string, rating: "up" | "down") => {
     if (!threadId) return;
-    if (!session?.id_token) {
-      setError("Please sign in to continue");
-      return;
-    }
+    if (!session?.id_token) return;
 
     setFeedbackLoading(cocktailName);
-    setError("");
 
     try {
       await submitFeedback(threadId, cocktailName, rating, session.id_token);
-      setError(`Feedback for "${cocktailName}" recorded!`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to submit feedback");
+      console.error("Failed to submit feedback:", err);
     } finally {
       setFeedbackLoading(null);
     }
@@ -97,8 +50,6 @@ export default function RecommendPage() {
   const handleNewChat = () => {
     setMessages([]);
     setThreadId(null);
-    setInput("");
-    setError("");
   };
 
   if (!session) {
@@ -116,7 +67,7 @@ export default function RecommendPage() {
     <div className="flex flex-col h-[calc(100vh-9rem)]">
       {/* Message list */}
       <div className="flex-1 overflow-y-auto space-y-4 pr-2" ref={scrollRef}>
-        {messages.length === 0 && !loading ? (
+        {messages.length === 0 && !isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center text-slate-500">
               <p className="text-lg">
@@ -125,76 +76,46 @@ export default function RecommendPage() {
             </div>
           </div>
         ) : (
-          messages.map((msg) => {
-            if (msg.role === "user") {
-              return (
-                <div key={msg.id} className="flex justify-end">
-                  <div className="bg-blue-600 text-white rounded-lg px-4 py-2 max-w-xs break-words">
-                    {msg.text}
-                  </div>
-                </div>
-              );
-            } else {
-              const response = msg.response;
-              return (
-                <div key={msg.id} className="flex justify-start">
-                  <div className="bg-slate-100 rounded-lg px-4 py-3 max-w-2xl space-y-3">
-                    {response.degraded && (
-                      <div className="p-3 bg-yellow-100 text-yellow-900 rounded text-sm">
-                        ⚠️ Some data sources unavailable. Recommendations may be
-                        degraded.
-                      </div>
-                    )}
-
-                    <div className="bg-white p-3 rounded border border-slate-200">
-                      <p className="text-xs font-semibold text-slate-600">
-                        Confidence Score
-                      </p>
-                      <p className="text-xl font-bold text-slate-900">
-                        {(response.confidence_score * 100).toFixed(0)}%
-                      </p>
-                      <p className="text-sm text-slate-700 mt-1">
-                        <strong>Rationale:</strong> {response.rationale}
-                      </p>
+          <>
+            {messages.map((msg, index) => {
+              if (msg.role === "user") {
+                return (
+                  <div key={msg.id} className="flex justify-end">
+                    <div className="bg-blue-600 text-white rounded-lg px-4 py-2 max-w-xs break-words">
+                      {msg.content}
                     </div>
-
-                    {response.recommendations.length > 0 && (
-                      <div className="space-y-2">
-                        {response.recommendations.map((cocktail) => (
-                          <CocktailCard
-                            key={cocktail.name}
-                            cocktail={cocktail}
-                            onThumbsUp={() =>
-                              handleFeedback(cocktail.name, "up")
-                            }
-                            onThumbsDown={() =>
-                              handleFeedback(cocktail.name, "down")
-                            }
-                            loading={feedbackLoading === cocktail.name}
-                          />
-                        ))}
-                      </div>
-                    )}
-
-                    {response.needs_clarification &&
-                      response.clarification_question && (
-                        <div className="bg-blue-50 p-3 rounded border border-blue-200 text-sm">
-                          <p className="text-blue-900 font-semibold">
-                            {response.clarification_question}
-                          </p>
-                          <p className="text-blue-700 text-xs mt-1">
-                            Reply in the chat to answer.
-                          </p>
-                        </div>
-                      )}
                   </div>
-                </div>
-              );
-            }
-          })
+                );
+              } else {
+                // Count assistant messages up to this point to get the correct data index
+                const assistantIndex = messages.slice(0, index).filter(m => m.role === "assistant").length;
+                const chatData = data?.[assistantIndex] as ChatResponse | undefined;
+
+                if (!chatData) {
+                  return (
+                    <div key={msg.id} className="flex justify-start">
+                      <div className="bg-slate-100 rounded-lg px-4 py-3">
+                        <TypingIndicator />
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div key={msg.id} className="flex justify-start">
+                    <AssistantBubble
+                      chatResponse={chatData}
+                      onFeedback={handleFeedback}
+                      feedbackLoading={feedbackLoading}
+                    />
+                  </div>
+                );
+              }
+            })}
+          </>
         )}
 
-        {loading && (
+        {isLoading && (
           <div className="flex justify-start">
             <div className="bg-slate-100 rounded-lg px-4 py-3">
               <TypingIndicator />
@@ -205,47 +126,36 @@ export default function RecommendPage() {
 
       {/* Error message */}
       {error && (
-        <div
-          className={`mt-2 p-3 rounded text-sm ${
-            error.includes("recorded")
-              ? "bg-green-100 text-green-900"
-              : "bg-red-100 text-red-900"
-          }`}
-        >
+        <div className="mt-2 p-3 rounded text-sm bg-red-100 text-red-900">
           {error}
         </div>
       )}
 
       {/* Input bar */}
-      <div className="mt-4 flex gap-2 border-t pt-4">
+      <form onSubmit={handleSubmit} className="mt-4 flex gap-2 border-t pt-4">
         <input
           type="text"
           placeholder="Type your message..."
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey && !loading) {
-              e.preventDefault();
-              handleSendMessage(input);
-            }
-          }}
-          disabled={loading}
+          onChange={handleInputChange}
+          disabled={isLoading}
           className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 disabled:bg-slate-100"
         />
         <button
-          onClick={() => handleSendMessage(input)}
-          disabled={loading || !input.trim()}
+          type="submit"
+          disabled={isLoading || !input.trim()}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-slate-400 transition"
         >
-          {loading ? "..." : "Send"}
+          {isLoading ? "..." : "Send"}
         </button>
         <button
+          type="button"
           onClick={handleNewChat}
           className="px-6 py-2 bg-slate-400 text-white rounded-lg hover:bg-slate-500 transition"
         >
           New Chat
         </button>
-      </div>
+      </form>
     </div>
   );
 }
@@ -262,6 +172,70 @@ function TypingIndicator() {
         className="w-2 h-2 bg-slate-400 rounded-full animate-pulse"
         style={{ animationDelay: "0.4s" }}
       ></div>
+    </div>
+  );
+}
+
+function AssistantBubble({
+  chatResponse,
+  onFeedback,
+  feedbackLoading,
+}: {
+  chatResponse: ChatResponse;
+  onFeedback: (name: string, rating: "up" | "down") => void;
+  feedbackLoading: string | null;
+}) {
+  return (
+    <div className="bg-slate-100 rounded-lg px-4 py-3 max-w-2xl space-y-3">
+      {chatResponse.degraded && (
+        <div className="p-3 bg-yellow-100 text-yellow-900 rounded text-sm">
+          ⚠️ Some data sources unavailable. Recommendations may be degraded.
+        </div>
+      )}
+
+      {chatResponse.intent === "recommendation" && (
+        <>
+          <div className="bg-white p-3 rounded border border-slate-200">
+            <p className="text-xs font-semibold text-slate-600">Confidence Score</p>
+            <p className="text-xl font-bold text-slate-900">
+              {(chatResponse.confidence_score! * 100).toFixed(0)}%
+            </p>
+            <p className="text-sm text-slate-700 mt-1">
+              <strong>Rationale:</strong> {chatResponse.rationale}
+            </p>
+          </div>
+
+          {chatResponse.recommendations && chatResponse.recommendations.length > 0 && (
+            <div className="space-y-2">
+              {chatResponse.recommendations.map((cocktail) => (
+                <CocktailCard
+                  key={cocktail.name}
+                  cocktail={cocktail}
+                  onThumbsUp={() => onFeedback(cocktail.name, "up")}
+                  onThumbsDown={() => onFeedback(cocktail.name, "down")}
+                  loading={feedbackLoading === cocktail.name}
+                />
+              ))}
+            </div>
+          )}
+
+          {chatResponse.needs_clarification && chatResponse.clarification_question && (
+            <div className="bg-blue-50 p-3 rounded border border-blue-200 text-sm">
+              <p className="text-blue-900 font-semibold">
+                {chatResponse.clarification_question}
+              </p>
+              <p className="text-blue-700 text-xs mt-1">Reply in the chat to answer.</p>
+            </div>
+          )}
+        </>
+      )}
+
+      {chatResponse.intent === "profile_update" && (
+        <div className="bg-blue-50 p-3 rounded border border-blue-200">
+          <p className="text-blue-900 font-semibold">Profile Updated</p>
+          <p className="text-blue-700 text-sm mt-1">{chatResponse.profile_update_summary}</p>
+        </div>
+      )}
     </div>
   );
 }

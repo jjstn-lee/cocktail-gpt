@@ -24,17 +24,22 @@ async def get_recommendations(
 
     If thread_id is None, generate a new one. Pass to graph.ainvoke() with config.
     user_id comes from the authenticated Google user, not the request.
+    If no message is provided, defaults to "I'd like a recommendation" to trigger recommendation intent.
     """
     thread_id = request.thread_id or str(uuid.uuid4())
+    # Default message for backward compatibility: if no message provided, indicate recommendation intent
+    message = request.message or "I'd like a cocktail recommendation"
+
     logger.info(
         "recommendation_service: generating recommendations",
-        extra={"user_id": user_id, "thread_id": thread_id},
+        extra={"user_id": user_id, "thread_id": thread_id, "message": message},
     )
 
     # Build initial state
     state: AgentState = {
         "user_id": user_id,
         "thread_id": thread_id,
+        "latest_message": message,
         "raw_sources": {},
         "recommendations": [],
         "confidence_score": 0.0,

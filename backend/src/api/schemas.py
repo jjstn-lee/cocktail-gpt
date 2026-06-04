@@ -14,6 +14,7 @@ class RecommendRequest(BaseModel):
 
     thread_id: str | None = None  # Omit to start a new session
     context_override: dict | None = None  # Optional one-off signal overrides
+    message: str | None = None  # Optional user message (defaults to "recommendation" intent)
 
 
 class ClarifyRequest(BaseModel):
@@ -61,6 +62,33 @@ class FeedbackResponse(BaseModel):
     """Response after submitting feedback."""
 
     accepted: bool
+
+
+# Conversational chat (supervisor routing)
+
+
+class ChatRequest(BaseModel):
+    """Request for conversational interaction with the agent."""
+
+    message: str  # User's message (e.g., "give me a cocktail" or "I like gin")
+    thread_id: str | None = None  # Omit to start a new session
+
+
+class ChatResponse(BaseModel):
+    """Response from conversational interaction (can be recommendations or profile update)."""
+
+    thread_id: str
+    intent: Literal["recommendation", "profile_update"]
+    # For recommendations
+    recommendations: list[CocktailOut] = []
+    confidence_score: float | None = None
+    rationale: str | None = None
+    needs_clarification: bool = False
+    clarification_question: str | None = None
+    # For profile updates
+    profile_update_summary: str | None = None
+    # Metadata
+    degraded: bool = False  # True if any source failed
 
 
 class SessionSummary(BaseModel):

@@ -23,13 +23,18 @@ class UserProfile(BaseModel):
 
 
 class Preferences(BaseModel):
-    """User's spirit and flavor preferences."""
+    """User's spirit and flavor preferences.
 
-    preferred_spirits: list[str] = []  # User-explicitly-set favorite spirits
-    genre_spirits: list[str] = []  # Spirits inferred from music (genre/audio signals)
-    preferred_flavors: list[str] = []
-    abv_preference: str | None = None  # e.g., "strong", "moderate", "light"
-    style_preferences: list[str] = []
+    NOTE: genre_spirits is session-specific (inferred from Spotify per session)
+    and should NOT be persisted to the user profile. Only preferred_spirits,
+    preferred_flavors, abv_preference, and style_preferences should be saved.
+    """
+
+    preferred_spirits: list[str] = []  # User-explicitly-set favorite spirits (persistent)
+    genre_spirits: list[str] = []  # Spirits inferred from music (session-specific, NOT persisted)
+    preferred_flavors: list[str] = []  # Persistent
+    abv_preference: str | None = None  # e.g., "strong", "moderate", "light" (persistent)
+    style_preferences: list[str] = []  # Persistent
 
 
 class Constraints(BaseModel):
@@ -51,17 +56,35 @@ class Feedback(BaseModel):
 class AgentState(TypedDict, total=False):
     """The graph state for cocktail recommendations."""
 
+    # Session and user tracking
     user_id: str
     thread_id: str
+    latest_message: str | None  # Current user message (for supervisor routing)
+
+    # Supervisor routing
+    intent: str | None  # "recommendation" or "profile_update"
+
+    # Data ingestion (recommendation subgraph)
     raw_sources: dict[str, Any]  # Keyed by source name (e.g., "spotify", "weather")
+
+    # Profile and preferences
     user_profile: UserProfile | None
     preferences: Preferences | None
     constraints: Constraints | None
+
+    # Profile updates (profile management subgraph)
+    profile_update_summary: str | None  # Summary of applied updates
+
+    # Recommendations (recommendation subgraph)
     recommendations: list[Cocktail]
     confidence_score: float
     rationale: str  # Top-pick explanation from recommender
+
+    # Clarification flow
     clarification_answer: str | None
-    session_count: int
     session_clarification_used: bool  # Cap clarification at one round
+
+    # History and feedback
+    session_count: int
     feedback: list[Feedback]
     recommendation_history: list[dict]  # Past sessions [{session_id, cocktails, timestamp}]

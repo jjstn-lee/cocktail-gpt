@@ -24,7 +24,7 @@ async def recommender(state: AgentState) -> dict:
     Generate cocktail recommendations based on user profile, preferences, constraints, and memory.
 
     Input: state["user_profile"], state["preferences"], state["constraints"], state.get("clarification_answer"),
-           state.get("feedback"), state.get("recommendation_history")
+           state.get("latest_message"), state.get("feedback"), state.get("recommendation_history")
     Output: {"recommendations": list[Cocktail], "confidence_score": float, "rationale": str}
     """
     logger.debug("recommender: generating recommendations")
@@ -33,6 +33,7 @@ async def recommender(state: AgentState) -> dict:
     preferences = state.get("preferences")
     constraints = state.get("constraints")
     clarification_answer = state.get("clarification_answer")
+    latest_message = state.get("latest_message")
     feedback = state.get("feedback", [])
     recommendation_history = state.get("recommendation_history", [])
 
@@ -97,6 +98,8 @@ async def recommender(state: AgentState) -> dict:
     print(f"[RECOMMENDER] Knowledgebase: {len(filtered)} cocktails available")
     if clarification_answer:
         print(f"[RECOMMENDER] Clarification: {clarification_answer}")
+    if latest_message:
+        print(f"[RECOMMENDER] User's Current Request: {latest_message}")
     print(f"[RECOMMENDER] Spirits in KB: {sorted(spirits_in_kb)}")
 
     kb_context = format_for_prompt(filtered)
@@ -117,6 +120,9 @@ Knowledgebase (select from these only):
 
     if clarification_answer:
         context += f"\n\nClarification Answer: {clarification_answer}"
+
+    if latest_message:
+        context += f"\n\nUser's Current Request: {latest_message}"
 
     llm = get_llm()
     llm_with_structured = llm.with_structured_output(RecommenderOutput)
