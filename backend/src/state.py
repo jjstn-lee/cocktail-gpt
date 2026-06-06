@@ -60,6 +60,7 @@ class AgentState(TypedDict, total=False):
     user_id: str
     thread_id: str
     latest_message: str | None  # Current user message (for supervisor routing)
+    message_history: list[dict]  # Full conversation history: [{"role": "user" | "assistant", "content": str}]
 
     # Supervisor routing
     intent: str | None  # "recommendation" or "profile_update"
@@ -88,3 +89,10 @@ class AgentState(TypedDict, total=False):
     session_count: int
     feedback: list[Feedback]
     recommendation_history: list[dict]  # Past sessions [{session_id, cocktails, timestamp}]
+
+    # Lightweight intent responses
+    explanation: str | None  # Explanation for explain_recommendation intent
+    explanation_cocktail_names: list[str]  # Names of cocktails being explained
+    rate_cocktail_message: str | None  # Acknowledgment message for rate_cocktail intent
+    profile_summary: str | None  # Formatted profile summary for retrieve_profile intent
+    fallback_message: str | None  # Conversational response for ambiguous/unclear messages

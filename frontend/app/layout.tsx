@@ -32,29 +32,17 @@ export default async function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <nav className="bg-slate-900 text-white p-4">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <h1 className="text-2xl font-bold">Cocktail GPT</h1>
-              {session && (
-                <div className="flex gap-6">
-                  <a href="/" className="hover:text-slate-300 transition">
-                    Recommend
-                  </a>
-                  <a href="/profile" className="hover:text-slate-300 transition">
-                    Profile
-                  </a>
-                  <a href="/sessions" className="hover:text-slate-300 transition">
-                    Sessions
-                  </a>
-                </div>
-              )}
+      <body className="h-screen flex flex-col bg-[#0f0f0f] text-[#f5f5f5]">
+        <header className="border-b border-[#2a2a2a] backdrop-blur-sm sticky top-0 z-50 bg-[#0f0f0f]/80">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">🍸</div>
+              <h1 className="text-xl font-semibold tracking-tight">Cocktail-GPT</h1>
             </div>
             <AuthButton session={session} />
           </div>
-        </nav>
-        <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+        </header>
+        <main className="flex-1 w-full overflow-hidden">
           <Providers>{children}</Providers>
         </main>
       </body>

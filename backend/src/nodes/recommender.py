@@ -24,7 +24,7 @@ async def recommender(state: AgentState) -> dict:
     Generate cocktail recommendations based on user profile, preferences, constraints, and memory.
 
     Input: state["user_profile"], state["preferences"], state["constraints"], state.get("clarification_answer"),
-           state.get("latest_message"), state.get("feedback"), state.get("recommendation_history")
+           state.get("latest_message"), state.get("message_history"), state.get("feedback"), state.get("recommendation_history")
     Output: {"recommendations": list[Cocktail], "confidence_score": float, "rationale": str}
     """
     logger.debug("recommender: generating recommendations")
@@ -34,6 +34,7 @@ async def recommender(state: AgentState) -> dict:
     constraints = state.get("constraints")
     clarification_answer = state.get("clarification_answer")
     latest_message = state.get("latest_message")
+    message_history = state.get("message_history", [])
     feedback = state.get("feedback", [])
     recommendation_history = state.get("recommendation_history", [])
 
@@ -111,9 +112,19 @@ async def recommender(state: AgentState) -> dict:
     if user_set_spirits or genre_inferred_spirits:
         prefs_display["_spirits_note"] = f"preferred_spirits={user_set_spirits} (user-set), genre_spirits={genre_inferred_spirits} (inferred from music)"
 
+    # Build conversation context from message history
+    conversation_context = ""
+    if message_history and len(message_history) > 1:
+        conversation_context = "\n## Conversation History:"
+        for msg in message_history[:-1]:
+            if msg["role"] == "user":
+                conversation_context += f"\nUser: {msg['content']}"
+            elif msg["role"] == "assistant":
+                conversation_context += f"\nAssistant: {msg['content']}"
+
     context = f"""User Profile: {json.dumps(profile_dict)}
 Preferences: {json.dumps(prefs_display, indent=2)}
-Constraints: {json.dumps(constraints_dict)}{memory_context}
+Constraints: {json.dumps(constraints_dict)}{memory_context}{conversation_context}
 
 Knowledgebase (select from these only):
 {kb_context}"""

@@ -77,7 +77,7 @@ async def profile_updater(state: AgentState) -> dict:
     """
     Extract and apply profile updates from user message.
 
-    Input: state["latest_message"], state["preferences"], state["constraints"]
+    Input: state["latest_message"], state["message_history"], state["preferences"], state["constraints"]
     Output: {
         "preferences": updated Preferences or None,
         "constraints": updated Constraints or None,
@@ -88,6 +88,7 @@ async def profile_updater(state: AgentState) -> dict:
     logger.debug("profile_updater: extracting profile updates")
 
     latest_message = state.get("latest_message")
+    message_history = state.get("message_history", [])
     print(f"[PROFILE_UPDATER] Latest message: {latest_message}")
     current_preferences = state.get("preferences")
     current_constraints = state.get("constraints")
@@ -103,10 +104,19 @@ async def profile_updater(state: AgentState) -> dict:
     llm = get_llm()
     updater_llm = llm.with_structured_output(ProfileUpdate)
 
-    messages = [
-        SystemMessage(content=PROFILE_UPDATER_SYSTEM_PROMPT),
-        HumanMessage(content=f"User message: {latest_message}"),
-    ]
+    # Build message list with conversation history
+    messages = [SystemMessage(content=PROFILE_UPDATER_SYSTEM_PROMPT)]
+
+    # Add message history (excluding the current message, which is included separately below)
+    if message_history and len(message_history) > 1:
+        for msg in message_history[:-1]:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(SystemMessage(content=f"Assistant: {msg['content']}"))
+
+    # Add the current message
+    messages.append(HumanMessage(content=f"Current user message: {latest_message}"))
 
     try:
         result = await updater_llm.ainvoke(messages)

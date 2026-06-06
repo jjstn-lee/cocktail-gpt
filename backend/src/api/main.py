@@ -18,18 +18,8 @@ from src.graph import build_graph
 from src.memory.checkpointer import get_checkpointer
 from src.storage.user_store import UserStore
 from src.api.middleware import add_middleware
-
-
-class SourceUnavailableError(Exception):
-    """Raised when a data source is unavailable."""
-
-    pass
-
-
-class GraphExecutionError(Exception):
-    """Raised when graph execution fails unrecoverably."""
-
-    pass
+from src.tools.base import SourceUnavailableError
+from src.exceptions import GraphExecutionError, AuthTokenExpiredError
 
 
 @asynccontextmanager
@@ -98,6 +88,21 @@ def create_app() -> FastAPI:
                 "request_id": getattr(request.state, "request_id", "unknown"),
             },
             status_code=500,
+        )
+
+    @app.exception_handler(AuthTokenExpiredError)
+    async def auth_token_expired_handler(request: Request, exc: AuthTokenExpiredError):
+        logger.info(
+            "AuthTokenExpiredError: user needs to re-authorize",
+            extra={"request_id": getattr(request.state, "request_id", "unknown")},
+        )
+        return JSONResponse(
+            {
+                "error": "Your session has expired",
+                "needs_reauth": True,
+                "request_id": getattr(request.state, "request_id", "unknown"),
+            },
+            status_code=401,
         )
 
     @app.exception_handler(ValueError)

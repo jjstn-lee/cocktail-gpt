@@ -80,14 +80,6 @@ def _fetch_current_playback(sp: spotipy.Spotify) -> dict[str, Any] | None:
     return result if isinstance(result, dict) or result is None else None
 
 
-def _fetch_playlists(sp: spotipy.Spotify, limit: int = 20) -> list[dict[str, Any]]:
-    """Fetch user's playlists."""
-    results = sp.current_user_playlists(limit=limit)
-    return list(results.get("items", []))
-
-
-
-
 
 
 def _extract_playback_signal(playback: dict[str, Any] | None) -> dict[str, Any]:
@@ -114,56 +106,44 @@ def _extract_playback_signal(playback: dict[str, Any] | None) -> dict[str, Any]:
         "context_uri": context.get("uri"),
     }
 
-
-def _extract_playlist_signal(playlists: list[dict[str, Any]]) -> dict[str, Any]:
-    """Extract playlist signal."""
-    playlist_names = [p.get("name") for p in playlists if p.get("name")]
-    return {"playlist_names": playlist_names, "playlist_count": len(playlists)}
-
-
 def _calculate_confidence(
     recently_played_success: bool,
-    audio_features_success: bool,
+    top_tracks_success: bool,
     top_artists_success: bool,
     current_playback_success: bool,
-    playlists_success: bool,
 ) -> float:
     """Calculate weighted confidence based on which endpoints succeeded.
 
     Confidence weights:
-    - Recently played + audio features: 0.50 (halved to 0.25 if audio features fail)
-    - Top artists / genres: 0.25
+    - Recently played: 0.40
+    - Top tracks: 0.25
+    - Top artists: 0.20
     - Current playback: 0.15
-    - Playlists: 0.10
     """
     confidence = 0.0
 
     if recently_played_success:
-        if audio_features_success:
-            confidence += 0.50
-        else:
-            logger.debug(
-                "Audio features failed; reducing recently_played confidence to 0.25"
-            )
-            confidence += 0.25
-    if top_artists_success:
+        confidence += 0.40
+    if top_tracks_success:
         confidence += 0.25
+    if top_artists_success:
+        confidence += 0.20
     if current_playback_success:
         confidence += 0.15
-    if playlists_success:
-        confidence += 0.10
 
     return min(confidence, 1.0)
 
 
-async def fetch_spotify(user_id: str, token_data: dict) -> SourcePayload:
+async def fetch_spotify(user_id: str, token_data: dict, user_store=None) -> SourcePayload:
     """Main entry point: fetch and normalize Spotify data.
 
     Runs all Spotify API calls concurrently. Logs failures but continues gracefully.
+    Auto-refreshes expired tokens before use.
 
     Args:
         user_id: User ID (for logging)
         token_data: Stored token dict with access_token, refresh_token, etc.
+        user_store: UserStore instance for saving refreshed tokens (optional)
 
     Returns:
         SourcePayload with Spotify data
@@ -174,6 +154,30 @@ async def fetch_spotify(user_id: str, token_data: dict) -> SourcePayload:
     print(f"[SPOTIFY] Starting fetch_spotify for user {user_id}")
     loop = asyncio.get_event_loop()
 
+    # Step 0: Check and refresh token if expired
+    from src.storage.spotify_token_store import is_token_expired, save_spotify_tokens
+    from src.api.services.spotify_auth_service import refresh_spotify_token
+
+    if is_token_expired(token_data):
+        print(f"[SPOTIFY] Token expired, attempting refresh...")
+        try:
+            refresh_token = token_data.get("refresh_token")
+            if not refresh_token:
+                raise SourceUnavailableError(
+                    "spotify", "Token expired and no refresh_token available"
+                )
+            refreshed = await refresh_spotify_token(refresh_token)
+            # Merge with existing data (keep any fields like scopes)
+            token_data.update(refreshed)
+            if user_store:
+                await loop.run_in_executor(None, save_spotify_tokens, user_store, user_id, token_data)
+            print(f"[SPOTIFY] ✓ Token refreshed successfully")
+        except Exception as e:
+            logger.error(f"Spotify token refresh failed: {e}")
+            raise SourceUnavailableError(
+                "spotify", f"Token refresh failed: {str(e)}", original=e
+            )
+
     # Step 1: Make client from stored token
     try:
         sp = await loop.run_in_executor(None, _make_client_from_tokens, token_data)
@@ -182,15 +186,14 @@ async def fetch_spotify(user_id: str, token_data: dict) -> SourcePayload:
         print(f"[SPOTIFY] ✗ Failed to create client: {e}")
         raise
 
-    # Step 2: Run all 5 endpoint fetches concurrently
-    print(f"[SPOTIFY] Fetching from 5 endpoints...")
+    # Step 2: Run all 4 endpoint fetches concurrently
+    print(f"[SPOTIFY] Fetching from 4 endpoints...")
     logger.debug(f"Fetching Spotify data for user {user_id}")
-    recently_played, top_artists, top_tracks, current_playback, playlists = await asyncio.gather(
+    recently_played, top_artists, top_tracks, current_playback = await asyncio.gather(
         loop.run_in_executor(None, _fetch_recently_played, sp),
         loop.run_in_executor(None, _fetch_top_artists, sp),
         loop.run_in_executor(None, _fetch_top_tracks, sp),
         loop.run_in_executor(None, _fetch_current_playback, sp),
-        loop.run_in_executor(None, _fetch_playlists, sp),
         return_exceptions=True,
     )
 
@@ -199,7 +202,6 @@ async def fetch_spotify(user_id: str, token_data: dict) -> SourcePayload:
     top_artists_success = not isinstance(top_artists, Exception)
     top_tracks_success = not isinstance(top_tracks, Exception)
     current_playback_success = not isinstance(current_playback, Exception)
-    playlists_success = not isinstance(playlists, Exception)
 
     if isinstance(recently_played, Exception):
         logger.warning(f"Spotify recently_played failed: {recently_played}")
@@ -213,9 +215,6 @@ async def fetch_spotify(user_id: str, token_data: dict) -> SourcePayload:
     if isinstance(current_playback, Exception):
         logger.warning(f"Spotify current_playback failed: {current_playback}")
         current_playback = None
-    if isinstance(playlists, Exception):
-        logger.warning(f"Spotify playlists failed: {playlists}")
-        playlists = []
 
     # Step 4: Extract signals
     # Note: audio_features and genres endpoints deprecated by Spotify
@@ -229,7 +228,6 @@ async def fetch_spotify(user_id: str, token_data: dict) -> SourcePayload:
             "track_names": [track.get("name") for track in top_tracks[:10]],
         },
         "playback": _extract_playback_signal(current_playback),
-        "playlist": _extract_playlist_signal(playlists),
         "recently_played_tracks": {
             "track_count": len(recently_played),
             "track_names": [item["track"]["name"] for item in recently_played[:10] if item.get("track")],
@@ -239,10 +237,9 @@ async def fetch_spotify(user_id: str, token_data: dict) -> SourcePayload:
     # Step 5: Calculate confidence
     confidence = _calculate_confidence(
         recently_played_success,
-        top_tracks_success,  # using top_tracks instead of audio_features
+        top_tracks_success,
         top_artists_success,
         current_playback_success,
-        playlists_success,
     )
 
     print(f"[SPOTIFY] ════════════════════════════════════════")
@@ -251,7 +248,6 @@ async def fetch_spotify(user_id: str, token_data: dict) -> SourcePayload:
     print(f"[SPOTIFY]   - top_artists: {top_artists_success} ({len(top_artists)} artists)")
     print(f"[SPOTIFY]   - top_tracks: {top_tracks_success} ({len(top_tracks)} tracks)")
     print(f"[SPOTIFY]   - current_playback: {current_playback_success}")
-    print(f"[SPOTIFY]   - playlists: {playlists_success} ({len(playlists)} playlists)")
     print(f"[SPOTIFY]   - overall_confidence: {confidence:.2f}")
     print(f"[SPOTIFY] Signal breakdown:")
     for signal_type, signal_data in signals.items():
@@ -264,7 +260,7 @@ async def fetch_spotify(user_id: str, token_data: dict) -> SourcePayload:
     logger.info(
         f"Spotify fetch complete for user {user_id}; confidence={confidence:.2f}, "
         f"sources=[recently_played={recently_played_success}, top_artists={top_artists_success}, "
-        f"top_tracks={top_tracks_success}, playback={current_playback_success}, playlists={playlists_success}]"
+        f"top_tracks={top_tracks_success}, playback={current_playback_success}]"
     )
 
     return SourcePayload(

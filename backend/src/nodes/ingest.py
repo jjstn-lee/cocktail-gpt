@@ -87,7 +87,7 @@ def make_ingest_node(user_store=None):
 
                 if spotify_token_data:
                     print(f"[INGEST] ✓ Adding Spotify to fetch tasks")
-                    tasks.append(fetch_spotify(user_id, spotify_token_data))
+                    tasks.append(fetch_spotify(user_id, spotify_token_data, user_store=user_store))
             else:
                 print(f"[INGEST] ✗ No Spotify tokens found for user {user_id} (account not connected?)")
 

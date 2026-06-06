@@ -2,11 +2,11 @@
 
 import json
 from loguru import logger
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage
 
 from src.llm import get_llm
 from src.state import AgentState, UserProfile
-from src.prompts.profile import PROFILE_BUILDER_PROMPT, PROFILE_BUILDER_SYSTEM_PROMPT
+from src.prompts.profile import PROFILE_BUILDER_PROMPT
 from src.nodes.utils import extract_json_from_llm_response
 
 
@@ -45,14 +45,11 @@ async def profile_builder(state: AgentState) -> dict:
         llm = get_llm()
 
         human_message_content = f"{PROFILE_BUILDER_PROMPT}\n\nUser data:\n{sources_summary}"
-        print(f"[PROFILE_BUILDER] Full message to LLM:")
-        print(f"[PROFILE_BUILDER] System: {PROFILE_BUILDER_SYSTEM_PROMPT[:100]}...")
         print(f"[PROFILE_BUILDER] Human prompt length: {len(human_message_content)} chars")
         print(f"[PROFILE_BUILDER] Human message preview:")
         print(human_message_content[:500])
 
         messages = [
-            SystemMessage(content=PROFILE_BUILDER_SYSTEM_PROMPT),
             HumanMessage(content=human_message_content),
         ]
 

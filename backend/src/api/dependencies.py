@@ -6,6 +6,7 @@ from fastapi import Request, Depends, HTTPException, status
 from loguru import logger
 
 from src.storage.user_store import UserStore
+from src.exceptions import AuthTokenExpiredError
 
 
 async def get_current_user(request: Request) -> dict:
@@ -13,7 +14,8 @@ async def get_current_user(request: Request) -> dict:
     Validate Google ID token from Authorization header.
 
     Returns user dict with 'sub' (user ID) and 'email'.
-    Raises HTTP 401 if token is invalid or missing.
+    Raises AuthTokenExpiredError if token is invalid or expired.
+    Raises HTTPException if Authorization header is missing.
     """
     auth_header = request.headers.get("Authorization", "")
     if not auth_header.startswith("Bearer "):
@@ -42,13 +44,10 @@ async def get_current_user(request: Request) -> dict:
             # Check for errors in response
             if response.status_code != 200 or "error" in data:
                 logger.warning(
-                    "get_current_user: invalid token",
+                    "get_current_user: invalid or expired token",
                     extra={"request_id": getattr(request.state, "request_id", "unknown")},
                 )
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Unauthorized",
-                )
+                raise AuthTokenExpiredError("Token is invalid or expired; user must re-authorize")
 
             # Validate audience matches our client ID
             if data.get("aud") != google_client_id:
@@ -56,15 +55,15 @@ async def get_current_user(request: Request) -> dict:
                     "get_current_user: audience mismatch",
                     extra={"request_id": getattr(request.state, "request_id", "unknown")},
                 )
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Unauthorized",
-                )
+                raise AuthTokenExpiredError("Token audience mismatch; user must re-authorize")
 
             return {
                 "sub": data.get("sub"),
                 "email": data.get("email"),
             }
+    except AuthTokenExpiredError:
+        # Re-raise our custom exception
+        raise
     except httpx.RequestError as e:
         logger.error(
             "get_current_user: request failed",

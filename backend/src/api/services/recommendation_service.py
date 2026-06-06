@@ -40,6 +40,7 @@ async def get_recommendations(
         "user_id": user_id,
         "thread_id": thread_id,
         "latest_message": message,
+        "message_history": [{"role": "user", "content": message}],
         "raw_sources": {},
         "recommendations": [],
         "confidence_score": 0.0,

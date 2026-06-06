@@ -75,10 +75,11 @@ class ChatRequest(BaseModel):
 
 
 class ChatResponse(BaseModel):
-    """Response from conversational interaction (can be recommendations or profile update)."""
+    """Response from conversational interaction (can be recommendations, profile update, feedback, or explanation)."""
 
     thread_id: str
-    intent: Literal["recommendation", "profile_update"]
+    intent: Literal["recommendation", "profile_update", "rate_cocktail", "explain_recommendation", "browse_by_attribute", "manage_restrictions", "retrieve_profile", "conversational_fallback"]
+    status: str  # Status message describing what was done (e.g., "Crafted cocktail recommendations")
     # For recommendations
     recommendations: list[CocktailOut] = []
     confidence_score: float | None = None
@@ -87,6 +88,19 @@ class ChatResponse(BaseModel):
     clarification_question: str | None = None
     # For profile updates
     profile_update_summary: str | None = None
+    # For rate_cocktail
+    rating_message: str | None = None
+    # For explain_recommendation
+    explanation: str | None = None
+    explanation_cocktail: str | None = None  # Name of cocktail being explained
+    # For browse_by_attribute
+    browse_attribute: str | None = None  # e.g., "smoky", "gin-based"
+    # For manage_restrictions
+    restriction_summary: str | None = None  # e.g., "Got it — keeping it alcohol-free tonight."
+    # For retrieve_profile
+    profile_summary: str | None = None  # Formatted profile summary
+    # For conversational_fallback
+    fallback_message: str | None = None  # Conversational response for ambiguous messages
     # Metadata
     degraded: bool = False  # True if any source failed
 
