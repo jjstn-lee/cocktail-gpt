@@ -357,12 +357,12 @@ export default function ChatPage() {
               <div className="flex flex-col gap-2 pt-2">
                 <button
                   onClick={() => {
-                    setInput("Something refreshing");
+                    setInput("Recommend me some cocktails");
                     setTimeout(() => {
                       const form = document.querySelector("form");
                       if (form) {
                         const submitBtn = form.querySelector("button[type='submit']");
-                        if (submitBtn && !isLoading && "Something refreshing".trim()) {
+                        if (submitBtn && !isLoading && "Recommend me some cocktails".trim()) {
                           form.dispatchEvent(new Event("submit", { bubbles: true }));
                         }
                       }
@@ -370,16 +370,16 @@ export default function ChatPage() {
                   }}
                   className="px-4 py-2.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] text-[#f5f5f5] text-sm hover:border-[#d97706] hover:bg-[#252525] transition-all duration-200"
                 >
-                  Something refreshing
+                  Recommend me some cocktails
                 </button>
                 <button
                   onClick={() => {
-                    setInput("Strong & spirit-forward");
+                    setInput("What do you know about me so far?");
                     setTimeout(() => {
                       const form = document.querySelector("form");
                       if (form) {
                         const submitBtn = form.querySelector("button[type='submit']");
-                        if (submitBtn && !isLoading && "Strong & spirit-forward".trim()) {
+                        if (submitBtn && !isLoading && "What do you know about me so far?".trim()) {
                           form.dispatchEvent(new Event("submit", { bubbles: true }));
                         }
                       }
@@ -387,16 +387,16 @@ export default function ChatPage() {
                   }}
                   className="px-4 py-2.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] text-[#f5f5f5] text-sm hover:border-[#d97706] hover:bg-[#252525] transition-all duration-200"
                 >
-                  Strong & spirit-forward
+                  What do you know about me so far?
                 </button>
                 <button
                   onClick={() => {
-                    setInput("Light & bubbly");
+                    setInput("What can you do for me?");
                     setTimeout(() => {
                       const form = document.querySelector("form");
                       if (form) {
                         const submitBtn = form.querySelector("button[type='submit']");
-                        if (submitBtn && !isLoading && "Light & bubbly".trim()) {
+                        if (submitBtn && !isLoading && "What can you do for me?".trim()) {
                           form.dispatchEvent(new Event("submit", { bubbles: true }));
                         }
                       }
@@ -404,24 +404,7 @@ export default function ChatPage() {
                   }}
                   className="px-4 py-2.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] text-[#f5f5f5] text-sm hover:border-[#d97706] hover:bg-[#252525] transition-all duration-200"
                 >
-                  Light & bubbly
-                </button>
-                <button
-                  onClick={() => {
-                    setInput("Match my current vibe");
-                    setTimeout(() => {
-                      const form = document.querySelector("form");
-                      if (form) {
-                        const submitBtn = form.querySelector("button[type='submit']");
-                        if (submitBtn && !isLoading && "Match my current vibe".trim()) {
-                          form.dispatchEvent(new Event("submit", { bubbles: true }));
-                        }
-                      }
-                    }, 0);
-                  }}
-                  className="px-4 py-2.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] text-[#f5f5f5] text-sm hover:border-[#d97706] hover:bg-[#252525] transition-all duration-200"
-                >
-                  Match my current vibe
+                  What can you do for me?
                 </button>
               </div>
             </div>
