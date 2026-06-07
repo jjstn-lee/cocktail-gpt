@@ -47,7 +47,7 @@ export default function AuthButton({ session }: { session: Session | null }) {
     return (
       <div className="flex items-center gap-2">
         <a
-          href="https://github.com/jjstn-lee"
+          href="https://justin-hisung-lee.dev/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 px-3 py-2 rounded-full border border-[#2a2a2a] hover:border-[#d97706] bg-[#1a1a1a] hover:bg-[#252525] transition-all duration-200 group"
@@ -58,7 +58,7 @@ export default function AuthButton({ session }: { session: Session | null }) {
           <span className="text-sm font-medium text-[#a0a0a0] group-hover:text-[#d97706] leading-none">
             {firstName}
           </span>
-          <span className="text-sm text-[#d97706] font-semibold leading-none">GitHub</span>
+          <span className="text-sm text-[#d97706] font-semibold leading-none">Portfolio</span>
         </a>
 
         <a
