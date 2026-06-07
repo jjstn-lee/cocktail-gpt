@@ -35,9 +35,30 @@ export default async function RootLayout({
       <body className="h-screen flex flex-col bg-[#0f0f0f] text-[#f5f5f5]">
         <header className="border-b border-[#2a2a2a] backdrop-blur-sm sticky top-0 z-50 bg-[#0f0f0f]/80">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-3">
-              <div className="text-2xl">🍸</div>
-              <h1 className="text-xl font-semibold tracking-tight">Cocktail-GPT</h1>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <div className="text-2xl">🍸</div>
+                <h1 className="text-xl font-semibold tracking-tight">Cocktail-GPT</h1>
+              </div>
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://justin-hisung-lee.dev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-[#a0a0a0] hover:text-[#d97706] transition-colors duration-200"
+                >
+                  Portfolio
+                </a>
+                <span className="text-[#2a2a2a]">|</span>
+                <a
+                  href="https://github.com/jjstn-lee"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-[#a0a0a0] hover:text-[#d97706] transition-colors duration-200"
+                >
+                  GitHub
+                </a>
+              </div>
             </div>
             <AuthButton session={session} />
           </div>

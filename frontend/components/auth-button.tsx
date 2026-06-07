@@ -46,32 +46,14 @@ export default function AuthButton({ session }: { session: Session | null }) {
 
     return (
       <div className="flex items-center gap-2">
-        <a
-          href="https://justin-hisung-lee.dev/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 px-3 py-2 rounded-full border border-[#2a2a2a] hover:border-[#d97706] bg-[#1a1a1a] hover:bg-[#252525] transition-all duration-200 group"
-        >
-          <div className="w-6 h-6 rounded-full bg-[#d97706] flex items-center justify-center text-xs font-semibold text-[#0f0f0f] group-hover:shadow-lg group-hover:shadow-[#d97706]/20 leading-none">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-[#2a2a2a] bg-[#1a1a1a] group">
+          <div className="w-6 h-6 rounded-full bg-[#d97706] flex items-center justify-center text-xs font-semibold text-[#0f0f0f] leading-none">
             {getInitials()}
           </div>
-          <span className="text-sm font-medium text-[#a0a0a0] group-hover:text-[#d97706] leading-none">
+          <span className="text-sm font-medium text-[#a0a0a0] leading-none">
             {firstName}
           </span>
-          <span className="text-sm text-[#d97706] font-semibold leading-none">Portfolio</span>
-        </a>
-
-        <a
-          href="https://github.com/jjstn-lee"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#2a2a2a] hover:border-[#d97706] bg-[#1a1a1a] hover:bg-[#252525] transition-all duration-200"
-        >
-          <span className="text-sm">🔗</span>
-          <span className="text-sm font-medium text-[#a0a0a0] hover:text-[#d97706]">
-            GitHub
-          </span>
-        </a>
+        </div>
 
         <button
           onClick={handleSignOut}
