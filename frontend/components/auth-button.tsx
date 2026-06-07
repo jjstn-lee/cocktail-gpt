@@ -62,7 +62,7 @@ export default function AuthButton({ session }: { session: Session | null }) {
         </a>
 
         <a
-          href="https://github.com/justinlee0777/cocktail-gpt"
+          href="https://github.com/jjstn-lee"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#2a2a2a] hover:border-[#d97706] bg-[#1a1a1a] hover:bg-[#252525] transition-all duration-200"
