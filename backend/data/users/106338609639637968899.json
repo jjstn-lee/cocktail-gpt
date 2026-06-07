@@ -1,0 +1,27 @@
+{
+  "preferences": {
+    "preferred_spirits": [],
+    "genre_spirits": [],
+    "preferred_flavors": [],
+    "abv_preference": null,
+    "style_preferences": []
+  },
+  "constraints": {
+    "allergies": [],
+    "ingredients_on_hand": [],
+    "max_abv": null
+  },
+  "feedback": [],
+  "recommendation_history": [],
+  "session_count": 0,
+  "updated_at": null,
+  "spotify": {
+    "access_token": "BQC90tYHMalBqvYS-365gb13wtUjJU5vMtyk1TQRdsxLMCRgPQ0d_aA0GFb1gCV2sTNiQUUl2ns7piWMHjprCNmk5divFIfeCxyX2g6XntGCXkdmE0W59CsU_05ZcT9XIG_znw0rrQo7Emp4pGL3KsQhIPjkmiuhMDmS2yWU_cKG-imGZJsAqEjb_65IDntr-MP-S9EwIiuG6Oo84CGCf1zN-Bi4jD-indnZ8NWJdpeP77okhHzd9m8Srh1BgJ0",
+    "token_type": "Bearer",
+    "expires_in": 3600,
+    "refresh_token": "AQCcFP7V7qW75HhLWMY2bHvIPWMK6BFYLCt2RepIGor7fDPnxRr-KMQSj4Itux6BCYd0OssekNGAw4QIeOFE7fbu32JST55nVL1ZbMBH7_DFABXXSkJdAR0PtF_GbDH1Hmw",
+    "scope": "playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played user-top-read",
+    "expires_at": 1780880337,
+    "connected_at": "2026-06-07T23:58:57.443603+00:00"
+  }
+}
