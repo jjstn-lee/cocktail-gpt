@@ -3,9 +3,10 @@
 from enum import Enum
 from loguru import logger
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 from src.llm import get_llm
+from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState
 
 
@@ -16,10 +17,10 @@ class Intent(str, Enum):
     PROFILE_UPDATE = "profile_update"
     RATE_COCKTAIL = "rate_cocktail"
     EXPLAIN_RECOMMENDATION = "explain_recommendation"
-    BROWSE_BY_ATTRIBUTE = "browse_by_attribute"
     MANAGE_RESTRICTIONS = "manage_restrictions"
     RETRIEVE_PROFILE = "retrieve_profile"
     CONVERSATIONAL_FALLBACK = "conversational_fallback"
+    SELF_INFORMATION = "self_information"
 
 
 class SupervisorOutput(BaseModel):
@@ -27,8 +28,15 @@ class SupervisorOutput(BaseModel):
     intent: Intent
 
 
-SUPERVISOR_SYSTEM_PROMPT = """You are a routing supervisor for a cocktail recommendation agent.
-Your job is to classify the user's intent based on their message.
+SUPERVISOR_SYSTEM_PROMPT = f"""{GENERAL_SYSTEM_PROMPT}
+
+You are a routing supervisor for a cocktail recommendation agent.
+Your job is to classify the user's intent based on their most recent message AND the full conversation context.
+
+Pay attention to:
+- What has already happened in the conversation (if recommendations were made, if they rated something, etc.)
+- The user's most recent statement and how it relates to what came before
+- Whether they're continuing a thought, responding to a question, or pivoting to a new request
 
 Classify the user's message into one of these categories:
 
@@ -36,7 +44,9 @@ Classify the user's message into one of these categories:
    - "Give me a cocktail recommendation"
    - "What should I drink tonight?"
    - "I'd like a drink suggestion"
+   - "Let's see some recommendations!" (or "Let me see some recommendations")
    - "What goes well with [mood/occasion]?"
+   - "Get me a drink"
    - User is answering a clarification question from a previous recommendation
 
 2. **profile_update** — The user wants to update their profile (preferences or constraints) PERMANENTLY. Examples:
@@ -60,35 +70,34 @@ Classify the user's message into one of these categories:
    - "Why would that work for me?"
    - "What's the reasoning behind that?"
 
-5. **browse_by_attribute** — The user wants to explore cocktails by a specific attribute, flavor, ingredient, or style (NOT personal recommendations). Examples:
-   - "show me something smoky"
-   - "what can I make with gin?"
-   - "I want something refreshing"
-   - "show me rum drinks"
-   - "what are some fruity cocktails?"
-
-6. **manage_restrictions** — The user is setting a TEMPORARY, SESSION-ONLY restriction or limitation. Examples:
+5. **manage_restrictions** — The user is setting a TEMPORARY, SESSION-ONLY restriction or limitation. Examples:
    - "I'm driving tonight, no alcohol"
    - "keep it low ABV for now"
    - "I'm out of citrus"
    - "make it non-alcoholic"
    - Language: temporal/contextual (tonight, right now, I'm out of, for now)
 
-7. **retrieve_profile** — The user wants to see what you know about them (their saved preferences, constraints, feedback history). Examples:
+6. **retrieve_profile** — The user wants to see what you know about them (their saved preferences, constraints, feedback history). Examples:
    - "What do you know about me?"
    - "Show me my preferences"
    - "What's my profile?"
    - "What have I liked?"
    - "Tell me what you remember"
 
+7. **self_information** — The user wants to know what you can or cannot do. Examples:
+   - "What can you do?"
+   - "How do you work?"
+   - "What are your capabilities?"
+   - "What can't you do?"
+   - "What features do you have?"
+
 8. **conversational_fallback** — The user's message is ambiguous, unclear, or doesn't fit the above categories. Examples:
    - "Hello"
-   - "What can you do?"
    - "Hi there"
    - "Tell me a joke"
    - Any vague chitchat or greeting
 
-Always respond with a JSON object containing only the "intent" field set to one of: "recommendation", "profile_update", "rate_cocktail", "explain_recommendation", "browse_by_attribute", "manage_restrictions", "retrieve_profile", or "conversational_fallback"."""
+Always respond with a JSON object containing only the "intent" field set to one of: "recommendation", "profile_update", "rate_cocktail", "explain_recommendation", "manage_restrictions", "retrieve_profile", "self_information", or "conversational_fallback"."""
 
 
 async def supervisor(state: AgentState) -> dict:
@@ -112,19 +121,20 @@ async def supervisor(state: AgentState) -> dict:
     # Use structured output to classify intent
     supervisor_llm = llm.with_structured_output(SupervisorOutput)
 
-    # Build message list with conversation history
+    # Build message list with full conversation context
     messages = [SystemMessage(content=SUPERVISOR_SYSTEM_PROMPT)]
 
-    # Add message history (excluding the current message, which is included separately below)
-    if message_history and len(message_history) > 1:
-        for msg in message_history[:-1]:
+    # Build conversation context from history
+    if message_history:
+        # Include all messages in the history for full context
+        for msg in message_history:
             if msg["role"] == "user":
                 messages.append(HumanMessage(content=msg["content"]))
             elif msg["role"] == "assistant":
-                messages.append(SystemMessage(content=f"Assistant: {msg['content']}"))
-
-    # Add the current message
-    messages.append(HumanMessage(content=f"Current user message: {latest_message}"))
+                messages.append(AIMessage(content=msg["content"]))
+    else:
+        # If no history, just use the current message
+        messages.append(HumanMessage(content=latest_message))
 
     try:
         result = await supervisor_llm.ainvoke(messages)

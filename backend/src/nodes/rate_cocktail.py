@@ -2,9 +2,10 @@
 
 from loguru import logger
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 from src.llm import get_llm
+from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState, Feedback
 
 
@@ -12,12 +13,15 @@ class FeedbackRating(BaseModel):
     """Extracted feedback from user message."""
 
     rating: int  # 1 for negative, 5 for positive
-    explanation: str  # Brief explanation of the rating
+    conversational_response: str  # Friendly conversational acknowledgment of their feedback
 
 
-RATE_COCKTAIL_SYSTEM_PROMPT = """You are a feedback extraction assistant for a cocktail recommendation agent.
+RATE_COCKTAIL_SYSTEM_PROMPT = f"""{GENERAL_SYSTEM_PROMPT}
+
 The supervisor has already determined this message is about rating/providing feedback on a previous recommendation.
-Your job is to extract the user's sentiment (positive or negative) from their message.
+Your job is to:
+1. Extract whether the user loved (positive) or disliked (negative) the cocktail
+2. Generate a warm acknowledgment of their feedback
 
 Examples of positive feedback:
 - "I loved that!"
@@ -31,12 +35,9 @@ Examples of negative feedback:
 - "Didn't like it"
 - "That wasn't good"
 
-Extract from the user's message and return JSON with:
+Return JSON with:
 - rating: 5 for positive feedback, 1 for negative feedback
-- explanation: brief summary of the sentiment
-
-Be generous in interpretation - if the user says anything positive about the cocktail, rate it 5.
-If they say anything negative, rate it 1."""
+- conversational_response: A natural, warm acknowledgment (1-2 sentences) like "That's fantastic! I'm so glad you enjoyed it!" or "Thanks for the feedback. I'll keep that in mind for next time!"""
 
 
 async def rate_cocktail(state: AgentState) -> dict:
@@ -67,16 +68,25 @@ async def rate_cocktail(state: AgentState) -> dict:
     llm = get_llm()
     feedback_llm = llm.with_structured_output(FeedbackRating)
 
-    messages = [
-        SystemMessage(content=RATE_COCKTAIL_SYSTEM_PROMPT),
-        HumanMessage(content=f"User message: {latest_message}"),
-    ]
+    # Build messages with conversation history
+    message_history = state.get("message_history", [])
+    messages = [SystemMessage(content=RATE_COCKTAIL_SYSTEM_PROMPT)]
+
+    # Add message history (excluding current turn)
+    if message_history and len(message_history) > 1:
+        for msg in message_history[:-1]:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(AIMessage(content=msg["content"]))
+
+    messages.append(HumanMessage(content=f"User message: {latest_message}"))
 
     try:
         result = await feedback_llm.ainvoke(messages)
         logger.debug(
             "rate_cocktail: extracted feedback",
-            extra={"rating": result.rating, "explanation": result.explanation},
+            extra={"rating": result.rating, "conversational_response": result.conversational_response},
         )
 
         # Get the last recommendation
@@ -97,13 +107,13 @@ async def rate_cocktail(state: AgentState) -> dict:
             extra={
                 "cocktail": last_cocktail.name,
                 "rating": result.rating,
-                "explanation": result.explanation,
+                "response": result.conversational_response,
             },
         )
 
         return {
             "feedback": updated_feedback,
-            "rate_cocktail_message": f"Thanks for the feedback on {last_cocktail.name}! {result.explanation}",
+            "rate_cocktail_message": result.conversational_response,
         }
 
     except Exception as e:

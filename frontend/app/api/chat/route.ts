@@ -56,6 +56,7 @@ export async function POST(request: Request): Promise<Response> {
       const decoder = new TextDecoder();
       let buffer = "";
       const statusMessages: string[] = [];
+      const nodeSequence: string[] = [];
       let finalResponse: any = null;
 
       try {
@@ -78,9 +79,12 @@ export async function POST(request: Request): Promise<Response> {
               const event = JSON.parse(line);
 
               if (event.type === "status") {
-                // Collect status updates
-                console.log("[STREAM] Status:", event.message);
+                // Collect status updates and node names
+                console.log("[STREAM] Status:", event.message, "Node:", event.node);
                 statusMessages.push(event.message);
+                if (event.node) {
+                  nodeSequence.push(event.node);
+                }
               } else if (event.type === "response") {
                 // Store final response
                 console.log("[STREAM] Response:", event.data);
@@ -106,12 +110,15 @@ export async function POST(request: Request): Promise<Response> {
           }
         }
 
-        // Send the final response with all status messages
+        // Send the final response with all status messages and node sequence
         if (finalResponse) {
-          dataStream.writeData(finalResponse);
+          // Write the message as the message content
+          dataStream.writeData(finalResponse.message || "");
+          // Add the full response to annotations for structured rendering
           dataStream.writeMessageAnnotation({
             thread_id: finalResponse.thread_id,
             statuses: statusMessages,
+            nodes: nodeSequence,
             response: finalResponse,
           });
         }

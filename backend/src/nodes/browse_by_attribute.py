@@ -1,21 +1,24 @@
 """Browse by attribute node: generates cocktails matching a user-specified attribute or ingredient."""
 
 from loguru import logger
-from pydantic import BaseModel
-from langchain_core.messages import HumanMessage, SystemMessage
+from pydantic import BaseModel, ConfigDict
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 from src.llm import get_llm
+from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState, Cocktail
 
 
 class BrowseByAttributeOutput(BaseModel):
     """Output from browse_by_attribute node."""
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     attribute_label: str  # e.g., "smoky", "gin-based", "refreshing"
     recommendations: list[Cocktail]
 
 
-BROWSE_BY_ATTRIBUTE_SYSTEM_PROMPT = """You are a knowledgeable bartender helping a customer explore cocktails.
+BROWSE_BY_ATTRIBUTE_SYSTEM_PROMPT = f"""{GENERAL_SYSTEM_PROMPT}
+
 The supervisor has determined the user wants to browse cocktails by a specific attribute, ingredient, flavor, or style.
 Your job is to generate cocktail recommendations that match their request.
 
@@ -24,18 +27,19 @@ IMPORTANT GUIDELINES:
 2. Draw from encyclopedic cocktail knowledge to suggest classic and well-known cocktails
 3. If the user mentions hard constraints (allergies, max ABV), respect them for safety
 4. Do NOT apply the user's personal preferences - this is about what's available by that attribute
-5. Generate 3-5 cocktails that clearly match the requested attribute
+5. Generate exactly 3 cocktails that clearly match the requested attribute
 6. Rank them by how well they exemplify the attribute
+7. **CRITICAL**: Always extract a clear, meaningful attribute_label from the user's request (e.g., "smoky", "gin-based", "refreshing" — never "unknown")
 
 Examples of attribute queries:
-- "show me something smoky" → Smoky Old Fashioned, Peaty Daiquiri, etc.
-- "what can I make with gin?" → Gin-based cocktails of various styles
-- "I want something refreshing" → Light, citrusy, cooling drinks
-- "show me rum drinks" → Various rum cocktails
+- "show me something smoky" → attribute_label: "smoky" with Smoky Old Fashioned, Peaty Daiquiri, etc.
+- "what can I make with gin?" → attribute_label: "gin-based" with gin cocktails
+- "I want something refreshing" → attribute_label: "refreshing" with light, citrusy drinks
+- "show me rum drinks" → attribute_label: "rum" with various rum cocktails
 
 Return JSON with:
-- attribute_label: A brief label for what they're browsing (e.g., "smoky cocktails", "gin-based", "refreshing")
-- recommendations: List of 3-5 cocktails that match this attribute"""
+- attribute_label: A brief, meaningful label for what they're browsing (MUST reflect the user's actual request, never "unknown")
+- recommendations: List of exactly 3 cocktails that match this attribute"""
 
 
 async def browse_by_attribute(state: AgentState) -> dict:
@@ -75,28 +79,53 @@ async def browse_by_attribute(state: AgentState) -> dict:
 Generate cocktails that match this attribute/ingredient/flavor/style request.
 Focus on the attribute, not personal preferences. Include classic and well-known cocktails."""
 
-    messages = [
-        SystemMessage(content=BROWSE_BY_ATTRIBUTE_SYSTEM_PROMPT),
-        HumanMessage(content=context),
-    ]
+    # Build messages with conversation history
+    message_history = state.get("message_history", [])
+    messages = [SystemMessage(content=BROWSE_BY_ATTRIBUTE_SYSTEM_PROMPT)]
+
+    # Add message history (excluding current turn)
+    if message_history and len(message_history) > 1:
+        for msg in message_history[:-1]:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(AIMessage(content=msg["content"]))
+
+    messages.append(HumanMessage(content=context))
 
     try:
         result = await browse_llm.ainvoke(messages)
+
+        # Safely extract attribute and recommendations
+        if isinstance(result, BrowseByAttributeOutput):
+            attribute_label = result.attribute_label
+            recommendations = result.recommendations
+        elif isinstance(result, dict):
+            attribute_label = result.get("attribute_label", "unknown")
+            recommendations = result.get("recommendations", [])
+        else:
+            logger.warning(f"browse_by_attribute: unexpected result type {type(result)}")
+            attribute_label = "unknown"
+            recommendations = []
+
         logger.info(
             "browse_by_attribute: generated recommendations",
             extra={
-                "attribute": result.attribute_label,
-                "count": len(result.recommendations),
+                "attribute": attribute_label,
+                "count": len(recommendations),
             },
         )
 
         return {
-            "recommendations": result.recommendations,
-            "browse_attribute": result.attribute_label,
+            "recommendations": recommendations,
+            "browse_attribute": attribute_label,
         }
 
     except Exception as e:
-        logger.error("browse_by_attribute: error generating recommendations", extra={"error": str(e)})
+        logger.error(
+            "browse_by_attribute: error generating recommendations",
+            extra={"error": str(e), "error_type": type(e).__name__},
+        )
         return {
             "recommendations": [],
             "browse_attribute": "unknown",

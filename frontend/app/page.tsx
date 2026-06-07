@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "ai/react";
 import { useSession, signIn } from "next-auth/react";
+import { MarkdownText } from "@/components/MarkdownText";
+import { CocktailCard } from "@/components/CocktailCard";
+import { Tooltip } from "@/components/Tooltip";
 
 async function handleSpotifyLogin(idToken: string) {
   try {
@@ -26,23 +29,47 @@ async function handleSpotifyLogin(idToken: string) {
   }
 }
 
-const BARTENDER_MESSAGES = [
-  "Restocking luxardo cherries...",
-  "Making 11 Long Island Iced Teas...",
-  "Cleaning up the bar...",
-  "Muddling fresh mint...",
-  "Shaking things up...",
-  "Consulting the liquor cabinet...",
-  "Perfecting the pour...",
-  "Selecting the finest spirits...",
-  "Checking the ice machine...",
-  "Appreciating the foam head...",
-  "Garnishing with finesse...",
-  "Reading the bar handbook...",
-  "Aging this in oak...",
-  "Chilling the glassware...",
-  "Measuring precisely...",
-  "Tasting for perfection...",
+// Flat list of loading messages that cycle every 3–7 seconds
+const LOADING_MESSAGES = [
+  "Replacing beer kegs",
+  "Muddling mint",
+  "Mixing",
+  "Shaking",
+  "Garnishing",
+  "Straining",
+  "Blending",
+  "Getting yelled at",
+  "Burning the ice",
+  "Polishing coupe glasses",
+  "Pouring",
+  "Measuring",
+  "Topping off",
+  "Filling up",
+  "Restocking bottles and cans",
+  "Restocking lime juice",
+  "Finding the jigger",
+  "Wiping down the bar",
+  "Chilling martini glass",
+  "Pouring a double",
+  "Taking a shot",
+  "Being someone's unlicensed therapist",
+  "Preparing garnishes",
+  "Zesting citrus",
+  "Calling for barback",
+  "Rinsing the glass",
+  "Pretending to remember a regular's usual",
+  "Asking for ID for the 60-year-old",
+  "Changing the keg mid-rush",
+  "Fishing out the bottle opener",
+  "Tasting for quality control",
+  "Cutting more garnish",
+  "Hunting for the Luxardo cherries",
+  "Running the glasswasher",
+  "Restocking the bitters collection",
+  "Pulling from the well",
+  "Double straining",
+  "Doing a free pour",
+  "Batching cocktails",
 ];
 
 export default function ChatPage() {
@@ -52,6 +79,7 @@ export default function ChatPage() {
   const [spotifyLoading, setSpotifyLoading] = useState(false);
   const [bartenderMessage, setBartenderMessage] = useState("");
   const [threadId, setThreadId] = useState<string | null>(null);
+  const [spotifyConnected, setSpotifyConnected] = useState(false);
 
   const {
     messages,
@@ -61,49 +89,70 @@ export default function ChatPage() {
     isLoading,
     error,
     setMessages,
+    setInput,
   } = useChat({
     api: "/api/chat",
   });
 
-  // Select a random bartender message when loading starts and change every 5-10 seconds
+  // Cycle through loading messages every 3–7 seconds
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-    let timeoutId: NodeJS.Timeout;
-
-    const selectNewMessage = () => {
-      const message = BARTENDER_MESSAGES[Math.floor(Math.random() * BARTENDER_MESSAGES.length)];
-      setBartenderMessage(message);
-    };
-
-    if (isLoading) {
-      // Set initial message immediately
-      selectNewMessage();
-
-      // Change message every 5-10 seconds
-      intervalId = setInterval(() => {
-        selectNewMessage();
-      }, Math.random() * 5000 + 5000); // 5000-10000ms
-    } else {
-      // Clear message when not loading
-      timeoutId = setTimeout(() => setBartenderMessage(""), 300);
+    if (!isLoading) {
+      const timeoutId = setTimeout(() => setBartenderMessage(""), 300);
+      return () => clearTimeout(timeoutId);
     }
 
-    return () => {
-      clearInterval(intervalId);
-      clearTimeout(timeoutId);
+    // Show a random message immediately
+    const pick = () => LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)];
+    setBartenderMessage(pick());
+
+    // Cycle to a new message every 3–7 seconds
+    const schedule = () => {
+      const delay = 3000 + Math.random() * 4000; // 3000–7000ms
+      return setTimeout(() => {
+        setBartenderMessage(pick());
+        timerId = schedule();
+      }, delay);
     };
+    let timerId = schedule();
+
+    return () => clearTimeout(timerId);
   }, [isLoading]);
+
+  // Check Spotify connection status
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      const checkSpotifyStatus = async () => {
+        try {
+          const idToken = (session as any)?.id_token;
+          if (!idToken) return;
+
+          const response = await fetch("/api/spotify/status", {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setSpotifyConnected(data.connected || false);
+          }
+        } catch (error) {
+          console.error("Error checking Spotify status:", error);
+          setSpotifyConnected(false);
+        }
+      };
+
+      checkSpotifyStatus();
+    } else {
+      setSpotifyConnected(false);
+    }
+  }, [status, session]);
 
   // Check token expiration and redirect if needed
   useEffect(() => {
-    const checkAndRedirect = () => {
-      if (status === "unauthenticated") {
-        signIn("google");
-        return;
-      }
-
-      // Check if token has expired
-      if (session && (session as any).expires_at) {
+    // Only check token expiration if user is authenticated
+    if (status === "authenticated" && session && (session as any).expires_at) {
+      const checkExpiration = () => {
         const expiresAt = (session as any).expires_at;
         const now = Math.floor(Date.now() / 1000);
         const bufferTime = 60; // Redirect 60 seconds before expiration
@@ -111,17 +160,16 @@ export default function ChatPage() {
         if (now >= expiresAt - bufferTime) {
           console.log("Token expired or expiring soon, redirecting to login");
           signIn("google");
-          return;
         }
-      }
-    };
+      };
 
-    // Check on mount and whenever session changes
-    checkAndRedirect();
+      // Check on mount
+      checkExpiration();
 
-    // Check every 30 seconds if token is still valid
-    const interval = setInterval(checkAndRedirect, 30 * 1000);
-    return () => clearInterval(interval);
+      // Check every 30 seconds if token is still valid
+      const interval = setInterval(checkExpiration, 30 * 1000);
+      return () => clearInterval(interval);
+    }
   }, [status, session]);
 
   // Auto-scroll to bottom when messages change
@@ -211,37 +259,13 @@ export default function ChatPage() {
           <div className="h-px bg-gradient-to-r from-transparent via-[#2a2a2a] to-transparent"></div>
 
           {/* Auth Buttons */}
-          <div className="space-y-3">
-            <button
-              onClick={() => signIn("google")}
-              className="w-full px-6 py-3 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] hover:bg-[#252525] hover:border-[#d97706] text-[#f5f5f5] font-medium transition-all duration-200 flex items-center justify-center gap-3 hover:shadow-lg hover:shadow-[#d97706]/10"
-            >
-              <span className="text-xl">🔵</span>
-              <span>Continue with Google</span>
-            </button>
-
-            <button
-              onClick={async () => {
-                setSpotifyLoading(true);
-                // Sign in with Google first, then Spotify
-                const result = await signIn("google", { redirect: false });
-                if (result?.ok) {
-                  // After Google signin, we can connect to Spotify
-                  // The session will have id_token we can use
-                  setTimeout(() => {
-                    // Refresh session and get id_token
-                    window.location.reload();
-                  }, 500);
-                }
-                setSpotifyLoading(false);
-              }}
-              disabled={spotifyLoading}
-              className="w-full px-6 py-3 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] hover:bg-[#252525] hover:border-[#d97706] text-[#f5f5f5] font-medium transition-all duration-200 flex items-center justify-center gap-3 hover:shadow-lg hover:shadow-[#d97706]/10 disabled:opacity-50"
-            >
-              <span className="text-xl">🎵</span>
-              <span>{spotifyLoading ? "Connecting..." : "Connect Spotify"}</span>
-            </button>
-          </div>
+          <button
+            onClick={() => signIn("google")}
+            className="w-full px-6 py-3 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] hover:bg-[#252525] hover:border-[#d97706] text-[#f5f5f5] font-medium transition-all duration-200 flex items-center justify-center gap-3 hover:shadow-lg hover:shadow-[#d97706]/10"
+          >
+            <span className="text-xl">🔵</span>
+            <span>Continue with Google</span>
+          </button>
 
           {/* Footer */}
           <p className="text-xs text-[#808080]">Sign in to access personalized recommendations</p>
@@ -273,9 +297,133 @@ export default function ChatPage() {
 
         {messages.length === 0 && !isLoading && (
           <div className="h-full flex items-center justify-center">
-            <div className="text-center space-y-4 animate-in fade-in duration-500">
-              <div className="text-5xl opacity-40">🍸</div>
-              <p className="text-[#808080] text-lg">What would you like to drink?</p>
+            <div className="text-center space-y-6 animate-in fade-in duration-500 max-w-md">
+              <div className="text-7xl opacity-60">🍸</div>
+              <div className="space-y-2">
+                <h2 className="text-3xl font-light tracking-tight text-[#f5f5f5]">What are you in the mood for?</h2>
+                <p className="text-[#a0a0a0] text-base">I'll recommend cocktails based on your taste profile and music right now.</p>
+              </div>
+
+              <div className="flex gap-2 justify-center flex-wrap">
+                {spotifyConnected ? (
+                  <div className="px-3 py-1.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                    Spotify connected
+                  </div>
+                ) : (
+                  <button
+                    onClick={async () => {
+                      setSpotifyLoading(true);
+                      try {
+                        const idToken = (session as any)?.id_token;
+                        if (!idToken) {
+                          console.error("No id_token available");
+                          return;
+                        }
+
+                        const response = await fetch("/api/spotify/connect-url", {
+                          headers: {
+                            Authorization: `Bearer ${idToken}`,
+                          },
+                        });
+
+                        if (!response.ok) {
+                          console.error("Failed to get Spotify connect URL");
+                          return;
+                        }
+
+                        const data = await response.json();
+                        if (data.connect_url) {
+                          window.location.href = data.connect_url;
+                        }
+                      } catch (error) {
+                        console.error("Error connecting to Spotify:", error);
+                      } finally {
+                        setSpotifyLoading(false);
+                      }
+                    }}
+                    disabled={spotifyLoading}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#2a2a2a] text-[#808080] border border-[#3a3a3a] flex items-center gap-1.5 hover:bg-[#333333] hover:border-[#d97706]/50 transition-all duration-200 disabled:opacity-50 cursor-pointer"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#808080]"></span>
+                    {spotifyLoading ? "Connecting..." : "Connect Spotify"}
+                  </button>
+                )}
+                <div className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#2a2a2a] text-[#808080] border border-[#3a3a3a]">
+                  More sources coming soon
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2">
+                <button
+                  onClick={() => {
+                    setInput("Something refreshing");
+                    setTimeout(() => {
+                      const form = document.querySelector("form");
+                      if (form) {
+                        const submitBtn = form.querySelector("button[type='submit']");
+                        if (submitBtn && !isLoading && "Something refreshing".trim()) {
+                          form.dispatchEvent(new Event("submit", { bubbles: true }));
+                        }
+                      }
+                    }, 0);
+                  }}
+                  className="px-4 py-2.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] text-[#f5f5f5] text-sm hover:border-[#d97706] hover:bg-[#252525] transition-all duration-200"
+                >
+                  Something refreshing
+                </button>
+                <button
+                  onClick={() => {
+                    setInput("Strong & spirit-forward");
+                    setTimeout(() => {
+                      const form = document.querySelector("form");
+                      if (form) {
+                        const submitBtn = form.querySelector("button[type='submit']");
+                        if (submitBtn && !isLoading && "Strong & spirit-forward".trim()) {
+                          form.dispatchEvent(new Event("submit", { bubbles: true }));
+                        }
+                      }
+                    }, 0);
+                  }}
+                  className="px-4 py-2.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] text-[#f5f5f5] text-sm hover:border-[#d97706] hover:bg-[#252525] transition-all duration-200"
+                >
+                  Strong & spirit-forward
+                </button>
+                <button
+                  onClick={() => {
+                    setInput("Light & bubbly");
+                    setTimeout(() => {
+                      const form = document.querySelector("form");
+                      if (form) {
+                        const submitBtn = form.querySelector("button[type='submit']");
+                        if (submitBtn && !isLoading && "Light & bubbly".trim()) {
+                          form.dispatchEvent(new Event("submit", { bubbles: true }));
+                        }
+                      }
+                    }, 0);
+                  }}
+                  className="px-4 py-2.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] text-[#f5f5f5] text-sm hover:border-[#d97706] hover:bg-[#252525] transition-all duration-200"
+                >
+                  Light & bubbly
+                </button>
+                <button
+                  onClick={() => {
+                    setInput("Match my current vibe");
+                    setTimeout(() => {
+                      const form = document.querySelector("form");
+                      if (form) {
+                        const submitBtn = form.querySelector("button[type='submit']");
+                        if (submitBtn && !isLoading && "Match my current vibe".trim()) {
+                          form.dispatchEvent(new Event("submit", { bubbles: true }));
+                        }
+                      }
+                    }, 0);
+                  }}
+                  className="px-4 py-2.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] text-[#f5f5f5] text-sm hover:border-[#d97706] hover:bg-[#252525] transition-all duration-200"
+                >
+                  Match my current vibe
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -308,9 +456,13 @@ export default function ChatPage() {
                 <div className="space-y-4">
                   <div className="max-w-2xl space-y-4">
                     {/* Main message */}
-                    <div className="text-[#f5f5f5] leading-relaxed">{msg.content}</div>
+                    {msg.content && (
+                      <div className="border border-[#2a2a2a] rounded-xl p-5 bg-[#1a1a1a]">
+                        <MarkdownText content={msg.content} className="text-sm" />
+                      </div>
+                    )}
 
-                    {/* Response Content */}
+                    {/* Additional Response Content (intent-specific) */}
                     {chatData && (
                       <div className="space-y-4 mt-4">
                         {/* Recommendations */}
@@ -320,64 +472,11 @@ export default function ChatPage() {
                             <div className="space-y-3">
                               {chatData.recommendations.map(
                                 (cocktail: any, idx: number) => (
-                                  <div
+                                  <CocktailCard
                                     key={cocktail.name}
-                                    className="group border border-[#2a2a2a] rounded-xl p-5 hover:border-[#d97706] hover:bg-[#1a1a1a] transition-all duration-300 cursor-pointer animate-in fade-in slide-in-from-left-4 duration-300"
-                                    style={{ animationDelay: `${idx * 100}ms` }}
-                                  >
-                                    <div className="flex items-start justify-between gap-4 mb-3">
-                                      <h3 className="text-lg font-semibold text-[#f5f5f5] group-hover:text-[#d97706] transition-colors">
-                                        {cocktail.name}
-                                      </h3>
-                                      <span className="text-sm font-medium text-[#d97706]">
-                                        #{idx + 1}
-                                      </span>
-                                    </div>
-
-                                    <div className="space-y-3 text-sm">
-                                      <div className="pb-2 border-b border-[#2a2a2a]">
-                                        <p className="text-[#d97706] italic text-base">
-                                          "{cocktail.why_this_works}"
-                                        </p>
-                                      </div>
-
-                                      <div>
-                                        <p className="text-[#808080] text-xs uppercase tracking-wide mb-1">
-                                          Ingredients
-                                        </p>
-                                        <p className="text-[#a0a0a0]">
-                                          {cocktail.ingredients.join(" • ")}
-                                        </p>
-                                      </div>
-
-                                      <div className="h-px bg-[#2a2a2a]"></div>
-
-                                      <div>
-                                        <p className="text-[#808080] text-xs uppercase tracking-wide mb-1">
-                                          Method
-                                        </p>
-                                        <p className="text-[#a0a0a0]">{cocktail.method}</p>
-                                      </div>
-
-                                      <div>
-                                        <p className="text-[#808080] text-xs uppercase tracking-wide mb-1">
-                                          Flavor Notes
-                                        </p>
-                                        <div className="flex gap-2 flex-wrap">
-                                          {cocktail.flavor_notes.map(
-                                            (note: string) => (
-                                              <span
-                                                key={note}
-                                                className="px-3 py-1 bg-[#2a2a2a] text-[#a0a0a0] rounded-full text-xs"
-                                              >
-                                                {note}
-                                              </span>
-                                            )
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
+                                    cocktail={cocktail}
+                                    index={idx}
+                                  />
                                 )
                               )}
                             </div>
@@ -386,27 +485,30 @@ export default function ChatPage() {
                         {/* Profile Update */}
                         {chatData.intent === "profile_update" && (
                           <div className="border border-[#2a2a2a] rounded-xl p-5 bg-[#1a1a1a]">
-                            <p className="text-[#f5f5f5] text-sm leading-relaxed">
-                              {chatData.profile_update_summary}
-                            </p>
+                            <MarkdownText
+                              content={chatData.profile_update_summary}
+                              className="text-sm"
+                            />
                           </div>
                         )}
 
                         {/* Retrieve Profile */}
                         {chatData.intent === "retrieve_profile" && chatData.profile_summary && (
                           <div className="border border-[#2a2a2a] rounded-xl p-5 bg-[#1a1a1a] space-y-3">
-                            <div className="text-[#f5f5f5] text-sm leading-relaxed whitespace-pre-wrap">
-                              {chatData.profile_summary}
-                            </div>
+                            <MarkdownText
+                              content={chatData.profile_summary}
+                              className="text-sm"
+                            />
                           </div>
                         )}
 
                         {/* Rate Cocktail */}
                         {chatData.intent === "rate_cocktail" && chatData.rating_message && (
                           <div className="border border-[#2a2a2a] rounded-xl p-5 bg-[#1a1a1a]">
-                            <p className="text-[#f5f5f5] text-sm leading-relaxed">
-                              {chatData.rating_message}
-                            </p>
+                            <MarkdownText
+                              content={chatData.rating_message}
+                              className="text-sm"
+                            />
                           </div>
                         )}
 
@@ -418,95 +520,42 @@ export default function ChatPage() {
                                 {chatData.explanation_cocktail}
                               </p>
                             )}
-                            <p className="text-[#f5f5f5] text-sm leading-relaxed">
-                              {chatData.explanation}
-                            </p>
+                            <MarkdownText
+                              content={chatData.explanation}
+                              className="text-sm"
+                            />
                           </div>
                         )}
 
-                        {/* Browse by Attribute */}
-                        {chatData.intent === "browse_by_attribute" &&
-                          chatData.recommendations &&
-                          chatData.recommendations.length > 0 && (
-                            <div className="space-y-3">
-                              {chatData.browse_attribute && (
-                                <p className="text-[#d97706] font-semibold text-sm">
-                                  {chatData.browse_attribute} cocktails
-                                </p>
-                              )}
-                              {chatData.recommendations.map(
-                                (cocktail: any, idx: number) => (
-                                  <div
-                                    key={cocktail.name}
-                                    className="group border border-[#2a2a2a] rounded-xl p-5 hover:border-[#d97706] hover:bg-[#1a1a1a] transition-all duration-300 cursor-pointer animate-in fade-in slide-in-from-left-4 duration-300"
-                                    style={{ animationDelay: `${idx * 100}ms` }}
-                                  >
-                                    <div className="flex items-start justify-between gap-4 mb-3">
-                                      <h3 className="text-lg font-semibold text-[#f5f5f5] group-hover:text-[#d97706] transition-colors">
-                                        {cocktail.name}
-                                      </h3>
-                                      <span className="text-sm font-medium text-[#d97706]">
-                                        #{idx + 1}
-                                      </span>
-                                    </div>
+                        {/* Conversational Fallback */}
+                        {chatData.intent === "conversational_fallback" && chatData.fallback_message && (
+                          <div className="border border-[#2a2a2a] rounded-xl p-5 bg-[#1a1a1a]">
+                            <MarkdownText
+                              content={chatData.fallback_message}
+                              className="text-sm"
+                            />
+                          </div>
+                        )}
 
-                                    <div className="space-y-3 text-sm">
-                                      <div className="pb-2 border-b border-[#2a2a2a]">
-                                        <p className="text-[#d97706] italic text-base">
-                                          "{cocktail.why_this_works}"
-                                        </p>
-                                      </div>
-
-                                      <div>
-                                        <p className="text-[#808080] text-xs uppercase tracking-wide mb-1">
-                                          Ingredients
-                                        </p>
-                                        <p className="text-[#a0a0a0]">
-                                          {cocktail.ingredients.join(" • ")}
-                                        </p>
-                                      </div>
-
-                                      <div className="h-px bg-[#2a2a2a]"></div>
-
-                                      <div>
-                                        <p className="text-[#808080] text-xs uppercase tracking-wide mb-1">
-                                          Method
-                                        </p>
-                                        <p className="text-[#a0a0a0]">{cocktail.method}</p>
-                                      </div>
-
-                                      <div>
-                                        <p className="text-[#808080] text-xs uppercase tracking-wide mb-1">
-                                          Flavor Notes
-                                        </p>
-                                        <div className="flex gap-2 flex-wrap">
-                                          {cocktail.flavor_notes.map(
-                                            (note: string) => (
-                                              <span
-                                                key={note}
-                                                className="px-3 py-1 bg-[#2a2a2a] text-[#a0a0a0] rounded-full text-xs"
-                                              >
-                                                {note}
-                                              </span>
-                                            )
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )
-                              )}
-                            </div>
-                          )}
+                        {/* Self Information */}
+                        {chatData.intent === "self_information" && chatData.self_information_message && (
+                          <div className="border border-[#2a2a2a] rounded-xl p-5 bg-[#1a1a1a]">
+                            <MarkdownText
+                              content={chatData.self_information_message}
+                              className="text-sm"
+                            />
+                          </div>
+                        )}
 
                         {/* Manage Restrictions */}
                         {chatData.intent === "manage_restrictions" && (
                           <div className="space-y-3">
                             {chatData.restriction_summary && (
                               <div className="border border-[#2a2a2a] rounded-xl p-5 bg-[#1a1a1a]">
-                                <p className="text-[#f5f5f5] text-sm leading-relaxed">
-                                  {chatData.restriction_summary}
-                                </p>
+                                <MarkdownText
+                                  content={chatData.restriction_summary}
+                                  className="text-sm"
+                                />
                               </div>
                             )}
                             {chatData.recommendations &&
@@ -514,64 +563,11 @@ export default function ChatPage() {
                                 <div className="space-y-3">
                                   {chatData.recommendations.map(
                                     (cocktail: any, idx: number) => (
-                                      <div
+                                      <CocktailCard
                                         key={cocktail.name}
-                                        className="group border border-[#2a2a2a] rounded-xl p-5 hover:border-[#d97706] hover:bg-[#1a1a1a] transition-all duration-300 cursor-pointer animate-in fade-in slide-in-from-left-4 duration-300"
-                                        style={{ animationDelay: `${idx * 100}ms` }}
-                                      >
-                                        <div className="flex items-start justify-between gap-4 mb-3">
-                                          <h3 className="text-lg font-semibold text-[#f5f5f5] group-hover:text-[#d97706] transition-colors">
-                                            {cocktail.name}
-                                          </h3>
-                                          <span className="text-sm font-medium text-[#d97706]">
-                                            #{idx + 1}
-                                          </span>
-                                        </div>
-
-                                        <div className="space-y-3 text-sm">
-                                          <div>
-                                            <p className="text-[#808080] text-xs uppercase tracking-wide mb-1">
-                                              Ingredients
-                                            </p>
-                                            <p className="text-[#a0a0a0]">
-                                              {cocktail.ingredients.join(" • ")}
-                                            </p>
-                                          </div>
-
-                                          <div className="h-px bg-[#2a2a2a]"></div>
-
-                                          <div>
-                                            <p className="text-[#808080] text-xs uppercase tracking-wide mb-1">
-                                              Method
-                                            </p>
-                                            <p className="text-[#a0a0a0]">{cocktail.method}</p>
-                                          </div>
-
-                                          <div>
-                                            <p className="text-[#808080] text-xs uppercase tracking-wide mb-1">
-                                              Flavor Notes
-                                            </p>
-                                            <div className="flex gap-2 flex-wrap">
-                                              {cocktail.flavor_notes.map(
-                                                (note: string) => (
-                                                  <span
-                                                    key={note}
-                                                    className="px-3 py-1 bg-[#2a2a2a] text-[#a0a0a0] rounded-full text-xs"
-                                                  >
-                                                    {note}
-                                                  </span>
-                                                )
-                                              )}
-                                            </div>
-                                          </div>
-
-                                          <div className="pt-2 border-t border-[#2a2a2a]">
-                                            <p className="text-[#d97706] italic text-xs">
-                                              "{cocktail.why_this_works}"
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
+                                        cocktail={cocktail}
+                                        index={idx}
+                                      />
                                     )
                                   )}
                                 </div>
@@ -586,16 +582,17 @@ export default function ChatPage() {
                               <p className="text-[#d97706] font-semibold text-sm">
                                 Help me understand better
                               </p>
-                              <p className="text-[#f5f5f5] text-sm">
-                                {chatData.clarification_question}
-                              </p>
+                              <MarkdownText
+                                content={chatData.clarification_question}
+                                className="text-sm"
+                              />
                             </div>
                           )}
 
                         {/* Rationale */}
                         {chatData.rationale && (
-                          <div className="text-[#a0a0a0] text-sm leading-relaxed italic pt-2 border-t border-[#2a2a2a]">
-                            {chatData.rationale}
+                          <div className="text-[#a0a0a0] text-sm italic pt-2 border-t border-[#2a2a2a]">
+                            <MarkdownText content={chatData.rationale} className="text-sm" />
                           </div>
                         )}
 
@@ -658,7 +655,7 @@ export default function ChatPage() {
           <div className="flex-1 relative">
             <input
               type="text"
-              placeholder="Ask for recommendations, describe your mood..."
+              placeholder="Describe your mood, or ask me to match your current playlist..."
               value={input}
               onChange={handleInputChange}
               disabled={isLoading}

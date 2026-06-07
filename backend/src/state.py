@@ -96,3 +96,4 @@ class AgentState(TypedDict, total=False):
     rate_cocktail_message: str | None  # Acknowledgment message for rate_cocktail intent
     profile_summary: str | None  # Formatted profile summary for retrieve_profile intent
     fallback_message: str | None  # Conversational response for ambiguous/unclear messages
+    self_information_message: str | None  # Response for self_information intent

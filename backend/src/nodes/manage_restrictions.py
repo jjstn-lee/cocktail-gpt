@@ -2,9 +2,10 @@
 
 from loguru import logger
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 from src.llm import get_llm
+from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState, Cocktail
 
 
@@ -16,9 +17,10 @@ class ManageRestrictionsOutput(BaseModel):
     recommendations: list[Cocktail]
 
 
-MANAGE_RESTRICTIONS_SYSTEM_PROMPT = """You are a helpful bartender handling temporary drink restrictions.
+MANAGE_RESTRICTIONS_SYSTEM_PROMPT = f"""{GENERAL_SYSTEM_PROMPT}
+
 The supervisor has determined the user is setting a TEMPORARY, SESSION-ONLY restriction or limitation.
-Your job is to acknowledge the restriction in a friendly way and generate 3 cocktails that respect it.
+Your job is to acknowledge the restriction warmly and generate 3 cocktails that respect it.
 
 IMPORTANT GUIDELINES:
 1. This is a TEMPORARY restriction — it is NOT being saved to their profile
@@ -36,7 +38,7 @@ Examples of restrictions:
 
 Return JSON with:
 - extracted_restriction: A brief label for the restriction (e.g., "alcohol-free", "low ABV", "no citrus")
-- restriction_summary: A warm, bartender-style acknowledgment (1 sentence)
+- restriction_summary: A warm acknowledgment of the restriction
 - recommendations: List of 3 cocktails that respect this restriction"""
 
 
@@ -94,10 +96,19 @@ Use stored preferences as soft signals for ranking, but don't filter by them.
 Respect both the new restriction AND stored hard constraints (allergies, max ABV).
 Remember: this restriction is session-only and will NOT be saved."""
 
-    messages = [
-        SystemMessage(content=MANAGE_RESTRICTIONS_SYSTEM_PROMPT),
-        HumanMessage(content=context),
-    ]
+    # Build messages with conversation history
+    message_history = state.get("message_history", [])
+    messages = [SystemMessage(content=MANAGE_RESTRICTIONS_SYSTEM_PROMPT)]
+
+    # Add message history (excluding current turn)
+    if message_history and len(message_history) > 1:
+        for msg in message_history[:-1]:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(AIMessage(content=msg["content"]))
+
+    messages.append(HumanMessage(content=context))
 
     try:
         result = await restrictions_llm.ainvoke(messages)

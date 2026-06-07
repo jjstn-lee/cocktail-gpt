@@ -1,10 +1,11 @@
 """Clarify node: asks a follow-up question when confidence is low."""
 
 from loguru import logger
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.types import interrupt
 
 from src.llm import get_llm
+from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState
 from src.prompts.clarify import CLARIFY_PROMPT
 
@@ -25,6 +26,7 @@ async def clarify(state: AgentState) -> dict:
 
     llm = get_llm()
     messages = [
+        SystemMessage(content=GENERAL_SYSTEM_PROMPT),
         HumanMessage(content=CLARIFY_PROMPT),
     ]
 

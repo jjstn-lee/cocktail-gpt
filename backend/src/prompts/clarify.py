@@ -11,4 +11,5 @@ Ask about ONE of:
 - Occasion/vibe (e.g., "Is this for a casual hangout or something more special?")
 - Strength preference (e.g., "Do you like strong drinks or something more approachable?")
 
-Keep it conversational and personable; make sure to include the character of the bartender asking it."""
+Keep it conversational and personable; make sure to include the character of the bartender asking it.
+Do not use emojis in your response."""

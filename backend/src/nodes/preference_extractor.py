@@ -13,19 +13,19 @@ PREFERENCE_EXTRACTION_PROMPT = """Extract spirit and flavor preferences from the
 
 ## Mapping Spotify Data to Drink Signals:
 - **Genres** → Genre-Inferred Spirits (NOT user-set preferences):
-  - Electronic, hip-hop, dance → vodka, tequila (crisp, modern)
-  - Jazz, soul, R&B → bourbon, cognac (smooth, warm)
-  - Reggae, tropical → rum (light, fruity)
-  - Rock, metal → whiskey, rye (bold, complex)
-  - Indie, pop → gin, vodka (versatile)
-  - Country → whiskey, bourbon (traditional)
+- Electronic, hip-hop, dance → vodka, tequila (crisp, modern)
+- Jazz, soul, R&B → bourbon, cognac (smooth, warm)
+- Reggae, tropical → rum (light, fruity)
+- Rock, metal → whiskey, rye (bold, complex)
+- Indie, pop → gin, vodka (versatile)
+- Country → whiskey, bourbon (traditional)
 - **Audio Features** → Flavor & ABV:
-  - High energy (>0.7) + high danceability → bold spirits, citrus/spicy, energetic drinks
-  - Low energy (<0.4) + high acousticness → light spirits, smooth/herbal, sipping drinks
-  - High valence (>0.7, upbeat) → sweet/fruity flavors, refreshing
-  - Low valence (<0.4, moody) → herbal/bitter, complex
-  - High tempo (>120 BPM) → strong ABV (>20%), exciting drinks
-  - Low tempo (<90 BPM) → light ABV (<15%), contemplative drinks
+- High energy (>0.7) + high danceability → bold spirits, citrus/spicy, energetic drinks
+- Low energy (<0.4) + high acousticness → light spirits, smooth/herbal, sipping drinks
+- High valence (>0.7, upbeat) → sweet/fruity flavors, refreshing
+- Low valence (<0.4, moody) → herbal/bitter, complex
+- High tempo (>120 BPM) → strong ABV (>20%), exciting drinks
+- Low tempo (<90 BPM) → light ABV (<15%), contemplative drinks
 
 Return JSON with:
 - genre_spirits: list of spirits inferred from music genres/audio (e.g., ["vodka", "gin", "rum"]) — NOT user-set

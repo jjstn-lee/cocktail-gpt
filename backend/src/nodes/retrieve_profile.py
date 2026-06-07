@@ -1,23 +1,24 @@
 """Retrieve profile node: uses LLM to intelligently summarize user profile data."""
 
 from loguru import logger
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 from src.llm import get_llm
+from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState
 
-RETRIEVE_PROFILE_SYSTEM_PROMPT = """You are a bartender assistant who remembers everything about the customer.
-Your job is to summarize what you know about them based on saved preferences, constraints, and interaction history.
+RETRIEVE_PROFILE_SYSTEM_PROMPT = f"""{GENERAL_SYSTEM_PROMPT}
 
-Be conversational and personal, like a bartender who's known this customer for a while.
-You can:
+Your job is to summarize what you know about the customer based on saved preferences, constraints, and interaction history.
+
+Be personal, like someone who's known this customer for a while. You can:
 - Emphasize what's most relevant
 - Omit trivial details
 - Add context or observations based on the data
 - Ask follow-up questions if their profile seems incomplete
 
-Format the summary naturally as a conversational response, not as a bulleted list.
-If they have no saved data yet, warmly invite them to share their preferences."""
+Format the summary naturally as a conversational response.
+If they have no saved data yet, mention that their profile is empty and suggest they can update it through profile changes."""
 
 
 async def retrieve_profile(state: AgentState) -> dict:
@@ -75,10 +76,20 @@ async def retrieve_profile(state: AgentState) -> dict:
         user_message = "I have no saved profile data for this customer yet. Please respond warmly and invite them to share their preferences."
 
     llm = get_llm()
-    messages = [
-        SystemMessage(content=RETRIEVE_PROFILE_SYSTEM_PROMPT),
-        HumanMessage(content=user_message),
-    ]
+
+    # Build messages with conversation history
+    message_history = state.get("message_history", [])
+    messages = [SystemMessage(content=RETRIEVE_PROFILE_SYSTEM_PROMPT)]
+
+    # Add message history (excluding current turn)
+    if message_history and len(message_history) > 1:
+        for msg in message_history[:-1]:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(AIMessage(content=msg["content"]))
+
+    messages.append(HumanMessage(content=user_message))
 
     try:
         result = await llm.ainvoke(messages)

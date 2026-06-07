@@ -15,10 +15,10 @@ NODE_STATUS_MESSAGES = {
     # Other intents
     "rate_cocktail": "👍 Recording your feedback...",
     "explain_recommendation": "📖 Preparing explanation...",
-    "browse_by_attribute": "🔎 Browsing cocktails...",
     "manage_restrictions": "🚫 Applying restrictions...",
     "retrieve_profile": "👤 Retrieving your profile...",
     "conversational_fallback": "💬 Thinking...",
+    "self_information": "ℹ️ Fetching capabilities...",
 }
 
 

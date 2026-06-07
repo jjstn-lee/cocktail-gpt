@@ -2,6 +2,7 @@
 
 import uuid
 import json
+import re
 from typing import Any, AsyncGenerator
 from loguru import logger
 from langgraph.errors import GraphInterrupt
@@ -11,6 +12,32 @@ from src.state import AgentState, Feedback
 from src.api.schemas import ChatRequest, ChatResponse
 from src.nodes.recommender import recommender
 from src.api.services.streaming_utils import get_status_message
+
+
+def strip_emojis(text: str) -> str:
+    """Remove all emojis from text."""
+    # Unicode ranges for emojis
+    emoji_pattern = re.compile(
+        "["
+        "\U0001F600-\U0001F64F"  # emoticons
+        "\U0001F300-\U0001F5FF"  # symbols & pictographs
+        "\U0001F680-\U0001F6FF"  # transport & map symbols
+        "\U0001F1E0-\U0001F1FF"  # flags (iOS)
+        "\U00002702-\U000027B0"
+        "\U000024C2-\U0001F251"
+        "\U0001f926-\U0001f937"
+        "\U00010000-\U0010ffff"
+        "\u2640-\u2642"
+        "\u2600-\u2B55"
+        "\u200d"
+        "\u23cf"
+        "\u23e9"
+        "\u231a"
+        "\ufe0f"  # dingbats
+        "\u3030"
+        "]+"
+    )
+    return emoji_pattern.sub("", text).strip()
 
 
 async def handle_chat(
@@ -189,6 +216,28 @@ async def handle_chat(
         final_state, thread_id, clarification_question, user_store, user_id
     )
 
+    # Strip emojis from all text fields in the response
+    if response.status:
+        response.status = strip_emojis(response.status)
+    if response.clarification_question:
+        response.clarification_question = strip_emojis(response.clarification_question)
+    if response.rationale:
+        response.rationale = strip_emojis(response.rationale)
+    if response.profile_update_summary:
+        response.profile_update_summary = strip_emojis(response.profile_update_summary)
+    if response.profile_summary:
+        response.profile_summary = strip_emojis(response.profile_summary)
+    if response.rating_message:
+        response.rating_message = strip_emojis(response.rating_message)
+    if response.explanation:
+        response.explanation = strip_emojis(response.explanation)
+    if response.restriction_summary:
+        response.restriction_summary = strip_emojis(response.restriction_summary)
+    if response.fallback_message:
+        response.fallback_message = strip_emojis(response.fallback_message)
+    if response.self_information_message:
+        response.self_information_message = strip_emojis(response.self_information_message)
+
     print(f"[CHAT_SVC] Returning response: intent={response.intent}")
     if hasattr(response, 'explanation') and response.explanation:
         print(f"[CHAT_SVC] Explanation in response: {response.explanation}")
@@ -282,11 +331,12 @@ async def stream_chat(
                     "supervisor", "ingest", "profile_builder", "preference_extractor",
                     "constraint_checker", "recommender", "clarify", "output",
                     "profile_updater", "rate_cocktail", "explain_recommendation",
-                    "browse_by_attribute", "manage_restrictions", "retrieve_profile"
+                    "manage_restrictions", "retrieve_profile",
+                    "conversational_fallback", "self_information"
                 ]:
                     seen_nodes.add(node_name)
                     status_msg = get_status_message(node_name)
-                    yield json.dumps({"type": "status", "message": status_msg}) + "\n"
+                    yield json.dumps({"type": "status", "message": status_msg, "node": node_name}) + "\n"
                     logger.debug(f"Status: {status_msg}")
 
     except GraphInterrupt as e:
@@ -310,7 +360,13 @@ async def stream_chat(
         final_state_snapshot = await graph.aget_state(config)
         if final_state_snapshot and final_state_snapshot.values:
             final_state = final_state_snapshot.values
-            logger.debug("Got final state from aget_state", extra={"keys": list(final_state.keys())})
+            logger.debug(
+                "Got final state from aget_state",
+                extra={
+                    "keys": list(final_state.keys()),
+                    "has_browse_attribute": "browse_attribute" in final_state,
+                },
+            )
         else:
             logger.error("No state snapshot returned from aget_state")
     except Exception as e:
@@ -318,6 +374,14 @@ async def stream_chat(
 
     # Build response
     intent = final_state.get("intent", "recommendation")
+    logger.debug(
+        "stream_chat: about to build response",
+        extra={
+            "intent": intent,
+            "has_browse_attribute": "browse_attribute" in final_state,
+            "browse_attribute_value": final_state.get("browse_attribute"),
+        },
+    )
 
     logger.info(
         "chat_service: graph completed",
@@ -339,6 +403,28 @@ async def stream_chat(
     response = await response_builder(
         final_state, thread_id, clarification_question, user_store, user_id
     )
+
+    # Strip emojis from all text fields in the response
+    if response.status:
+        response.status = strip_emojis(response.status)
+    if response.clarification_question:
+        response.clarification_question = strip_emojis(response.clarification_question)
+    if response.rationale:
+        response.rationale = strip_emojis(response.rationale)
+    if response.profile_update_summary:
+        response.profile_update_summary = strip_emojis(response.profile_update_summary)
+    if response.profile_summary:
+        response.profile_summary = strip_emojis(response.profile_summary)
+    if response.rating_message:
+        response.rating_message = strip_emojis(response.rating_message)
+    if response.explanation:
+        response.explanation = strip_emojis(response.explanation)
+    if response.restriction_summary:
+        response.restriction_summary = strip_emojis(response.restriction_summary)
+    if response.fallback_message:
+        response.fallback_message = strip_emojis(response.fallback_message)
+    if response.self_information_message:
+        response.self_information_message = strip_emojis(response.self_information_message)
 
     logger.debug(
         "Built response",

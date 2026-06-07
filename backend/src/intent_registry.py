@@ -33,19 +33,19 @@ def _get_registry() -> dict[str, "IntentDefinition"]:
     from src.graphs.profile_management_subgraph import build_profile_management_subgraph
     from src.graphs.rate_cocktail_subgraph import build_rate_cocktail_subgraph
     from src.graphs.explain_recommendation_subgraph import build_explain_recommendation_subgraph
-    from src.graphs.browse_by_attribute_subgraph import build_browse_by_attribute_subgraph
     from src.graphs.manage_restrictions_subgraph import build_manage_restrictions_subgraph
     from src.graphs.retrieve_profile_subgraph import build_retrieve_profile_subgraph
     from src.graphs.conversational_fallback_subgraph import build_conversational_fallback_subgraph
+    from src.graphs.self_information_subgraph import build_self_information_subgraph
     from src.api.services.response_builders import (
         build_recommendation_response,
         build_profile_update_response,
         build_rate_cocktail_response,
         build_explain_recommendation_response,
-        build_browse_by_attribute_response,
         build_manage_restrictions_response,
         build_retrieve_profile_response,
         build_conversational_fallback_response,
+        build_self_information_response,
     )
 
     return {
@@ -78,13 +78,6 @@ def _get_registry() -> dict[str, "IntentDefinition"]:
             needs_checkpointer=True,
             needs_user_store=False,
         ),
-        "browse_by_attribute": IntentDefinition(
-            node_name="browse_by_attribute",
-            builder=build_browse_by_attribute_subgraph,
-            response_builder=build_browse_by_attribute_response,
-            needs_checkpointer=False,
-            needs_user_store=False,
-        ),
         "manage_restrictions": IntentDefinition(
             node_name="manage_restrictions",
             builder=build_manage_restrictions_subgraph,
@@ -103,6 +96,13 @@ def _get_registry() -> dict[str, "IntentDefinition"]:
             node_name="conversational_fallback_subgraph",
             builder=build_conversational_fallback_subgraph,
             response_builder=build_conversational_fallback_response,
+            needs_checkpointer=False,
+            needs_user_store=False,
+        ),
+        "self_information": IntentDefinition(
+            node_name="self_information_subgraph",
+            builder=build_self_information_subgraph,
+            response_builder=build_self_information_response,
             needs_checkpointer=False,
             needs_user_store=False,
         ),

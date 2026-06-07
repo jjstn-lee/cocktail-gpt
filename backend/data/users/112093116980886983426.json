@@ -2,8 +2,11 @@
   "preferences": {
     "preferred_spirits": [],
     "genre_spirits": [],
-    "preferred_flavors": [],
-    "abv_preference": null,
+    "preferred_flavors": [
+      "light",
+      "refreshing"
+    ],
+    "abv_preference": "light",
     "style_preferences": []
   },
   "constraints": {
@@ -11,53 +14,15 @@
     "ingredients_on_hand": [],
     "max_abv": null
   },
-  "feedback": [],
+  "feedback": [
+    {
+      "cocktail_name": "Amaretto Sour",
+      "session_id": "07474540-0b59-46c1-bd9c-f9a0b1e6eb41",
+      "rating": 5,
+      "timestamp": "2026-06-06T21:01:59.884658Z"
+    }
+  ],
   "recommendation_history": [
-    {
-      "session_id": "864a0f45-39d5-48d1-96fb-ed0061e5243c",
-      "cocktails": [
-        "Margarita",
-        "Paloma",
-        "Spicy Margarita"
-      ],
-      "timestamp": "2026-06-05T21:41:56.772839Z"
-    },
-    {
-      "session_id": "3eaee139-02f2-4a9f-9b9d-5ad27bdda3e2",
-      "cocktails": [
-        "Whiskey Sour",
-        "Daiquiri",
-        "Negroni"
-      ],
-      "timestamp": "2026-06-05T21:42:53.613669Z"
-    },
-    {
-      "session_id": "0b00906f-808c-47b0-8bb9-e28e3e013845",
-      "cocktails": [
-        "Gin & Tonic",
-        "Aperol Spritz",
-        "Whiskey Sour"
-      ],
-      "timestamp": "2026-06-05T22:12:57.783336Z"
-    },
-    {
-      "session_id": "15e67d05-4dd8-4ba7-8f99-765f39f68643",
-      "cocktails": [
-        "Mai Tai",
-        "Bee's Knees",
-        "Amaretto Sour"
-      ],
-      "timestamp": "2026-06-05T22:15:05.069447Z"
-    },
-    {
-      "session_id": "267d1152-ca57-45cf-8bba-0c74a3793387",
-      "cocktails": [
-        "Daiquiri",
-        "Manhattan",
-        "Negroni"
-      ],
-      "timestamp": "2026-06-06T10:48:32.522028Z"
-    },
     {
       "session_id": "e1fac6ab-5ad7-4182-9b04-fb0fcc79a479",
       "cocktails": [
@@ -75,17 +40,89 @@
         "Gimlet"
       ],
       "timestamp": "2026-06-06T10:54:07.200801Z"
+    },
+    {
+      "session_id": "16240b6d-97c1-4c3d-a6b7-820b4652b72c",
+      "cocktails": [
+        "Aperol Spritz",
+        "Tom Collins",
+        "Moscow Mule"
+      ],
+      "timestamp": "2026-06-06T20:33:30.762394Z"
+    },
+    {
+      "session_id": "9c286931-e64f-42b7-97c4-651602b1c151",
+      "cocktails": [
+        "Daiquiri",
+        "Pi\u00f1a Colada",
+        "Cuba Libre"
+      ],
+      "timestamp": "2026-06-06T20:38:31.312197Z"
+    },
+    {
+      "session_id": "07474540-0b59-46c1-bd9c-f9a0b1e6eb41",
+      "cocktails": [
+        "Amaretto Sour",
+        "New York Sour",
+        "Whiskey Sour"
+      ],
+      "timestamp": "2026-06-06T21:00:21.330686Z"
+    },
+    {
+      "session_id": "5dbd09ea-0fd9-4605-83e4-3cf2a847866a",
+      "cocktails": [
+        "Chartreuse Swizzle",
+        "Last Word",
+        "Naked and Famous"
+      ],
+      "timestamp": "2026-06-06T21:14:25.698755Z"
+    },
+    {
+      "session_id": "e8b7c1b4-99d5-48cc-985d-1016009152b9",
+      "cocktails": [
+        "Aviation",
+        "Gimlet",
+        "Bee's Knees"
+      ],
+      "timestamp": "2026-06-06T21:29:52.173792Z"
+    },
+    {
+      "session_id": "694be5e2-1cca-4918-a7c6-f25d76fd9648",
+      "cocktails": [
+        "Cosmopolitan",
+        "Paloma",
+        "Tom Collins"
+      ],
+      "timestamp": "2026-06-06T21:47:14.717496Z"
+    },
+    {
+      "session_id": "8fc2677d-243a-484e-a05e-54897a998014",
+      "cocktails": [
+        "Gold Rush",
+        "Paloma",
+        "Moscow Mule"
+      ],
+      "timestamp": "2026-06-06T22:27:36.524927Z"
+    },
+    {
+      "session_id": "11630c6c-706e-4ae4-9742-1d7e7899eac9",
+      "cocktails": [
+        "Bee's Knees",
+        "Gimlet",
+        "Daiquiri"
+      ],
+      "timestamp": "2026-06-07T10:48:33.647477Z"
     }
   ],
-  "session_count": 7,
-  "updated_at": "2026-06-06T10:54:07.201461Z",
+  "session_count": 15,
+  "updated_at": "2026-06-07T10:48:33.648165Z",
   "spotify": {
-    "access_token": "BQAwenMHivOvvhM58p7oRydiBgRDwtwPtH9EgZofQM_UykKereEcdc1LkSt2su_8N0qft0-GHPoR6oZuLMBFbOlfcBcVdgCPLi9N_GfLad51mRgdKU0CNCE-2x426ibTImYse9DUcnKjYmoekdlO6OMjCgcQLS_oQ-e7-RHWGwZtwq-tQY0XCUxtSf2QFP_AT-JDLwpooRHyiNOjgM0AY5yFyD5GEmlGg-bXjyrZPXVjeCYkgsygTTBGle09ZHI",
+    "access_token": "BQBKR16M-mOLcljYXi74HVeNErTv8Fvmq8x5wbPeQbFJtiFdABhPZLGUF6K6WfEtAKoMXDFbBWt9MDocta1UIqeY2G5kP0dII2mqyXiIj68lXB5aqTJ3Jq3fx_Qztci20h0xq2eafSQ8HQGs_zuxoLUk2OTxkmGS3jF5eE-kr86E5v8907Y-Fb1Q620soWpaApIzzLtkShXvKddDuAbFLwFH48z_M-V6QeOCZ_U06ZpFZ5NCLKkLFqCTsWENZoE",
     "token_type": "Bearer",
     "expires_in": 3600,
-    "refresh_token": "AQAbO002ZvQwfFpgOtNEsW-B-xohDlBgjzBRr7aPcMph1Z2vgvZmz_7AVvnD9wStF55IVCV_2SrRkpgUe_hClF5LY8tZDyqHEaee4nQSUmnmXQdJpeyn-ZqHFeb273G0nWk",
     "scope": "playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played user-top-read",
-    "expires_at": 1780746622,
-    "connected_at": "2026-06-06T10:50:22.913996+00:00"
+    "expires_at": 1780832876,
+    "refresh_token": "AQAILQy7SGmD91Bkh1grwBBzOr_xkotNz2W3PPCtU8Hp5mnqhfN1S6TYiaWgfgDpss8wfn3FjUrx8qFGzdT90EWaREf4s8_zZG3ry5CyKPSdIBkEn_cst6R0MyaEjaWnEiY",
+    "connected_at": "2026-06-06T22:43:51.284652+00:00"
   }
 }

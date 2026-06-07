@@ -3,9 +3,10 @@
 import json
 from loguru import logger
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 from src.llm import get_llm
+from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState, Preferences, Constraints
 from src.nodes.utils import extract_json_from_llm_response
 
@@ -29,48 +30,38 @@ class ProfileUpdate(BaseModel):
     """Extracted profile updates from user message."""
     preferences: ExtractedPreferences | None = None
     constraints: ExtractedConstraints | None = None
-    explanation: str  # Summary of what was updated
+    conversational_response: str  # Warm conversational acknowledgment of what was learned
 
 
-PROFILE_UPDATER_SYSTEM_PROMPT = """You are a profile extraction assistant for a cocktail recommendation agent.
-The supervisor has already determined this message is about updating the user's profile.
-Your job is to extract ANY preferences or constraints mentioned in the user's message.
+# prompt-version: 2.0
 
-IMPORTANT: The user doesn't need to say "update my profile" - any mention of likes/dislikes/preferences IS a profile update.
+PROFILE_UPDATER_SYSTEM_PROMPT = f"""{GENERAL_SYSTEM_PROMPT}
+
+When the user tells you something about their preferences or constraints, acknowledge it warmly and extract what they're telling you.
+
 Examples:
-- "I really like tequila" → Extract tequila as preferred spirit
-- "I'm allergic to nuts" → Extract nuts as allergy
-- "I prefer light drinks" → Extract as abv preference
-- "I love fruity flavors" → Extract fruity as preferred flavor
+- User: "I really like tequila" → Extract tequila as a preference and acknowledge warmly
+- User: "I'm allergic to nuts" → Extract as a constraint with warm acknowledgment
+- User: "I prefer light drinks" → Note for future recommendations
+- User: "I love fruity flavors" → Show enthusiasm and extract the preference
 
-Extract from the user's message and return JSON with:
-- preferences: object with any of these fields:
-  - preferred_spirits: list of spirit names (e.g., ["tequila", "mezcal"])
-  - preferred_flavors: list of flavor types (e.g., ["fruity", "herbal"])
-  - abv_preference: string like "strong", "moderate", "light"
-  - style_preferences: list of cocktail styles (e.g., ["margarita", "daiquiri"])
-- constraints: object with any of these fields:
-  - allergies: list of ingredients to avoid
-  - ingredients_on_hand: list of available ingredients
-  - max_abv: maximum alcohol percentage (float)
-- explanation: brief summary of what was extracted
+Your job is to:
+1. Extract their preferences and constraints accurately
+2. Generate a warm acknowledgment of what they told you
 
-Only include fields that were explicitly mentioned. Set fields to null if not mentioned.
-Be generous in extracting preferences - if the user mentions liking something, extract it!
+Return JSON with:
+- preferences: What they enjoy (spirits, flavors, styles, ABV levels)
+  - preferred_spirits: specific liquors they like (e.g., ["tequila", "mezcal"])
+  - preferred_flavors: flavor profiles they gravitate toward (e.g., ["fruity", "herbal"])
+  - abv_preference: how strong they like it ("light", "moderate", "strong")
+  - style_preferences: types of drinks they enjoy (e.g., ["margarita", "daiquiri"])
+- constraints: Anything they can't or prefer to avoid
+  - allergies: ingredients to never suggest
+  - ingredients_on_hand: what they have available
+  - max_abv: the strongest they'd go
+- conversational_response: A warm acknowledgment of what they told you (1-2 sentences)
 
-Example:
-```json
-{
-  "preferences": {
-    "preferred_spirits": ["tequila"],
-    "preferred_flavors": null,
-    "abv_preference": null,
-    "style_preferences": null
-  },
-  "constraints": null,
-  "explanation": "User likes tequila as a preferred spirit."
-}
-```"""
+Only record what they actually said — don't invent. But be generous: if they mention liking something, take note of it."""
 
 
 async def profile_updater(state: AgentState) -> dict:
@@ -113,7 +104,7 @@ async def profile_updater(state: AgentState) -> dict:
             if msg["role"] == "user":
                 messages.append(HumanMessage(content=msg["content"]))
             elif msg["role"] == "assistant":
-                messages.append(SystemMessage(content=f"Assistant: {msg['content']}"))
+                messages.append(AIMessage(content=msg["content"]))
 
     # Add the current message
     messages.append(HumanMessage(content=f"Current user message: {latest_message}"))
@@ -123,7 +114,7 @@ async def profile_updater(state: AgentState) -> dict:
         print(f"[PROFILE_UPDATER] LLM result object: {result}")
         print(f"[PROFILE_UPDATER] LLM result.preferences: {result.preferences}")
         print(f"[PROFILE_UPDATER] LLM result.constraints: {result.constraints}")
-        print(f"[PROFILE_UPDATER] LLM result.explanation: {result.explanation}")
+        print(f"[PROFILE_UPDATER] LLM result.conversational_response: {result.conversational_response}")
         logger.debug("profile_updater: LLM response", extra={"result": result.model_dump()})
 
         # Merge updates into existing preferences and constraints
@@ -174,7 +165,7 @@ async def profile_updater(state: AgentState) -> dict:
         output = {
             "preferences": updated_preferences,
             "constraints": updated_constraints,
-            "profile_update_summary": result.explanation,
+            "profile_update_summary": result.conversational_response,
         }
         print(f"[PROFILE_UPDATER] Returning output: {output}")
         print(f"[PROFILE_UPDATER] Preferences type: {type(updated_preferences)}")
@@ -190,7 +181,7 @@ async def profile_updater(state: AgentState) -> dict:
         output = {
             "preferences": current_preferences,
             "constraints": current_constraints,
-            "profile_update_summary": f"Error processing profile update: {error_msg}",
+            "profile_update_summary": "Got it! I'll remember that for next time.",
         }
         print(f"[PROFILE_UPDATER] Returning error output: {output}")
         return output

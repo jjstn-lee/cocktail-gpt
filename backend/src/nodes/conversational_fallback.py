@@ -1,25 +1,30 @@
 """Conversational fallback node: handles ambiguous or unclear user messages with helpful guidance."""
 
 from loguru import logger
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 from src.llm import get_llm
+from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState
 
-CONVERSATIONAL_FALLBACK_SYSTEM_PROMPT = """You are a friendly, knowledgeable bartender assistant.
-Your role is to help users have a great conversation about cocktails and guide them toward useful actions.
+def _get_conversational_fallback_system_prompt() -> str:
+    """Build conversational fallback system prompt."""
+    node_specific = """Your role is to guide the user toward the right action without making promises about what will happen next.
 
-The user has sent a message that doesn't clearly fit our main capabilities (recommendations, profile updates, etc.).
-Respond warmly and conversationally. You can:
-- Greet them and introduce what you can do
-- Ask clarifying questions about their mood or preferences
-- Guide them toward actions like:
-  * "Give me cocktail recommendations" (for personalized suggestions)
-  * "Here's what I like..." (to update their preferences)
-  * "What do you know about me?" (to view their profile)
-  * "Show me something smoky/citrusy/etc" (to browse by flavor/attribute)
+Simply acknowledge their message and guide them to the most relevant action:
+- "Give me cocktail recommendations" — Gets personalized recommendations based on their Spotify data and preferences
+- "Here's what I like..." — Lets them save permanent preferences and constraints
+- "What do you know about me?" — Shows their saved profile
+- "Show me something smoky/citrusy/etc" — Explores cocktails by flavor or style (no personalization)
 
-Keep it brief (1-2 sentences), friendly, and engaging. Act like a bartender who enjoys chatting."""
+Do NOT:
+- Promise that there will be interactive back-and-forth questions (there won't be in the recommendation flow)
+- Make up details about what will happen when they choose an action
+- Ask clarifying questions yourself (just guide them to the right feature)
+
+Keep it brief, friendly, and honest about what each action does."""
+
+    return f"{GENERAL_SYSTEM_PROMPT}\n\n{node_specific}"
 
 
 async def conversational_fallback(state: AgentState) -> dict:
@@ -36,16 +41,17 @@ async def conversational_fallback(state: AgentState) -> dict:
 
     llm = get_llm()
 
-    # Build conversation context
-    messages = [SystemMessage(content=CONVERSATIONAL_FALLBACK_SYSTEM_PROMPT)]
+    # Build conversation context with system prompt
+    system_prompt = _get_conversational_fallback_system_prompt()
+    messages = [SystemMessage(content=system_prompt)]
 
     # Add message history if available
     if message_history and len(message_history) > 1:
         for msg in message_history[:-1]:
             if msg["role"] == "user":
-                messages.append(HumanMessage(content=f"User: {msg['content']}"))
+                messages.append(HumanMessage(content=msg["content"]))
             elif msg["role"] == "assistant":
-                messages.append(HumanMessage(content=f"Assistant: {msg['content']}"))
+                messages.append(AIMessage(content=msg["content"]))
 
     # Add the current message
     messages.append(HumanMessage(content=latest_message if latest_message else ""))

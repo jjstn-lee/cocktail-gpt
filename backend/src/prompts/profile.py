@@ -56,4 +56,5 @@ Return JSON with:
 - vibe
 - energy_level
 
-Be data-driven: use artist names, track titles, and playlist names to infer emotional state. Be conservative: only infer mood/occasion/vibe if the data strongly suggests them. If uncertain, use null."""
+Be data-driven: use artist names, track titles, and playlist names to infer emotional state. Be conservative: only infer mood/occasion/vibe if the data strongly suggests them. If uncertain, use null.
+Do not use emojis in your response."""

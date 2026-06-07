@@ -2,9 +2,10 @@
 
 from loguru import logger
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 from src.llm import get_llm
+from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState
 
 
@@ -14,9 +15,11 @@ class ExplanationOutput(BaseModel):
     explanation: str  # 2-3 sentences explaining the match
 
 
-EXPLAIN_RECOMMENDATION_SYSTEM_PROMPT = """You are a bartender explaining your cocktail recommendations.
+EXPLAIN_RECOMMENDATION_SYSTEM_PROMPT = f"""{GENERAL_SYSTEM_PROMPT}
+
+Your job is to explain why cocktails were recommended.
 The supervisor has already determined the user wants to understand why their recommended cocktails were suggested.
-Your job is to provide a clear, concise explanation (2-3 sentences) of why these cocktails are a good fit for them.
+Provide a clear, concise explanation (2-3 sentences) of why these cocktails are a good fit for them.
 
 Consider:
 - Their mood/occasion/vibe
@@ -24,7 +27,7 @@ Consider:
 - Any constraints (allergies, ABV limits)
 - Why these specific cocktails are great matches for their profile
 
-Be friendly and conversational, like a bartender would be. Focus on what makes THESE cocktails special for THEM.
+Focus on what makes THESE cocktails special for THEM.
 If explaining multiple cocktails, you can mention what they have in common or how each serves a different aspect of their taste."""
 
 
@@ -116,10 +119,20 @@ User Constraints:
     llm = get_llm()
     explanation_llm = llm.with_structured_output(ExplanationOutput)
 
-    messages = [
-        SystemMessage(content=EXPLAIN_RECOMMENDATION_SYSTEM_PROMPT),
-        HumanMessage(content=context),
-    ]
+    # Build messages with conversation history
+    message_history = state.get("message_history", [])
+    messages = [SystemMessage(content=EXPLAIN_RECOMMENDATION_SYSTEM_PROMPT)]
+
+    # Add message history (excluding current turn)
+    if message_history and len(message_history) > 1:
+        for msg in message_history[:-1]:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(AIMessage(content=msg["content"]))
+
+    # Add the context about cocktails and profile
+    messages.append(HumanMessage(content=context))
 
     try:
         result = await explanation_llm.ainvoke(messages)
