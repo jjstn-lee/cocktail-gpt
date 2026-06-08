@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const state = searchParams.get("state")
     const error = searchParams.get("error")
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
     // Build query params for backend
     const params = new URLSearchParams()

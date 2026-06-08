@@ -21,8 +21,8 @@ async function handleSpotifyLogin(idToken: string) {
     }
 
     const data = await response.json();
-    if (data.url) {
-      window.location.href = data.url;
+    if (data.connect_url) {
+      window.location.href = data.connect_url;
     }
   } catch (error) {
     console.error("Error initiating Spotify login:", error);
