@@ -306,48 +306,52 @@ export default function ChatPage() {
 
               <div className="flex gap-2 justify-center flex-wrap">
                 {spotifyConnected ? (
-                  <div className="px-3 py-1.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                    Spotify connected
-                  </div>
+                  <Tooltip content="Even though it might say connected, you might need to send your email address to the developer to be authenticated properly.">
+                    <div className="px-3 py-1.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                      Spotify connected
+                    </div>
+                  </Tooltip>
                 ) : (
-                  <button
-                    onClick={async () => {
-                      setSpotifyLoading(true);
-                      try {
-                        const idToken = (session as any)?.id_token;
-                        if (!idToken) {
-                          console.error("No id_token available");
-                          return;
-                        }
+                  <Tooltip content="Even though it says connected, you might need to send your email address to the developer to be authenticated properly.">
+                    <button
+                      onClick={async () => {
+                        setSpotifyLoading(true);
+                        try {
+                          const idToken = (session as any)?.id_token;
+                          if (!idToken) {
+                            console.error("No id_token available");
+                            return;
+                          }
 
-                        const response = await fetch("/api/spotify/connect-url", {
-                          headers: {
-                            Authorization: `Bearer ${idToken}`,
-                          },
-                        });
+                          const response = await fetch("/api/spotify/connect-url", {
+                            headers: {
+                              Authorization: `Bearer ${idToken}`,
+                            },
+                          });
 
-                        if (!response.ok) {
-                          console.error("Failed to get Spotify connect URL");
-                          return;
-                        }
+                          if (!response.ok) {
+                            console.error("Failed to get Spotify connect URL");
+                            return;
+                          }
 
-                        const data = await response.json();
-                        if (data.connect_url) {
-                          window.location.href = data.connect_url;
+                          const data = await response.json();
+                          if (data.connect_url) {
+                            window.location.href = data.connect_url;
+                          }
+                        } catch (error) {
+                          console.error("Error connecting to Spotify:", error);
+                        } finally {
+                          setSpotifyLoading(false);
                         }
-                      } catch (error) {
-                        console.error("Error connecting to Spotify:", error);
-                      } finally {
-                        setSpotifyLoading(false);
-                      }
-                    }}
-                    disabled={spotifyLoading}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#2a2a2a] text-[#808080] border border-[#3a3a3a] flex items-center gap-1.5 hover:bg-[#333333] hover:border-[#d97706]/50 transition-all duration-200 disabled:opacity-50 cursor-pointer"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#808080]"></span>
-                    {spotifyLoading ? "Connecting..." : "Connect Spotify"}
-                  </button>
+                      }}
+                      disabled={spotifyLoading}
+                      className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#2a2a2a] text-[#808080] border border-[#3a3a3a] flex items-center gap-1.5 hover:bg-[#333333] hover:border-[#d97706]/50 transition-all duration-200 disabled:opacity-50 cursor-pointer"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#808080]"></span>
+                      {spotifyLoading ? "Connecting..." : "Connect Spotify"}
+                    </button>
+                  </Tooltip>
                 )}
                 <div className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#2a2a2a] text-[#808080] border border-[#3a3a3a]">
                   More sources coming soon

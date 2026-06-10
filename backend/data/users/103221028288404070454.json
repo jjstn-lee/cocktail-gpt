@@ -1,0 +1,37 @@
+{
+  "preferences": {
+    "preferred_spirits": [],
+    "genre_spirits": [],
+    "preferred_flavors": [],
+    "abv_preference": null,
+    "style_preferences": []
+  },
+  "constraints": {
+    "allergies": [],
+    "ingredients_on_hand": [],
+    "max_abv": null
+  },
+  "feedback": [],
+  "recommendation_history": [
+    {
+      "session_id": "905efc76-32ad-48d9-9cfd-1880da3c472a",
+      "cocktails": [
+        "Negroni",
+        "Daiquiri",
+        "Old Fashioned"
+      ],
+      "timestamp": "2026-06-10T16:36:53.073308Z"
+    }
+  ],
+  "session_count": 1,
+  "updated_at": "2026-06-10T16:36:53.073825Z",
+  "spotify": {
+    "access_token": "BQCkJNKacRKVYAXq7H9ycPFGt9KfUtaItmrL2k8kAX_gy4IumKsvAHxnPbjxDoTexO0AoR1ZdZZDy3of1vwoT7UlwDamCk-T3JfjykAuIgA5qvUeG95X8eWELZXXaqz3NfPt2O99PdcXceIJmpWErkq_d47ZVY2k_GQ7ulKNdjTSXiHtXgQr6jAGYmSeU4ordsTwvilgGYGQliEaPMyzFKTl7CRJ6XvR97PhnbiM3_DjQvetc3TM_yYPpzsT1Hv1Wbs1NsbHz4_7BhjbPA",
+    "token_type": "Bearer",
+    "expires_in": 3600,
+    "refresh_token": "AQAyQy-e6AhShnLvaRWHF4f-7w4qJ6Qim4rKCmiM6NJ2BrXKN78-9ZvoJ6rnHonYW66MAjURh7FwlLSvTG0NgDmM8OSCHeeJAnjdzNibh_-ME1jRpiCRCW7wBrLTBkwSf3Y",
+    "scope": "playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played user-top-read",
+    "expires_at": 1781112937,
+    "connected_at": "2026-06-10T16:35:37.673389+00:00"
+  }
+}

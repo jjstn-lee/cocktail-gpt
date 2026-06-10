@@ -64,9 +64,11 @@ def _verify_state_token(state: str) -> str:
     try:
         parts = state.split(".")
         if len(parts) != 2:
-            raise ValueError("Invalid state format")
+            raise ValueError("Invalid state format (expected 2 parts)")
 
         payload_b64, provided_hmac = parts
+        print(f"[STATE_VERIFY] Payload (first 30 chars): {payload_b64[:30]}...")
+        print(f"[STATE_VERIFY] HMAC (first 20 chars): {provided_hmac[:20]}...")
 
         # Verify HMAC
         secret = os.getenv("SPOTIFY_STATE_SECRET", "default-secret-key")
@@ -77,17 +79,30 @@ def _verify_state_token(state: str) -> str:
         ).hexdigest()
 
         if not hmac.compare_digest(provided_hmac, expected_hmac):
+            print(f"[STATE_VERIFY] ✗ HMAC mismatch!")
+            print(f"[STATE_VERIFY]   Expected: {expected_hmac[:20]}...")
+            print(f"[STATE_VERIFY]   Got:      {provided_hmac[:20]}...")
             raise ValueError("Invalid state signature")
 
+        print(f"[STATE_VERIFY] ✓ HMAC verified")
+
         # Decode payload
-        payload_json = base64.urlsafe_b64decode(payload_b64 + "==").decode()
-        payload = json.loads(payload_json)
+        try:
+            payload_json = base64.urlsafe_b64decode(payload_b64 + "==").decode()
+            payload = json.loads(payload_json)
+            print(f"[STATE_VERIFY] ✓ Payload decoded: user_id={payload.get('user_id')}")
+        except Exception as e:
+            print(f"[STATE_VERIFY] ✗ Failed to decode payload: {e}")
+            raise ValueError(f"Failed to decode payload: {str(e)}")
 
         # Check expiry
         now = int(time.time())
-        if now > payload.get("exp", 0):
-            raise ValueError("State token expired")
+        exp = payload.get("exp", 0)
+        if now > exp:
+            print(f"[STATE_VERIFY] ✗ Token expired! Now={now}, Exp={exp}, Diff={now-exp}s")
+            raise ValueError(f"State token expired (expired {now-exp} seconds ago)")
 
+        print(f"[STATE_VERIFY] ✓ Token valid (expires in {exp-now}s)")
         return payload["user_id"]
     except (ValueError, KeyError, json.JSONDecodeError) as e:
         logger.warning(f"_verify_state_token failed: {e}")

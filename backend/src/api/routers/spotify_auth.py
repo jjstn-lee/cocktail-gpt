@@ -84,16 +84,31 @@ async def spotify_callback(
 
     try:
         # Validate state and extract user_id
+        print(f"[SPOTIFY_CALLBACK] Validating state: {state[:20]}...")
         user_id = validate_state_token(state)
         print(f"[SPOTIFY_CALLBACK] ✓ State validated, user_id={user_id}")
+        logger.info(f"Spotify state validated for user {user_id}")
 
         # Exchange code for tokens
+        print(f"[SPOTIFY_CALLBACK] Exchanging code for tokens...")
         token_data = await exchange_code_for_tokens(code, state)
         print(f"[SPOTIFY_CALLBACK] ✓ Token exchanged successfully")
+        print(f"[SPOTIFY_CALLBACK] Token keys: {list(token_data.keys())}")
+        logger.info(f"Spotify token exchanged for user {user_id}")
 
         # Save tokens
+        print(f"[SPOTIFY_CALLBACK] Saving tokens for user {user_id}...")
         save_spotify_tokens(user_store, user_id, token_data)
-        print(f"[SPOTIFY_CALLBACK] ✓ Tokens saved to UserStore")
+        print(f"[SPOTIFY_CALLBACK] ✓ Tokens saved to UserStore for user {user_id}")
+
+        # Verify tokens were saved
+        from src.storage.spotify_token_store import get_spotify_tokens
+        verify_tokens = get_spotify_tokens(user_store, user_id)
+        if verify_tokens:
+            print(f"[SPOTIFY_CALLBACK] ✓ Verification: tokens retrieved for user {user_id}")
+        else:
+            print(f"[SPOTIFY_CALLBACK] ✗ ERROR: tokens NOT found after saving for user {user_id}")
+            logger.error(f"Spotify tokens failed to save for user {user_id}")
 
         logger.info(f"Spotify OAuth completed for user {user_id}")
 
@@ -104,13 +119,17 @@ async def spotify_callback(
             status_code=302,
         )
     except ValueError as e:
+        print(f"[SPOTIFY_CALLBACK] ✗ State validation failed: {e}")
         logger.warning(f"Spotify callback validation failed: {e}")
         return RedirectResponse(
             url=f"{frontend_redirect}?status=error&reason=invalid_state",
             status_code=302,
         )
     except Exception as e:
-        logger.error(f"Spotify callback error: {e}")
+        print(f"[SPOTIFY_CALLBACK] ✗ Unexpected error: {type(e).__name__}: {e}")
+        logger.error(f"Spotify callback error: {type(e).__name__}: {e}")
+        import traceback
+        print(f"[SPOTIFY_CALLBACK] Traceback: {traceback.format_exc()}")
         return RedirectResponse(
             url=f"{frontend_redirect}?status=error&reason=unknown",
             status_code=302,

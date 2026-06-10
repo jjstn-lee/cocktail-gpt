@@ -115,5 +115,14 @@
     }
   ],
   "session_count": 15,
-  "updated_at": "2026-06-07T10:48:33.648165Z"
+  "updated_at": "2026-06-07T10:48:33.648165Z",
+  "spotify": {
+    "access_token": "BQDAOKqEC87uTHLg-hOJXdJLt55x6RqE8TISHLv6EruA_IUk31GZOLpZIrm0FCE51lSdwUAE1hGPnLgjzGDdgMjdLefeCE4HlvE-nr63Rvm5-KUxPSMFOsGRchh8Y1Q3DGoEQIORqkW3E13i8yHQUN8Y-MwnRG7SaFLQ7qvpXPAliFQp53njfCHfWM8A_3SwGV4mQm3pf7zTvWKmKrAhMypiCq-6otME4kdLFrdqpzvHdY0D0BhEQtzU4_oNDi3D",
+    "token_type": "Bearer",
+    "expires_in": 3600,
+    "refresh_token": "AQCYOo3Jdg7282IhW_DOzgnWxFpNfgAEpBBhiSfiJiaEJhKQO0sDkWpeDth0Z98fy3ZdnquIUhDnVE-K4DCH05_I4vU74jfD39qfiig87X7eRo6EFCxd92qagmFdC2AUTFs",
+    "scope": "playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played user-top-read",
+    "expires_at": 1781116646,
+    "connected_at": "2026-06-10T17:37:26.686586+00:00"
+  }
 }
