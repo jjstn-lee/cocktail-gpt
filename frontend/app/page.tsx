@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useChat } from "ai/react";
 import { useSession, signIn } from "next-auth/react";
 import { MarkdownText } from "@/components/MarkdownText";
@@ -236,7 +237,13 @@ export default function ChatPage() {
     return (
       <div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="text-5xl opacity-40">🍸</div>
+          <Image
+            src="/logo.png"
+            alt="Cocktail GPT"
+            width={120}
+            height={120}
+            className="opacity-40 mx-auto"
+          />
           <p className="text-[#808080]">Loading...</p>
         </div>
       </div>
@@ -249,8 +256,13 @@ export default function ChatPage() {
       <div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center px-4">
         <div className="w-full max-w-md space-y-8 text-center animate-in fade-in duration-500">
           {/* Logo */}
-          <div className="space-y-4">
-            <div className="text-6xl">🍸</div>
+          <div className="space-y-4 flex flex-col items-center">
+            <Image
+              src="/logo.png"
+              alt="Cocktail GPT"
+              width={160}
+              height={160}
+            />
             <h1 className="text-4xl font-light tracking-tight">Cocktail-GPT</h1>
             <p className="text-[#a0a0a0] text-lg">Discover your next favorite cocktail</p>
           </div>
@@ -298,7 +310,13 @@ export default function ChatPage() {
         {messages.length === 0 && !isLoading && (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-6 animate-in fade-in duration-500 max-w-md">
-              <div className="text-7xl opacity-60">🍸</div>
+              <Image
+                src="/logo.png"
+                alt="Cocktail GPT"
+                width={200}
+                height={200}
+                className="opacity-60 mx-auto"
+              />
               <div className="space-y-2">
                 <h2 className="text-3xl font-light tracking-tight text-[#f5f5f5]">What are you in the mood for?</h2>
                 <p className="text-[#a0a0a0] text-base">I'll recommend cocktails based on your taste profile and music right now.</p>

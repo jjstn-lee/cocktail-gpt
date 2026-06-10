@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 import Providers from "@/components/providers";
 import { auth } from "@/auth";
@@ -37,7 +38,13 @@ export default async function RootLayout({
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
-                <div className="text-2xl">🍸</div>
+                <Image
+                  src="/logo.png"
+                  alt="Cocktail GPT"
+                  width={32}
+                  height={32}
+                  className="rounded"
+                />
                 <h1 className="text-xl font-semibold tracking-tight">Cocktail-GPT</h1>
               </div>
               <div className="flex items-center gap-3">
