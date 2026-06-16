@@ -5,7 +5,6 @@ import json
 import re
 from typing import Any, AsyncGenerator
 from loguru import logger
-from langgraph.errors import GraphInterrupt
 
 from src.storage.user_store import UserStore
 from src.state import AgentState, Feedback
@@ -128,9 +127,7 @@ async def handle_chat(
             "recommendations": [],
             "confidence_score": 0.0,
             "rationale": "",
-            "clarification_answer": None,
             "session_count": 0,
-            "session_clarification_used": False,
             "feedback": [],
             "recommendation_history": [],
             "profile_update_summary": None,
@@ -153,38 +150,24 @@ async def handle_chat(
                 state["recommendation_history"] = stored_history
             state["session_count"] = user_store.get_session_count(user_id)
 
-    # Run the graph with persistence
-    clarification_question: str | None = None
     final_state: dict[str, Any] = {}
 
     print(f"[CHAT_SVC] About to invoke graph with state containing {len(state.get('recommendations', []))} recommendations")
     print(f"[CHAT_SVC] State keys before graph: {list(state.keys())}")
 
-    try:
-        final_state = await graph.ainvoke(state, config=config)
-        print(f"[CHAT_SVC] State keys after graph: {list(final_state.keys())}")
-        print(f"[CHAT_SVC] Final state intent: {final_state.get('intent')}")
-        if final_state.get('intent') == 'explain_recommendation':
-            print(f"[CHAT_SVC] Explanation in final_state: {final_state.get('explanation', 'NOT FOUND')}")
-        logger.info(
-            "chat_service: chat processing complete",
-            extra={
-                "user_id": user_id,
-                "thread_id": thread_id,
-                "intent": final_state.get("intent"),
-            },
-        )
-    except GraphInterrupt as e:
-        # Graph paused at clarify node; extract the clarification question
-        clarification_question = e.args[0] if e.args else None
-        logger.info(
-            "chat_service: graph paused at clarification",
-            extra={
-                "user_id": user_id,
-                "thread_id": thread_id,
-                "clarification_question": clarification_question,
-            },
-        )
+    final_state = await graph.ainvoke(state, config=config)
+    print(f"[CHAT_SVC] State keys after graph: {list(final_state.keys())}")
+    print(f"[CHAT_SVC] Final state intent: {final_state.get('intent')}")
+    if final_state.get('intent') == 'explain_recommendation':
+        print(f"[CHAT_SVC] Explanation in final_state: {final_state.get('explanation', 'NOT FOUND')}")
+    logger.info(
+        "chat_service: chat processing complete",
+        extra={
+            "user_id": user_id,
+            "thread_id": thread_id,
+            "intent": final_state.get("intent"),
+        },
+    )
 
     # Determine the intent that was routed to
     intent = final_state.get("intent", "recommendation")
@@ -213,14 +196,12 @@ async def handle_chat(
 
     response_builder = registry[intent].response_builder
     response = await response_builder(
-        final_state, thread_id, clarification_question, user_store, user_id
+        final_state, thread_id, user_store, user_id
     )
 
     # Strip emojis from all text fields in the response
     if response.status:
         response.status = strip_emojis(response.status)
-    if response.clarification_question:
-        response.clarification_question = strip_emojis(response.clarification_question)
     if response.rationale:
         response.rationale = strip_emojis(response.rationale)
     if response.profile_update_summary:
@@ -290,9 +271,7 @@ async def stream_chat(
             "recommendations": [],
             "confidence_score": 0.0,
             "rationale": "",
-            "clarification_answer": None,
             "session_count": 0,
-            "session_clarification_used": False,
             "feedback": [],
             "recommendation_history": [],
             "profile_update_summary": None,
@@ -314,42 +293,26 @@ async def stream_chat(
             state["session_count"] = user_store.get_session_count(user_id)
 
     # Stream graph execution with status updates
-    clarification_question: str | None = None
     final_state: dict[str, Any] = {}
     seen_nodes = set()
 
     try:
-        # Stream events for status updates while graph executes
         async for event in graph.astream_events(state, config=config, version="v1"):
-            # Get node start events
             if event.get("event") == "on_chain_start":
-                # Get the node/chain name
                 node_name = event.get("name", "").lower()
 
-                # Skip duplicate status messages (multiple calls to same node in one run)
                 if node_name and node_name not in seen_nodes and node_name in [
                     "supervisor", "ingest", "profile_builder", "preference_extractor",
-                    "constraint_checker", "recommender", "clarify", "output",
+                    "recommender", "output",
                     "profile_updater", "rate_cocktail", "explain_recommendation",
                     "manage_restrictions", "retrieve_profile",
-                    "conversational_fallback", "self_information"
+                    "conversational_fallback", "self_information", "browse_by_attribute"
                 ]:
                     seen_nodes.add(node_name)
                     status_msg = get_status_message(node_name)
                     yield json.dumps({"type": "status", "message": status_msg, "node": node_name}) + "\n"
                     logger.debug(f"Status: {status_msg}")
 
-    except GraphInterrupt as e:
-        # Graph paused for clarification - this is expected and normal
-        clarification_question = e.args[0] if e.args else None
-        logger.info(
-            "chat_service: graph paused at clarification",
-            extra={
-                "user_id": user_id,
-                "thread_id": thread_id,
-                "clarification_question": clarification_question,
-            },
-        )
     except Exception as e:
         logger.error(f"Graph streaming error: {e}")
         yield json.dumps({"type": "error", "message": str(e)}) + "\n"
@@ -401,14 +364,12 @@ async def stream_chat(
 
     response_builder = registry[intent].response_builder
     response = await response_builder(
-        final_state, thread_id, clarification_question, user_store, user_id
+        final_state, thread_id, user_store, user_id
     )
 
     # Strip emojis from all text fields in the response
     if response.status:
         response.status = strip_emojis(response.status)
-    if response.clarification_question:
-        response.clarification_question = strip_emojis(response.clarification_question)
     if response.rationale:
         response.rationale = strip_emojis(response.rationale)
     if response.profile_update_summary:

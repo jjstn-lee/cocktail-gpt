@@ -21,9 +21,7 @@ def base_state() -> AgentState:
         constraints=None,
         recommendations=[],
         confidence_score=0.0,
-        clarification_answer=None,
         session_count=1,
-        session_clarification_used=False,
         feedback=[],
     )
 
@@ -226,9 +224,7 @@ async def test_ingest_node_user_id_preserved(
         constraints=None,
         recommendations=[],
         confidence_score=0.0,
-        clarification_answer=None,
         session_count=1,
-        session_clarification_used=False,
         feedback=[],
     )
 

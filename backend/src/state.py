@@ -81,10 +81,6 @@ class AgentState(TypedDict, total=False):
     confidence_score: float
     rationale: str  # Top-pick explanation from recommender
 
-    # Clarification flow
-    clarification_answer: str | None
-    session_clarification_used: bool  # Cap clarification at one round
-
     # History and feedback
     session_count: int
     feedback: list[Feedback]
@@ -97,3 +93,4 @@ class AgentState(TypedDict, total=False):
     profile_summary: str | None  # Formatted profile summary for retrieve_profile intent
     fallback_message: str | None  # Conversational response for ambiguous/unclear messages
     self_information_message: str | None  # Response for self_information intent
+    browse_attribute: str | None  # Attribute label for browse_by_attribute intent

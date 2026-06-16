@@ -22,7 +22,6 @@ async def test_output_node_passthrough():
             )
         ],
         "confidence_score": 0.85,
-        "clarification_question": None,
     }
 
     result = await output_node(state)

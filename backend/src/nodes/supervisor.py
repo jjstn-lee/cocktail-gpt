@@ -21,6 +21,7 @@ class Intent(str, Enum):
     RETRIEVE_PROFILE = "retrieve_profile"
     CONVERSATIONAL_FALLBACK = "conversational_fallback"
     SELF_INFORMATION = "self_information"
+    BROWSE_BY_ATTRIBUTE = "browse_by_attribute"
 
 
 class SupervisorOutput(BaseModel):
@@ -47,7 +48,7 @@ Classify the user's message into one of these categories:
    - "Let's see some recommendations!" (or "Let me see some recommendations")
    - "What goes well with [mood/occasion]?"
    - "Get me a drink"
-   - User is answering a clarification question from a previous recommendation
+   - User is answering a follow-up question the recommender asked in a previous turn
 
 2. **profile_update** — The user wants to update their profile (preferences or constraints) PERMANENTLY. Examples:
    - "I like whiskey and gin"
@@ -91,13 +92,21 @@ Classify the user's message into one of these categories:
    - "What can't you do?"
    - "What features do you have?"
 
-8. **conversational_fallback** — The user's message is ambiguous, unclear, or doesn't fit the above categories. Examples:
+8. **browse_by_attribute** — The user is exploring cocktails by a specific attribute, ingredient,
+   flavor, or style, rather than asking for a personalized recommendation. Examples:
+   - "show me something smoky"
+   - "what gin cocktails do you have?"
+   - "give me a non-alcoholic option"
+   - "what's good for summer?"
+   - Language: exploration of a category, not "what should I have right now"
+
+9. **conversational_fallback** — The user's message is ambiguous, unclear, or doesn't fit the above categories. Examples:
    - "Hello"
    - "Hi there"
    - "Tell me a joke"
    - Any vague chitchat or greeting
 
-Always respond with a JSON object containing only the "intent" field set to one of: "recommendation", "profile_update", "rate_cocktail", "explain_recommendation", "manage_restrictions", "retrieve_profile", "self_information", or "conversational_fallback"."""
+Always respond with a JSON object containing only the "intent" field set to one of: "recommendation", "profile_update", "rate_cocktail", "explain_recommendation", "manage_restrictions", "retrieve_profile", "self_information", "browse_by_attribute", or "conversational_fallback"."""
 
 
 async def supervisor(state: AgentState) -> dict:

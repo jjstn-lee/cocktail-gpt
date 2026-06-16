@@ -16,7 +16,6 @@ from src.api.schemas import ChatResponse, CocktailOut
 async def build_recommendation_response(
     final_state: dict[str, Any],
     thread_id: str,
-    clarification_question: str | None,
     user_store: UserStore | None,
     user_id: str,
 ) -> ChatResponse:
@@ -32,18 +31,12 @@ async def build_recommendation_response(
         for c in final_state.get("recommendations", [])
     ]
 
-    # Save session to cross-session memory if user_store is provided and not asking for clarification
-    if user_store and clarification_question is None:
+    if user_store:
         cocktail_names = [c.name for c in final_state.get("recommendations", [])]
         user_store.save_session_recommendations(user_id, thread_id, cocktail_names)
         user_store.increment_session_count(user_id)
 
-    needs_clarification = clarification_question is not None
-
-    if needs_clarification:
-        status = "Need a bit more info..."
-        message = "I need a bit more information to fine-tune my recommendation for you."
-    elif recommendations:
+    if recommendations:
         status = "✓ Crafted cocktail recommendations"
         message = f"I've selected **{len(recommendations)}** cocktail(s) that match your taste. Here they are:"
     else:
@@ -58,8 +51,6 @@ async def build_recommendation_response(
         recommendations=recommendations,
         confidence_score=final_state.get("confidence_score", 0.0),
         rationale=final_state.get("rationale", ""),
-        needs_clarification=needs_clarification,
-        clarification_question=clarification_question,
         degraded=False,
     )
 
@@ -67,7 +58,6 @@ async def build_recommendation_response(
 async def build_profile_update_response(
     final_state: dict[str, Any],
     thread_id: str,
-    clarification_question: str | None,
     user_store: UserStore | None,
     user_id: str,
 ) -> ChatResponse:
@@ -117,7 +107,6 @@ async def build_profile_update_response(
 async def build_rate_cocktail_response(
     final_state: dict[str, Any],
     thread_id: str,
-    clarification_question: str | None,
     user_store: UserStore | None,
     user_id: str,
 ) -> ChatResponse:
@@ -169,7 +158,6 @@ async def build_rate_cocktail_response(
 async def build_explain_recommendation_response(
     final_state: dict[str, Any],
     thread_id: str,
-    clarification_question: str | None,
     user_store: UserStore | None,
     user_id: str,
 ) -> ChatResponse:
@@ -205,7 +193,6 @@ async def build_explain_recommendation_response(
 async def build_manage_restrictions_response(
     final_state: dict[str, Any],
     thread_id: str,
-    clarification_question: str | None,
     user_store: UserStore | None,
     user_id: str,
 ) -> ChatResponse:
@@ -249,7 +236,6 @@ async def build_manage_restrictions_response(
 async def build_retrieve_profile_response(
     final_state: dict[str, Any],
     thread_id: str,
-    clarification_question: str | None,
     user_store: UserStore | None,
     user_id: str,
 ) -> ChatResponse:
@@ -272,7 +258,6 @@ async def build_retrieve_profile_response(
 async def build_conversational_fallback_response(
     final_state: dict[str, Any],
     thread_id: str,
-    clarification_question: str | None,
     user_store: UserStore | None,
     user_id: str,
 ) -> ChatResponse:
@@ -295,10 +280,49 @@ async def build_conversational_fallback_response(
     )
 
 
+async def build_browse_by_attribute_response(
+    final_state: dict[str, Any],
+    thread_id: str,
+    user_store: UserStore | None,
+    user_id: str,
+) -> ChatResponse:
+    """Build browse_by_attribute intent response with KB-grounded attribute picks."""
+    recommendations = [
+        CocktailOut(
+            name=c.name,
+            ingredients=c.ingredients,
+            method=c.method,
+            flavor_notes=c.flavor_notes,
+            why_this_works=c.why_this_works,
+        )
+        for c in final_state.get("recommendations", [])
+    ]
+    attribute = final_state.get("browse_attribute") or "that style"
+
+    if recommendations:
+        status = f"✓ Browsing by {attribute}"
+        message = f"Here are **{len(recommendations)}** cocktail(s) matching **{attribute}**."
+    else:
+        status = f"⚠ No matches for {attribute}"
+        message = (
+            f"I couldn't find any cocktails matching **{attribute}** in my knowledgebase. "
+            "Try a different attribute or ask for a personalized recommendation."
+        )
+
+    return ChatResponse(
+        thread_id=thread_id,
+        intent="browse_by_attribute",
+        message=message,
+        status=status,
+        recommendations=recommendations,
+        browse_attribute=attribute,
+        degraded=False,
+    )
+
+
 async def build_self_information_response(
     final_state: dict[str, Any],
     thread_id: str,
-    clarification_question: str | None,
     user_store: UserStore | None,
     user_id: str,
 ) -> ChatResponse:

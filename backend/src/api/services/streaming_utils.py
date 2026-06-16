@@ -6,9 +6,7 @@ NODE_STATUS_MESSAGES = {
     "ingest": "📊 Gathering your data...",
     "profile_builder": "👤 Building your profile...",
     "preference_extractor": "❤️ Extracting your preferences...",
-    "constraint_checker": "⚠️ Checking constraints...",
     "recommender": "🍹 Crafting cocktail recommendations...",
-    "clarify": "❓ Preparing clarification...",
     "output": "✨ Finalizing response...",
     # Profile update path
     "profile_updater": "💾 Updating your profile...",
@@ -19,6 +17,7 @@ NODE_STATUS_MESSAGES = {
     "retrieve_profile": "👤 Retrieving your profile...",
     "conversational_fallback": "💬 Thinking...",
     "self_information": "ℹ️ Fetching capabilities...",
+    "browse_by_attribute": "🔎 Browsing the cocktail catalog...",
 }
 
 

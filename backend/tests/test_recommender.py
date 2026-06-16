@@ -49,30 +49,3 @@ async def test_recommender_with_all_inputs():
     assert result["confidence_score"] == 0.85
 
 
-@pytest.mark.asyncio
-async def test_recommender_with_clarification():
-    """Test recommender with clarification answer."""
-    state: AgentState = {
-        "user_id": "test_user",
-        "thread_id": "test_thread",
-        "user_profile": UserProfile(mood="relaxed"),
-        "preferences": Preferences(),
-        "constraints": Constraints(),
-        "clarification_answer": "something citrusy",
-    }
-
-    mock_llm_response = AsyncMock()
-    mock_llm_response.recommendations = []
-    mock_llm_response.confidence_score = 0.9
-    mock_llm_response.rationale = "Using clarification to improve recommendation"
-
-    with patch("src.nodes.recommender.get_llm") as mock_get_llm:
-        mock_llm = AsyncMock()
-        mock_llm.with_structured_output = lambda x: mock_llm
-        mock_llm.ainvoke = AsyncMock(return_value=mock_llm_response)
-        mock_get_llm.return_value = mock_llm
-
-        result = await recommender(state)
-
-    assert "recommendations" in result
-    assert result["confidence_score"] == 0.9

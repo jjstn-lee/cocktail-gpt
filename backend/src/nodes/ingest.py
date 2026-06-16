@@ -39,6 +39,14 @@ def make_ingest_node(user_store=None):
         Returns:
             A dict with "raw_sources" containing normalized payloads keyed by source name.
         """
+        cached_sources = state.get("raw_sources") or {}
+        if cached_sources:
+            logger.debug(
+                "ingest: cache hit, skipping fetch",
+                extra={"sources": list(cached_sources.keys())},
+            )
+            return {}
+
         user_id: str = state.get("user_id", "")
         if not user_id:
             raise ValueError("user_id is required in state")

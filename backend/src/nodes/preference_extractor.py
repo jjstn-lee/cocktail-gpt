@@ -49,6 +49,10 @@ async def preference_extractor(state: AgentState) -> dict:
     """
     logger.debug("preference_extractor: extracting preferences")
 
+    if state.get("preferences") is not None:
+        logger.debug("preference_extractor: cache hit, reusing existing preferences")
+        return {}
+
     raw_sources = state.get("raw_sources", {})
     user_profile = state.get("user_profile")
     print(f"[PREFERENCE_EXTRACTOR] Raw sources: {list(raw_sources.keys())}")

@@ -458,7 +458,7 @@ export default function ChatPage() {
 
               {/* Assistant Message */}
               {msg.role === "assistant" && (
-                <div className="space-y-4">
+                <div className="space-y-4 mb-8">
                   <div className="max-w-2xl space-y-4">
                     {/* Main message */}
                     {msg.content && (
@@ -580,20 +580,6 @@ export default function ChatPage() {
                           </div>
                         )}
 
-                        {/* Clarification */}
-                        {chatData.needs_clarification &&
-                          chatData.clarification_question && (
-                            <div className="border-l-2 border-[#d97706] bg-[#1a1a1a] rounded-lg px-5 py-4 space-y-2">
-                              <p className="text-[#d97706] font-semibold text-sm">
-                                Help me understand better
-                              </p>
-                              <MarkdownText
-                                content={chatData.clarification_question}
-                                className="text-sm"
-                              />
-                            </div>
-                          )}
-
                         {/* Rationale */}
                         {chatData.rationale && (
                           <div className="text-[#a0a0a0] text-sm italic pt-2 border-t border-[#2a2a2a]">
@@ -604,7 +590,7 @@ export default function ChatPage() {
                         {/* Confidence Score */}
                         {chatData.confidence_score !== null &&
                           chatData.confidence_score !== undefined && (
-                            <div className="flex items-center gap-3 text-xs">
+                            <div className="flex items-center gap-3 text-xs pb-4">
                               <div className="flex-1 h-1 bg-[#2a2a2a] rounded-full overflow-hidden">
                                 <div
                                   className="h-full bg-gradient-to-r from-[#d97706] to-[#b45309] transition-all duration-500"

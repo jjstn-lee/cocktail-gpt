@@ -19,6 +19,10 @@ async def profile_builder(state: AgentState) -> dict:
     """
     logger.debug("profile_builder: building user profile from raw sources")
 
+    if state.get("user_profile") is not None:
+        logger.debug("profile_builder: cache hit, reusing existing user_profile")
+        return {}
+
     raw_sources = state.get("raw_sources", {})
     print(f"[PROFILE_BUILDER] Received raw_sources: {list(raw_sources.keys())}")
     if not raw_sources:

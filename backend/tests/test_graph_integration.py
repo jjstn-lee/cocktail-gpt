@@ -25,9 +25,6 @@ async def test_graph_full_flow_with_recommendations(mock_checkpointer):
     mock_pref_response = AsyncMock()
     mock_pref_response.content = '{"preferred_spirits": ["vodka"], "preferred_flavors": ["citrus"], "abv_preference": "moderate", "style_preferences": []}'
 
-    mock_constraint_response = AsyncMock()
-    mock_constraint_response.content = '{"allergies": [], "ingredients_on_hand": [], "max_abv": null}'
-
     mock_recommender_response = AsyncMock()
     mock_recommender_response.recommendations = [
         Cocktail(
@@ -43,15 +40,13 @@ async def test_graph_full_flow_with_recommendations(mock_checkpointer):
 
     def mock_get_llm():
         llm = AsyncMock()
-        # Use side_effect to return different responses for different calls
-        llm.ainvoke = AsyncMock(side_effect=[mock_profile_response, mock_pref_response, mock_constraint_response])
+        llm.ainvoke = AsyncMock(side_effect=[mock_profile_response, mock_pref_response])
         llm.with_structured_output = lambda x: llm
         return llm
 
     with patch("src.nodes.profile_builder.get_llm", side_effect=mock_get_llm):
         with patch("src.nodes.preference_extractor.get_llm", side_effect=mock_get_llm):
-            with patch("src.nodes.constraint_checker.get_llm", side_effect=mock_get_llm):
-                with patch("src.nodes.recommender.get_llm") as mock_recommender_llm:
+            with patch("src.nodes.recommender.get_llm") as mock_recommender_llm:
                     mock_rec_llm = AsyncMock()
                     mock_rec_llm.with_structured_output = lambda x: mock_rec_llm
                     mock_rec_llm.ainvoke = AsyncMock(return_value=mock_recommender_response)
@@ -81,7 +76,6 @@ async def test_graph_full_flow_with_recommendations(mock_checkpointer):
                                 "recommendations": [],
                                 "confidence_score": 0.0,
                                 "session_count": 0,
-                                "session_clarification_used": False,
                                 "feedback": [],
                             }
 
@@ -91,88 +85,3 @@ async def test_graph_full_flow_with_recommendations(mock_checkpointer):
                             # Verify graph executed
                             assert result is not None
                             assert result.get("user_id") == "test_user"
-
-
-@pytest.mark.asyncio
-async def test_graph_with_clarification_flow(mock_checkpointer):
-    """Test graph routes to clarification when confidence is low."""
-    # Note: interrupt() is handled at the API layer via service functions,
-    # not directly by the test. This test verifies the graph routes to clarify.
-
-    mock_profile_response = AsyncMock()
-    mock_profile_response.content = '{"mood": null, "vibe": null, "energy_level": null, "occasion": null}'
-
-    mock_pref_response = AsyncMock()
-    mock_pref_response.content = '{"preferred_spirits": [], "preferred_flavors": [], "abv_preference": null, "style_preferences": []}'
-
-    mock_constraint_response = AsyncMock()
-    mock_constraint_response.content = '{"allergies": [], "ingredients_on_hand": [], "max_abv": null}'
-
-    # Low confidence response
-    mock_recommender_response = AsyncMock()
-    mock_recommender_response.recommendations = []
-    mock_recommender_response.confidence_score = 0.4
-    mock_recommender_response.rationale = "Not enough info"
-
-    mock_clarify_response = AsyncMock()
-    mock_clarify_response.content = "Are you a whiskey or vodka person?"
-
-    def mock_get_llm():
-        llm = AsyncMock()
-        llm.ainvoke = AsyncMock(side_effect=[mock_profile_response, mock_pref_response, mock_constraint_response])
-        llm.with_structured_output = lambda x: llm
-        return llm
-
-    with patch("src.nodes.profile_builder.get_llm", side_effect=mock_get_llm):
-        with patch("src.nodes.preference_extractor.get_llm", side_effect=mock_get_llm):
-            with patch("src.nodes.constraint_checker.get_llm", side_effect=mock_get_llm):
-                with patch("src.nodes.recommender.get_llm") as mock_recommender_llm:
-                    mock_rec_llm = AsyncMock()
-                    mock_rec_llm.with_structured_output = lambda x: mock_rec_llm
-                    mock_rec_llm.ainvoke = AsyncMock(return_value=mock_recommender_response)
-                    mock_recommender_llm.return_value = mock_rec_llm
-
-                    with patch("src.nodes.clarify.get_llm") as mock_clarify_llm:
-                        mock_c_llm = AsyncMock()
-                        mock_c_llm.ainvoke = AsyncMock(return_value=mock_clarify_response)
-                        mock_clarify_llm.return_value = mock_c_llm
-
-                        with patch("src.nodes.ingest.fetch_spotify") as mock_spotify:
-                            with patch("src.nodes.ingest.fetch_weather") as mock_weather:
-                                mock_spotify.return_value = {
-                                    "source": "spotify",
-                                    "signals": {},
-                                    "confidence": 0.0,
-                                    "fetched_at": "2026-05-28T00:00:00Z",
-                                }
-                                mock_weather.return_value = {
-                                    "source": "weather",
-                                    "signals": {},
-                                    "confidence": 0.0,
-                                    "fetched_at": "2026-05-28T00:00:00Z",
-                                }
-
-                                graph = build_graph(mock_checkpointer)
-
-                                initial_state: AgentState = {
-                                    "user_id": "test_user",
-                                    "thread_id": "test_thread",
-                                    "raw_sources": {},
-                                    "recommendations": [],
-                                    "confidence_score": 0.0,
-                                    "session_count": 0,
-                                    "session_clarification_used": False,
-                                    "feedback": [],
-                                }
-
-                                config = {"configurable": {"thread_id": "test_thread"}}
-
-                                # Graph should route to clarify node due to low confidence
-                                result = await graph.ainvoke(initial_state, config=config)
-
-                                # Verify that graph paused at interrupt (indicated by __interrupt__ key)
-                                assert "__interrupt__" in result
-                                assert len(result["__interrupt__"]) > 0
-                                # Verify the interrupt contains the clarification question
-                                interrupt_value = result["__interrupt__"][0].value
-                                assert interrupt_value == "Are you a whiskey or vodka person?"

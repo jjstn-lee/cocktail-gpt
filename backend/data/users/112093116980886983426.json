@@ -30,15 +30,6 @@
   ],
   "recommendation_history": [
     {
-      "session_id": "07474540-0b59-46c1-bd9c-f9a0b1e6eb41",
-      "cocktails": [
-        "Amaretto Sour",
-        "New York Sour",
-        "Whiskey Sour"
-      ],
-      "timestamp": "2026-06-06T21:00:21.330686Z"
-    },
-    {
       "session_id": "5dbd09ea-0fd9-4605-83e4-3cf2a847866a",
       "cocktails": [
         "Chartreuse Swizzle",
@@ -118,16 +109,25 @@
         "Penicillin"
       ],
       "timestamp": "2026-06-16T06:02:24.536583Z"
+    },
+    {
+      "session_id": "d33886f6-0fb5-4501-a948-90f75a183854",
+      "cocktails": [
+        "Paloma",
+        "Aviation",
+        "Moscow Mule"
+      ],
+      "timestamp": "2026-06-16T06:11:28.086188Z"
     }
   ],
-  "session_count": 19,
-  "updated_at": "2026-06-16T06:02:24.537359Z",
+  "session_count": 20,
+  "updated_at": "2026-06-16T06:11:28.086849Z",
   "spotify": {
-    "access_token": "BQBix9DoQXg5YmPyrADC87jxUU6c6LktGoqdAbZZmjRgGO1z_DsekvG1Dfb89wHcg1UNs6L2072H8fD0zSJIA77QXq-mGTG6Yoe5Gr1QH_CHQ5N3AY3mq2u1a8ojhCgTef39_D8lCp99Fjo-BvFJ84MYbSGxnqoX_Sh5215jB0WGPsaGbEkTojgY-LU0TXc6eVV0dEul2u3ANbjO_2Gu1Jdk48TMMneJ1eUOwL0vAYiQRZYUX6sEQH9gCngI9abJ",
+    "access_token": "BQBltrHJE_dGC9Pg8lw7NDtlTgz5HEPhlDS6dbmg4FQMOtiBsXFkNxQPPyo_AuOkiunOcG_BwdS1fjqAK33DJDl5qKOEeL4ji0-TDB9EjPCn1YXFnIho8i6w--IITjiqdcEYMlkrWQTPlqKBWtw1tP4GivnfLoRAeLaOlRWZrMWHUXDIR7Eo1VmvZv3BxF5Sx1aHcztU1x1cRd32tCbfnvVQShBpvWWbyOyJ1TTF1JG6H2PSTD1EuRJ-ohDBl9qd",
     "token_type": "Bearer",
     "expires_in": 3600,
     "scope": "playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played user-top-read",
-    "expires_at": 1781593173,
+    "expires_at": 1781597367,
     "refresh_token": "AQCYOo3Jdg7282IhW_DOzgnWxFpNfgAEpBBhiSfiJiaEJhKQO0sDkWpeDth0Z98fy3ZdnquIUhDnVE-K4DCH05_I4vU74jfD39qfiig87X7eRo6EFCxd92qagmFdC2AUTFs",
     "connected_at": "2026-06-10T17:37:26.686586+00:00"
   }

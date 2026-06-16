@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from src.llm import get_llm
 from src.state import AgentState, Cocktail
 from src.prompts.recommender import RECOMMENDER_PROMPT, RECOMMENDER_SYSTEM_PROMPT
-from src.tools.cocktail_kb import load_cocktails, filter_cocktails, format_for_prompt
+from src.tools.cocktail_kb import load_cocktails, apply_hard_filters, format_for_prompt
 
 
 class RecommenderOutput(BaseModel):
@@ -23,7 +23,7 @@ async def recommender(state: AgentState) -> dict:
     """
     Generate cocktail recommendations based on user profile, preferences, constraints, and memory.
 
-    Input: state["user_profile"], state["preferences"], state["constraints"], state.get("clarification_answer"),
+    Input: state["user_profile"], state["preferences"], state["constraints"],
            state.get("latest_message"), state.get("message_history"), state.get("feedback"), state.get("recommendation_history")
     Output: {"recommendations": list[Cocktail], "confidence_score": float, "rationale": str}
     """
@@ -32,7 +32,6 @@ async def recommender(state: AgentState) -> dict:
     user_profile = state.get("user_profile")
     preferences = state.get("preferences")
     constraints = state.get("constraints")
-    clarification_answer = state.get("clarification_answer")
     latest_message = state.get("latest_message")
     message_history = state.get("message_history", [])
     feedback = state.get("feedback", [])
@@ -61,30 +60,8 @@ async def recommender(state: AgentState) -> dict:
         if recent_cocktails:
             memory_context += f"\nRecently recommended cocktails (avoid unless user rated them up): {', '.join(recent_cocktails)}"
 
-    # Load knowledgebase - apply only constraint filters, never preference filters
-    # Preferences are soft signals for scoring/ranking, not hard exclusions.
-    # The LLM should see all available cocktails and decide based on user preferences.
     all_cocktails = load_cocktails()
-
-    # Apply only hard constraint filters (allergies, max ABV)
-    # Never filter by preferences - a user who prefers vodka might still enjoy a great gin drink
-    filtered = []
-    for cocktail in all_cocktails:
-        # Hard exclusion 1: allergies
-        if constraints and constraints.allergies:
-            ingredients_items = [ing.get("item", "").lower() for ing in (cocktail.get("ingredients") or [])]
-            all_ingredients_text = " ".join(ingredients_items)
-            if any(allergy.lower() in all_ingredients_text for allergy in constraints.allergies):
-                continue  # Skip this cocktail
-
-        # Hard exclusion 2: max ABV
-        if constraints and constraints.max_abv is not None:
-            abv = cocktail.get("abv_estimate", 0)
-            if abv > constraints.max_abv:
-                continue  # Skip this cocktail
-
-        # Keep this cocktail
-        filtered.append(cocktail)
+    filtered = apply_hard_filters(all_cocktails, constraints)
 
     spirits_in_kb = list(set(c.get("spirit_category", "mixed") for c in filtered))
     logger.info(
@@ -93,12 +70,9 @@ async def recommender(state: AgentState) -> dict:
             "total": len(all_cocktails),
             "filtered": len(filtered),
             "spirits_available": sorted(spirits_in_kb),
-            "has_clarification": bool(clarification_answer),
         },
     )
     print(f"[RECOMMENDER] Knowledgebase: {len(filtered)} cocktails available")
-    if clarification_answer:
-        print(f"[RECOMMENDER] Clarification: {clarification_answer}")
     if latest_message:
         print(f"[RECOMMENDER] User's Current Request: {latest_message}")
     print(f"[RECOMMENDER] Spirits in KB: {sorted(spirits_in_kb)}")
@@ -128,9 +102,6 @@ Constraints: {json.dumps(constraints_dict)}{memory_context}{conversation_context
 
 Knowledgebase (select from these only):
 {kb_context}"""
-
-    if clarification_answer:
-        context += f"\n\nClarification Answer: {clarification_answer}"
 
     if latest_message:
         context += f"\n\nUser's Current Request: {latest_message}"

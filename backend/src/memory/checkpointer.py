@@ -10,7 +10,7 @@ def get_checkpointer():
     """
     Get the appropriate checkpointer for within-session state persistence.
 
-    Uses MemorySaver for within-session checkpoints (clarification flows, state resumption).
+    Uses MemorySaver for within-session checkpoints (per-thread state across turns).
     Cross-session memory (feedback, recommendations, session_count) is persisted via user_store JSON files.
 
     For production with multi-process deployments, consider upgrading to langgraph version

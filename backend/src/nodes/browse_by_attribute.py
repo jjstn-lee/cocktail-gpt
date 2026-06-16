@@ -1,4 +1,4 @@
-"""Browse by attribute node: generates cocktails matching a user-specified attribute or ingredient."""
+"""Browse by attribute node: picks cocktails from the KB matching a user-specified attribute."""
 
 from loguru import logger
 from pydantic import BaseModel, ConfigDict
@@ -7,62 +7,67 @@ from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from src.llm import get_llm
 from src.prompts.base import GENERAL_SYSTEM_PROMPT
 from src.state import AgentState, Cocktail
+from src.tools.cocktail_kb import (
+    apply_hard_filters,
+    filter_by_attribute,
+    format_for_prompt,
+    load_cocktails,
+)
 
 
 class BrowseByAttributeOutput(BaseModel):
     """Output from browse_by_attribute node."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    attribute_label: str  # e.g., "smoky", "gin-based", "refreshing"
+    attribute_label: str
     recommendations: list[Cocktail]
 
 
 BROWSE_BY_ATTRIBUTE_SYSTEM_PROMPT = f"""{GENERAL_SYSTEM_PROMPT}
 
-The supervisor has determined the user wants to browse cocktails by a specific attribute, ingredient, flavor, or style.
-Your job is to generate cocktail recommendations that match their request.
+The user wants to browse cocktails by an attribute, ingredient, flavor, or style.
+You will be given a CANDIDATE LIST of cocktails drawn from the curated knowledgebase.
 
-IMPORTANT GUIDELINES:
-1. Treat the user's request as an exploration query, not a personal recommendation
-2. Draw from encyclopedic cocktail knowledge to suggest classic and well-known cocktails
-3. If the user mentions hard constraints (allergies, max ABV), respect them for safety
-4. Do NOT apply the user's personal preferences - this is about what's available by that attribute
-5. Generate exactly 3 cocktails that clearly match the requested attribute
-6. Rank them by how well they exemplify the attribute
-7. **CRITICAL**: Always extract a clear, meaningful attribute_label from the user's request (e.g., "smoky", "gin-based", "refreshing" — never "unknown")
-
-Examples of attribute queries:
-- "show me something smoky" → attribute_label: "smoky" with Smoky Old Fashioned, Peaty Daiquiri, etc.
-- "what can I make with gin?" → attribute_label: "gin-based" with gin cocktails
-- "I want something refreshing" → attribute_label: "refreshing" with light, citrusy drinks
-- "show me rum drinks" → attribute_label: "rum" with various rum cocktails
+RULES:
+1. Pick exactly 3 cocktails from the candidate list. Do not invent cocktails or use cocktails
+   not in the candidate list — names must match the candidate list exactly.
+2. If fewer than 3 candidates are present, return as many as are available.
+3. Rank by how clearly each cocktail exemplifies the requested attribute.
+4. Do NOT apply the user's personal preferences — this is an attribute query, not a recommendation.
+   Hard safety constraints (allergies, max ABV) have already been applied to the candidate list.
+5. Extract a clear `attribute_label` from the user's request (e.g., "smoky", "gin-based",
+   "refreshing"). Never return "unknown" — pick the most defensible label.
 
 Return JSON with:
-- attribute_label: A brief, meaningful label for what they're browsing (MUST reflect the user's actual request, never "unknown")
-- recommendations: List of exactly 3 cocktails that match this attribute"""
+- attribute_label: A brief, meaningful label for what they're browsing
+- recommendations: Exactly 3 cocktails (or fewer if candidate list is shorter) from the candidate list"""
 
 
 async def browse_by_attribute(state: AgentState) -> dict:
     """
-    Generate cocktail recommendations based on a user-specified attribute, flavor, ingredient, or style.
-    Does NOT apply personal preferences; purely attribute-led exploration.
+    Pick KB-grounded cocktails matching the user's attribute query.
 
-    Input: state["latest_message"], state.get("constraints") (for hard constraint context only)
+    Input: state["latest_message"], state.get("constraints"), state.get("message_history")
     Output: {"recommendations": list[Cocktail], "browse_attribute": str}
     """
-    logger.debug("browse_by_attribute: generating attribute-driven recommendations")
+    logger.debug("browse_by_attribute: KB-grounded attribute pick")
 
     latest_message = state.get("latest_message")
     constraints = state.get("constraints")
 
     if not latest_message:
         logger.warning("browse_by_attribute: no latest_message in state")
-        return {
-            "recommendations": [],
-            "browse_attribute": "unknown",
-        }
+        return {"recommendations": [], "browse_attribute": "unknown"}
 
-    # Build constraint context for safety filtering (hard constraints only)
+    all_cocktails = load_cocktails()
+
+    candidates = filter_by_attribute(all_cocktails, latest_message, constraints)
+    if not candidates:
+        candidates = apply_hard_filters(all_cocktails, constraints)
+
+    candidate_names = {c.get("name", "") for c in candidates}
+    kb_block = format_for_prompt(candidates)
+
     constraint_context = ""
     if constraints:
         if constraints.allergies:
@@ -70,33 +75,27 @@ async def browse_by_attribute(state: AgentState) -> dict:
         if constraints.max_abv is not None:
             constraint_context += f"Max ABV: {constraints.max_abv}%\n"
 
-    llm = get_llm()
-    browse_llm = llm.with_structured_output(BrowseByAttributeOutput)
-
     context = f"""User request: {latest_message}
 {constraint_context}
+CANDIDATES (pick from these only):
+{kb_block}"""
 
-Generate cocktails that match this attribute/ingredient/flavor/style request.
-Focus on the attribute, not personal preferences. Include classic and well-known cocktails."""
-
-    # Build messages with conversation history
     message_history = state.get("message_history", [])
-    messages = [SystemMessage(content=BROWSE_BY_ATTRIBUTE_SYSTEM_PROMPT)]
-
-    # Add message history (excluding current turn)
+    messages: list = [SystemMessage(content=BROWSE_BY_ATTRIBUTE_SYSTEM_PROMPT)]
     if message_history and len(message_history) > 1:
         for msg in message_history[:-1]:
             if msg["role"] == "user":
                 messages.append(HumanMessage(content=msg["content"]))
             elif msg["role"] == "assistant":
                 messages.append(AIMessage(content=msg["content"]))
-
     messages.append(HumanMessage(content=context))
+
+    llm = get_llm()
+    browse_llm = llm.with_structured_output(BrowseByAttributeOutput)
 
     try:
         result = await browse_llm.ainvoke(messages)
 
-        # Safely extract attribute and recommendations
         if isinstance(result, BrowseByAttributeOutput):
             attribute_label = result.attribute_label
             recommendations = result.recommendations
@@ -105,28 +104,31 @@ Focus on the attribute, not personal preferences. Include classic and well-known
             recommendations = result.get("recommendations", [])
         else:
             logger.warning(f"browse_by_attribute: unexpected result type {type(result)}")
-            attribute_label = "unknown"
-            recommendations = []
+            return {"recommendations": [], "browse_attribute": "unknown"}
+
+        valid: list[Cocktail] = []
+        for cocktail in recommendations:
+            if cocktail.name in candidate_names:
+                valid.append(cocktail)
+            else:
+                logger.warning(
+                    "browse_by_attribute: LLM returned cocktail outside KB; dropping",
+                    extra={"name": cocktail.name},
+                )
 
         logger.info(
-            "browse_by_attribute: generated recommendations",
+            "browse_by_attribute: KB-grounded picks",
             extra={
                 "attribute": attribute_label,
-                "count": len(recommendations),
+                "candidates": len(candidates),
+                "returned": len(valid),
             },
         )
-
-        return {
-            "recommendations": recommendations,
-            "browse_attribute": attribute_label,
-        }
+        return {"recommendations": valid, "browse_attribute": attribute_label}
 
     except Exception as e:
         logger.error(
             "browse_by_attribute: error generating recommendations",
             extra={"error": str(e), "error_type": type(e).__name__},
         )
-        return {
-            "recommendations": [],
-            "browse_attribute": "unknown",
-        }
+        return {"recommendations": [], "browse_attribute": "unknown"}

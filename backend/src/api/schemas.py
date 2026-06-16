@@ -28,15 +28,13 @@ class ChatResponse(BaseModel):
     """Response from conversational interaction (can be recommendations, profile update, feedback, or explanation)."""
 
     thread_id: str
-    intent: Literal["recommendation", "profile_update", "rate_cocktail", "explain_recommendation", "manage_restrictions", "retrieve_profile", "conversational_fallback", "self_information"]
+    intent: Literal["recommendation", "profile_update", "rate_cocktail", "explain_recommendation", "manage_restrictions", "retrieve_profile", "conversational_fallback", "self_information", "browse_by_attribute"]
     message: str  # Main text message to display
     status: str  # Status message describing what was done (e.g., "Crafted cocktail recommendations")
     # For recommendations
     recommendations: list[CocktailOut] = []
     confidence_score: float | None = None
     rationale: str | None = None
-    needs_clarification: bool = False
-    clarification_question: str | None = None
     # For profile updates
     profile_update_summary: str | None = None
     # For rate_cocktail
@@ -52,6 +50,8 @@ class ChatResponse(BaseModel):
     fallback_message: str | None = None  # Conversational response for ambiguous messages
     # For self_information
     self_information_message: str | None = None  # Explanation of agent capabilities
+    # For browse_by_attribute
+    browse_attribute: str | None = None  # Label of the attribute browsed (e.g., "smoky")
     # Metadata
     degraded: bool = False  # True if any source failed
 

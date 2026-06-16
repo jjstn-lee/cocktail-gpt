@@ -53,6 +53,37 @@ def load_cocktails() -> list[dict[str, Any]]:
     return cocktails
 
 
+def apply_hard_filters(
+    cocktails: list[dict[str, Any]],
+    constraints: Any,  # Constraints Pydantic model, or None
+) -> list[dict[str, Any]]:
+    """
+    Apply safety-critical exclusions: allergy ingredients and max ABV.
+
+    Shared by recommender, browse_by_attribute, and filter_cocktails so allergy/ABV
+    semantics stay in lockstep across the agent's KB-querying paths.
+    """
+    if constraints is None:
+        return list(cocktails)
+
+    allergies = [a.lower() for a in (constraints.allergies or [])]
+    max_abv = constraints.max_abv
+
+    survivors = []
+    for cocktail in cocktails:
+        if allergies:
+            ingredients_items = [
+                ing.get("item", "").lower() for ing in (cocktail.get("ingredients") or [])
+            ]
+            all_ingredients_text = " ".join(ingredients_items)
+            if any(allergy in all_ingredients_text for allergy in allergies):
+                continue
+        if max_abv is not None and cocktail.get("abv_estimate", 0) > max_abv:
+            continue
+        survivors.append(cocktail)
+    return survivors
+
+
 def filter_cocktails(
     cocktails: list[dict[str, Any]],
     preferences: Any,  # Preferences Pydantic model
@@ -80,15 +111,11 @@ def filter_cocktails(
     Returns:
         Top 20 cocktails by score, or all survivors if fewer than 5 pass hard filters.
     """
-    # Prepare filter parameters
-    allergies = [a.lower() for a in (constraints.allergies or [])]
     ingredients_on_hand = [i.lower() for i in (constraints.ingredients_on_hand or [])]
-    max_abv = constraints.max_abv
     preferred_spirits = [s.lower() for s in (preferences.preferred_spirits or [])]
     preferred_flavors = [f.lower() for f in (preferences.preferred_flavors or [])]
     abv_preference = preferences.abv_preference
 
-    # Map ABV preference to tier
     abv_tier_map = {
         "light": "low",
         "moderate": "medium",
@@ -96,23 +123,10 @@ def filter_cocktails(
     }
     target_abv_tier = abv_tier_map.get(abv_preference.lower(), None) if abv_preference else None
 
-    # Apply hard filters and soft scoring
+    survivors = apply_hard_filters(cocktails, constraints)
     scored = []
 
-    for cocktail in cocktails:
-        # Hard exclusion 1: allergies
-        if allergies:
-            ingredients_items = [ing["item"].lower() for ing in (cocktail.get("ingredients") or [])]
-            all_ingredients_text = " ".join(ingredients_items)
-            if any(allergy in all_ingredients_text for allergy in allergies):
-                continue  # Skip this cocktail
-
-        # Hard exclusion 2: max ABV
-        if max_abv is not None:
-            abv = cocktail.get("abv_estimate", 0)
-            if abv > max_abv:
-                continue  # Skip this cocktail
-
+    for cocktail in survivors:
         # Soft scoring
         score = 0
 
@@ -158,6 +172,79 @@ def filter_cocktails(
         return [c for c, _ in scored]
 
     return [c for c, _ in scored[:20]]
+
+
+def filter_by_attribute(
+    cocktails: list[dict[str, Any]],
+    attribute_query: str,
+    constraints: Any,  # Constraints Pydantic model, or None
+) -> list[dict[str, Any]]:
+    """
+    Return up to 10 cocktails from the KB that match a free-form attribute query.
+
+    Applies hard constraint exclusions first, then scores each cocktail by how
+    strongly the attribute_query matches its spirit_category, flavor_notes,
+    mood/occasion/season/style tags, ingredients, or non-alcoholic flag.
+
+    Args:
+        cocktails: All cocktails from load_cocktails()
+        attribute_query: Free-form string from the user (e.g., "smoky", "gin", "summer")
+        constraints: Optional Constraints — allergies/max_abv exclusions applied first
+
+    Returns:
+        Up to 10 cocktails with score > 0, sorted descending by score.
+        If nothing matches scoring, returns the first 10 hard-filter survivors as
+        a fallback so the LLM still has KB-grounded candidates to pick from.
+    """
+    query = (attribute_query or "").lower().strip()
+    survivors = apply_hard_filters(cocktails, constraints)
+
+    if not query:
+        return survivors[:10]
+
+    scored: list[tuple[dict[str, Any], int]] = []
+    for cocktail in survivors:
+        score = 0
+        spirit_category = (cocktail.get("spirit_category") or "").lower()
+        if query in spirit_category:
+            score += 3
+
+        flavor_notes = [str(f).lower() for f in (cocktail.get("flavor_notes") or [])]
+        if any(query in note for note in flavor_notes):
+            score += 2
+
+        tag_fields = ("mood_tags", "occasion_tags", "season_tags", "style_tags")
+        tags = [
+            str(t).lower()
+            for field in tag_fields
+            for t in (cocktail.get(field) or [])
+        ]
+        if any(query in tag for tag in tags):
+            score += 2
+
+        ingredient_items = [
+            (ing.get("item") or "").lower() for ing in (cocktail.get("ingredients") or [])
+        ]
+        if any(query in item for item in ingredient_items):
+            score += 1
+
+        if query in ("non-alcoholic", "nonalcoholic", "alcohol-free", "mocktail") and cocktail.get(
+            "is_non_alcoholic"
+        ):
+            score += 3
+
+        if score > 0:
+            scored.append((cocktail, score))
+
+    if not scored:
+        logger.debug(
+            "filter_by_attribute: no scored matches; returning hard-filter survivors as fallback",
+            extra={"query": query, "survivors": len(survivors)},
+        )
+        return survivors[:10]
+
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return [c for c, _ in scored[:10]]
 
 
 def format_for_prompt(cocktails: list[dict[str, Any]]) -> str:
