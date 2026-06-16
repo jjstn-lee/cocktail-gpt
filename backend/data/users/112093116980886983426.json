@@ -20,45 +20,15 @@
       "session_id": "07474540-0b59-46c1-bd9c-f9a0b1e6eb41",
       "rating": 5,
       "timestamp": "2026-06-06T21:01:59.884658Z"
+    },
+    {
+      "cocktail_name": "Cosmopolitan",
+      "session_id": "9df3e387-6f1a-43eb-bd48-8ae36d37ba56",
+      "rating": 5,
+      "timestamp": "2026-06-16T01:23:00.138631Z"
     }
   ],
   "recommendation_history": [
-    {
-      "session_id": "e1fac6ab-5ad7-4182-9b04-fb0fcc79a479",
-      "cocktails": [
-        "Paloma",
-        "Aviation",
-        "Cosmopolitan"
-      ],
-      "timestamp": "2026-06-06T10:51:13.949501Z"
-    },
-    {
-      "session_id": "a45a860d-07e0-46fa-8461-615eba376b31",
-      "cocktails": [
-        "Bee's Knees",
-        "Tommy's Margarita",
-        "Gimlet"
-      ],
-      "timestamp": "2026-06-06T10:54:07.200801Z"
-    },
-    {
-      "session_id": "16240b6d-97c1-4c3d-a6b7-820b4652b72c",
-      "cocktails": [
-        "Aperol Spritz",
-        "Tom Collins",
-        "Moscow Mule"
-      ],
-      "timestamp": "2026-06-06T20:33:30.762394Z"
-    },
-    {
-      "session_id": "9c286931-e64f-42b7-97c4-651602b1c151",
-      "cocktails": [
-        "Daiquiri",
-        "Pi\u00f1a Colada",
-        "Cuba Libre"
-      ],
-      "timestamp": "2026-06-06T20:38:31.312197Z"
-    },
     {
       "session_id": "07474540-0b59-46c1-bd9c-f9a0b1e6eb41",
       "cocktails": [
@@ -112,17 +82,53 @@
         "Daiquiri"
       ],
       "timestamp": "2026-06-07T10:48:33.647477Z"
+    },
+    {
+      "session_id": "9df3e387-6f1a-43eb-bd48-8ae36d37ba56",
+      "cocktails": [
+        "Cosmopolitan",
+        "Aviation",
+        "Aperol Spritz"
+      ],
+      "timestamp": "2026-06-16T01:20:51.373320Z"
+    },
+    {
+      "session_id": "9df3e387-6f1a-43eb-bd48-8ae36d37ba56",
+      "cocktails": [
+        "Vodka Martini",
+        "Adonis",
+        "Bamboo"
+      ],
+      "timestamp": "2026-06-16T01:24:03.803365Z"
+    },
+    {
+      "session_id": "ca56f096-f8d4-4375-b335-cd8d52ff2df1",
+      "cocktails": [
+        "Bee's Knees",
+        "Gimlet",
+        "Tom Collins"
+      ],
+      "timestamp": "2026-06-16T06:00:11.616546Z"
+    },
+    {
+      "session_id": "ca56f096-f8d4-4375-b335-cd8d52ff2df1",
+      "cocktails": [
+        "Mezcal Negroni",
+        "Oaxacan Old Fashioned",
+        "Penicillin"
+      ],
+      "timestamp": "2026-06-16T06:02:24.536583Z"
     }
   ],
-  "session_count": 15,
-  "updated_at": "2026-06-07T10:48:33.648165Z",
+  "session_count": 19,
+  "updated_at": "2026-06-16T06:02:24.537359Z",
   "spotify": {
-    "access_token": "BQDAOKqEC87uTHLg-hOJXdJLt55x6RqE8TISHLv6EruA_IUk31GZOLpZIrm0FCE51lSdwUAE1hGPnLgjzGDdgMjdLefeCE4HlvE-nr63Rvm5-KUxPSMFOsGRchh8Y1Q3DGoEQIORqkW3E13i8yHQUN8Y-MwnRG7SaFLQ7qvpXPAliFQp53njfCHfWM8A_3SwGV4mQm3pf7zTvWKmKrAhMypiCq-6otME4kdLFrdqpzvHdY0D0BhEQtzU4_oNDi3D",
+    "access_token": "BQBix9DoQXg5YmPyrADC87jxUU6c6LktGoqdAbZZmjRgGO1z_DsekvG1Dfb89wHcg1UNs6L2072H8fD0zSJIA77QXq-mGTG6Yoe5Gr1QH_CHQ5N3AY3mq2u1a8ojhCgTef39_D8lCp99Fjo-BvFJ84MYbSGxnqoX_Sh5215jB0WGPsaGbEkTojgY-LU0TXc6eVV0dEul2u3ANbjO_2Gu1Jdk48TMMneJ1eUOwL0vAYiQRZYUX6sEQH9gCngI9abJ",
     "token_type": "Bearer",
     "expires_in": 3600,
-    "refresh_token": "AQCYOo3Jdg7282IhW_DOzgnWxFpNfgAEpBBhiSfiJiaEJhKQO0sDkWpeDth0Z98fy3ZdnquIUhDnVE-K4DCH05_I4vU74jfD39qfiig87X7eRo6EFCxd92qagmFdC2AUTFs",
     "scope": "playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played user-top-read",
-    "expires_at": 1781116646,
+    "expires_at": 1781593173,
+    "refresh_token": "AQCYOo3Jdg7282IhW_DOzgnWxFpNfgAEpBBhiSfiJiaEJhKQO0sDkWpeDth0Z98fy3ZdnquIUhDnVE-K4DCH05_I4vU74jfD39qfiig87X7eRo6EFCxd92qagmFdC2AUTFs",
     "connected_at": "2026-06-10T17:37:26.686586+00:00"
   }
 }
